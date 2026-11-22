@@ -15,3 +15,5 @@ Brand names and logos belong to their respective owners. This fan game is not af
 - sheraton.png: https://cache.marriott.com/content/dam/marriott-digital/bonvoy/global/en_us/logo/internal/assets/bonvoy-si-logo-l-aries-23319.png (Sheraton brand logo from the official Marriott hotel page).
 
 - new-otani.svg: https://www.newotani.co.jp/fileadmin/sites/_assets/logo/logo-tokyo.svg (official Hotel New Otani Tokyo logo).
+
+- nikko.svg: https://d3g2yh83to8qa2.cloudfront.net/wp-content/uploads/1/2016/04/11081857/logo-nikko.svg (Nikko Hotels International logo linked from the official https://okura.com/nikko/ page).

@@ -27,3 +27,7 @@ Only changes pushed to this repository trigger its workflow.
 ## Purchase announcements
 
 A confirmed basket announces every hotel, quantity and line cost, plus total spending. Finishing without buying announces zero shares. Each authenticated seat receives a separate 15-second display window; receipts use namespaced auxiliary rows in the existing rooms table and do not change the game version. The server keeps a five-minute bounded delivery buffer for delayed polls. Expired receipts cannot be replayed by refreshing or rejoining the same seat. Live details are excluded from permanent public history; cash and cumulative holdings remain private. No schema migration or additional service is required.
+
+## Room rules and bonuses
+
+New rooms use Classic with Standard bonuses (10× majority, 5× minority) by default. Hosts may instead choose Custom with majority 5×, 7× or 10× and minority at half. The setting is fixed when the room is created, shared with all players and used for mergers, final settlement and price references. Unsplit custom awards are exact; tied splits round up to $100. Existing rooms without settings continue as Standard. No database migration is required.

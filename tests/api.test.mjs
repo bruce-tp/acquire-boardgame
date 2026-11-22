@@ -96,5 +96,23 @@ assert.ok(delayed.purchaseAnnouncements.some(n=>n.id==='delayed-poll'&&n.remaini
 assert.ok(!delayed.purchaseAnnouncements.some(n=>n.id==='expired-buffer'));
 assert.ok(!JSON.stringify(delayed).includes('Expired purchase'));
 assert.equal(delayed.version,lagRow.version);
+// Room settings are validated at creation, persisted, and shared without allowing joiners to overwrite them.
+assert.deepEqual(host.data.state.settings,{edition:'classic',bonusMode:'standard',majorityMultiplier:10});
+for(const multiplier of [5,7,10]){
+ const settings={edition:'classic',bonusMode:'custom',majorityMultiplier:multiplier};
+ const custom=await post({type:'create',name:'Custom host',settings});assert.equal(custom.status,201);
+ const cc=custom.data.state.code;assert.deepEqual(custom.data.state.settings,settings);
+ const joined=await post({type:'join',name:'Custom guest',code:cc,settings:{...settings,majorityMultiplier:99}});
+ assert.equal(joined.status,200);assert.deepEqual(joined.data.state.settings,settings);
+ const loaded=(await state(cc,custom.data.token)).data;assert.deepEqual(loaded.settings,settings);
+ const began=await post({type:'action',code:cc,version:loaded.version,action:{type:'start',settings:{...settings,majorityMultiplier:99}}},custom.data.token);
+ assert.equal(began.status,200);assert.deepEqual(began.data.state.settings,settings);
+ assert.deepEqual((await state(cc,joined.data.token)).data.settings,settings);
+}
+for(const settings of [null,{edition:'tycoon',bonusMode:'standard',majorityMultiplier:10},{edition:'classic',bonusMode:'standard',majorityMultiplier:5},{edition:'classic',bonusMode:'custom',majorityMultiplier:99}])assert.equal((await post({type:'create',name:'Invalid settings',settings})).status,400);
+// A stored pre-feature room is still readable and advertises Standard.
+const old=JSON.parse((await db.prepare('SELECT state FROM rooms WHERE code=?').bind(code).first()).state);delete old.settings;
+await db.prepare('UPDATE rooms SET state=? WHERE code=?').bind(JSON.stringify(old),code).run();
+assert.deepEqual((await state(code,host.data.token)).data.settings,{edition:'classic',bonusMode:'standard',majorityMultiplier:10});
 await mf.dispose();
 console.log('PASS: 3-player persistence, private cash and shares in GET/POST, private hands, hidden deck, host permissions, late-join lock, stale-action rejection, concurrent-action CAS, and rejoin.');

@@ -47,3 +47,44 @@ test('50 complete automated games keep share totals, cash and tile inventory con
 test('opponents cash and cumulative shares are absent for every viewer, including lobby',()=>{const g=setup();g.players.forEach((p,i)=>{p.cash=12345+i;p.shares=[i+1,2,3,4,5,6,7];p.hand=[80+i];});for(const phase of ['lobby','place','buy','found']){g.phase=phase;for(let i=0;i<3;i++){const v=publicState(g,i);for(let j=0;j<3;j++){assert.equal(v.players[j].cash,i===j?12345+j:undefined);assert.deepEqual(v.players[j].shares,i===j?g.players[j].shares:[]);assert.deepEqual(v.players[j].hand,i===j?[80+j]:[]);}const wire=JSON.parse(JSON.stringify(v));assert.ok(wire.players.filter((_,j)=>j!==i).every(p=>!('cash' in p)&&p.shares.length===0));}}});
 test('only the current acquired chain is disclosed, frozen before exchanges, then hidden again',()=>{const g=setup();put(g,0,[0,1,12]);put(g,1,[3,4]);hand(g,0,[2]);shares(g,1,[3,2,1]);shares(g,0,[1,2,3]);applyAction(g,0,{type:'place',tile:2});const before=publicState(g,2);assert.deepEqual(before.merger.revealed,[3,2,1]);assert.deepEqual(before.players[0].shares,[]);assert.equal(before.players[0].cash,undefined);applyAction(g,0,{type:'dispose',sell:1,trade:1});const after=publicState(g,2);assert.deepEqual(after.merger.revealed,[3,2,1]);assert.equal(g.players[0].shares[1],0);assert.deepEqual(after.players[0].shares,[]);applyAction(g,1,{type:'dispose',sell:2});applyAction(g,2,{type:'dispose',sell:1});const done=publicState(g,2);assert.equal(done.phase,'buy');assert.equal(done.merger,null);assert.deepEqual(done.players[0].shares,[]);assert.equal(done.players[0].cash,undefined);assert.ok(done.log.every(s=>!s.includes('retained ')&&!s.includes('+$')));});
 test('historical quantities are redacted, latest public purchase remains announced; final scores reveal',()=>{const g=setup();g.log=['Alice: bought 3 The Peninsula @ $200 · 買入','Player 1: +$3,000 The Peninsula bonus · 股東獎金','Player 1: The Peninsula sold 2, exchanged 4, retained 7 · 賣出／換股／保留','Player 2: bought 2 Imperial Hotel @ $500 · 買入'];const v=publicState(g,0);assert.ok(v.log.every(s=>!s.includes('bought 3')&&!s.includes('+$3,000')&&!s.includes('retained 7')&&!s.includes('bought 2')));assert.equal(v.announcement,'Player 2: purchased Imperial Hotel · 買入酒店股票');assert.equal(v.players[1].cash,undefined);g.phase='end';const final=publicState(g,0);assert.equal(final.players[1].cash,6000);assert.equal(final.players[1].shares.length,7);assert.equal(final.announcement,null);});
+
+import {parseSettings,bonusAmounts} from '../lib/game/settings.ts';
+function customMerge(multiplier,holdings,n=3){
+ const g=setup(n);g.settings={edition:'classic',bonusMode:'custom',majorityMultiplier:multiplier};
+ put(g,0,[0,1,12,13,24]);put(g,2,[3,4,15,16]);hand(g,0,[2]);shares(g,2,holdings);g.deck=[];
+ return g;
+}
+test('custom awards use the chosen multiplier, with half for minority and unchanged share sale prices',()=>{
+ for(const m of [5,7,10]){
+  const g=customMerge(m,[3,2,1]);applyAction(g,0,{type:'place',tile:2});
+  assert.equal(g.phase,'dispose');assert.equal(g.players[0].cash,6000+500*m);
+  assert.equal(g.players[1].cash,6000+250*m);assert.equal(g.players[2].cash,6000);
+  applyAction(g,0,{type:'dispose',sell:3});assert.equal(g.players[0].cash,6000+500*m+1500);
+  assert.equal(publicState(g,1).settings.majorityMultiplier,m);
+ }
+});
+test('custom sole-holder awards are exact; only tied awards round to the next $100',()=>{
+ for(const [holdings,expected] of [[[3,0,0],[5250,0,0]],[[3,3,1],[2700,2700,0]],[[4,2,2],[3500,900,900]]]){
+  const g=customMerge(7,holdings);applyAction(g,0,{type:'place',tile:2});
+  assert.deepEqual(g.players.map(p=>p.cash-6000),expected);
+ }
+});
+test('custom bonuses also apply at final settlement and to the two-player market rule',()=>{
+ const g=setup();g.settings={edition:'classic',bonusMode:'custom',majorityMultiplier:7};
+ put(g,0,Array.from({length:11},(_,i)=>i));shares(g,0,[3,1,0]);g.phase='buy';
+ applyAction(g,0,{type:'declare'});applyAction(g,0,{type:'finish'});
+ assert.equal(g.phase,'end');assert.deepEqual(g.players.map(p=>p.cash),[13000,9150,6000]);
+ const two=customMerge(7,[3,0],2);two.deck=[104]; // Market receives nine virtual shares, so the human receives minority.
+ applyAction(two,0,{type:'place',tile:2});assert.equal(two.players[0].cash,7750);assert.equal(two.players[1].cash,6000);
+});
+test('legacy rooms without settings retain Standard awards and explicit Standard matches them',()=>{
+ const legacy=customMerge(10,[3,2,1]);delete legacy.settings;
+ const standard=structuredClone(legacy);standard.settings=parseSettings();
+ for(const g of [legacy,standard])applyAction(g,0,{type:'place',tile:2});
+ assert.deepEqual(legacy.players,standard.players);assert.deepEqual(legacy.players.map(p=>p.cash),[11000,8500,6000]);
+ assert.deepEqual(publicState(legacy,0).settings,{edition:'classic',bonusMode:'standard',majorityMultiplier:10});
+});
+test('settings reject unsupported editions, modes and unsafe multipliers',()=>{
+ for(const s of [null,[],{}, {edition:'tycoon',bonusMode:'standard',majorityMultiplier:10},{edition:'classic',bonusMode:'standard',majorityMultiplier:7},...[-1,0,3.5,6,NaN,Infinity,'7'].map(m=>({edition:'classic',bonusMode:'custom',majorityMultiplier:m}))])assert.throws(()=>parseSettings(s));
+ assert.deepEqual(bonusAmounts(500,parseSettings({edition:'classic',bonusMode:'custom',majorityMultiplier:7})),{majority:3500,minority:1750});
+});

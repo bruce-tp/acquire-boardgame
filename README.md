@@ -1,6 +1,6 @@
-# Acquire Board Game
+# Big Ambition
 
-Classic Acquire for 2–6 friends, with Hong Kong and Japanese hotel artwork.
+A hotel investment game for 2–6 friends, with Hong Kong and Japanese hotel artwork.
 
 遊戲網址 / Play: https://acquire-boardgame.pages.dev
 

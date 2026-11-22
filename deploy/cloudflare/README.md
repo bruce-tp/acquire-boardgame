@@ -1,4 +1,4 @@
-# Acquire on Cloudflare Pages + D1
+# Big Ambition on Cloudflare Pages + D1
 
 This deployment reuses the exact React game screen and Classic engine from the hosted Site. Only the hosting adapter changes. It has no ChatGPT sign-in dependency.
 
@@ -31,7 +31,7 @@ One-time setup in the owner's own signed-in browsers:
 1. Put the source in a private GitHub repository. Keep the current lockfile and the workflow file.
 2. In Cloudflare, create an API token restricted to the selected account with **Account / Cloudflare Pages / Edit** only. The account ID is already visible in the account dashboard.
 3. In GitHub repository **Settings > Secrets and variables > Actions**, add `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. Enter the token only in the GitHub secret field, never in source files or chat.
-4. Run **Actions > Deploy Acquire to Cloudflare Pages > Run workflow** once. Confirm all checks, deployment and the live D1 health check succeed.
+4. Run **Actions > Deploy Big Ambition to Cloudflare Pages > Run workflow** once. Confirm all checks, deployment and the live D1 health check succeed.
 5. Later approved pushes to `main` build and deploy automatically. Future code changes must be pushed to this GitHub repository; changing only the original ChatGPT Site source will not trigger GitHub Actions.
 
 GitHub Actions has plan-specific usage limits. Use standard Ubuntu runners and review the account's current billing and budget settings before enabling paid usage. This workflow stores no build artifacts and uses the npm cache through setup-node.

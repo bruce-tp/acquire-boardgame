@@ -1,4 +1,4 @@
-name: Deploy Acquire to Cloudflare Pages
+name: Deploy Big Ambition to Cloudflare Pages
 
 on:
   push:

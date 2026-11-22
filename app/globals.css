@@ -391,3 +391,32 @@
   white-space: nowrap;
   pointer-events: none;
 }
+
+
+/* Make trading availability clear while keeping every row readable. */
+.market-row:not(.inactive) {
+  background: linear-gradient(90deg, color-mix(in srgb, var(--hotel) 13%, #172b3d), #172b3d 78%);
+  box-shadow: inset 3px 0 var(--hotel);
+}
+.market-row.inactive {
+  background: #101d2b;
+}
+.market-row.inactive .hotel-info strong {
+  filter: saturate(.35) brightness(.76);
+}
+.market-row.inactive .hotel-info .emblem {
+  filter: saturate(.35);
+}
+.market-row .bank-count {
+  display: block;
+  margin: 4px 0 0;
+  color: #deebf4;
+  font-size: 16px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.25;
+  white-space: nowrap;
+}
+.market-row.inactive .bank-count {
+  color: #a0b3c3;
+}

@@ -311,3 +311,35 @@
   .landing-toast-quote p {font-size: clamp(13px, 3.4vw, 20px)}
   .landing-toast-quote p[lang="en"] {font-size: clamp(12px, 2.8vw, 15px)}
 }
+
+
+/* Keep the holdings and activity visible beside the board where space allows. */
+.game-layout {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: "board" "information" "market";
+}
+.game-layout > .board-area { grid-area: board; }
+.game-layout > .market-area { grid-area: market; min-width: 0; }
+.table-information {
+  grid-area: information;
+  display: grid;
+  gap: 17px;
+  min-width: 0;
+}
+.table-information > section { min-width: 0; }
+
+@media (min-width: 761px) {
+  .game-layout {
+    grid-template-columns: minmax(250px, 29%) minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    grid-template-areas: "information board" "market board";
+  }
+}
+
+@media (min-width: 1280px) {
+  .game-layout {
+    grid-template-columns: minmax(275px, 21%) minmax(0, 1fr) minmax(270px, 21%);
+    grid-template-rows: auto;
+    grid-template-areas: "information board market";
+  }
+}

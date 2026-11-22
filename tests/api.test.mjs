@@ -32,5 +32,21 @@ const results=await Promise.all([1,2].map(()=>post({type:'action',code,version:a
 assert.equal(results.filter(r=>r.status===200).length,1);assert.equal(results.filter(r=>r.status===409).length,1);
 const after=(await state(code,host.data.token)).data;assert.equal(after.players[s.turn].handCount,5);assert.ok(after.board[t]>=0);
 const resumed=await post({type:'join',name:'Ignored new name',code},guest.data.token);assert.equal(resumed.status,200);assert.equal(resumed.data.state.players.length,3);
+// A purchase and turn completion must be persisted in one versioned write.
+const row=await db.prepare('SELECT state,version FROM rooms WHERE code=?').bind(code).first();
+const seeded=JSON.parse(row.state);seeded.phase='buy';seeded.turn=0;seeded.bought=0;seeded.merger=null;
+seeded.board=Array(108).fill(-1);seeded.board[0]=0;seeded.board[1]=0;
+seeded.bank=Array(7).fill(25);seeded.players.forEach((p,i)=>{p.shares=Array(7).fill(0);p.cash=6000;p.hand=[90+i];});
+seeded.deck=Array.from({length:108},(_,i)=>i).filter(i=>![0,1,90,91,92].includes(i));
+await db.prepare('UPDATE rooms SET state=? WHERE code=?').bind(JSON.stringify(seeded),code).run();
+const purchase={type:'action',code,version:row.version,action:{type:'buyAndFinish',quantities:[1,0,0,0,0,0,0]}};
+const confirmations=await Promise.all([1,2].map(()=>post(purchase,host.data.token)));
+assert.equal(confirmations.filter(r=>r.status===200).length,1);
+assert.equal(confirmations.filter(r=>r.status===409).length,1);
+const finished=(await state(code,host.data.token)).data;
+assert.equal(finished.version,row.version+1);assert.equal(finished.turn,1);assert.equal(finished.phase,'place');
+assert.equal(finished.players[0].cash,5800);assert.equal(finished.players[0].shares[0],1);assert.equal(finished.players[0].hand.length,6);
+assert.equal((await post(purchase,host.data.token)).status,409);
+assert.equal((await state(code,host.data.token)).data.players[0].cash,5800);
 await mf.dispose();
 console.log('PASS: 3-player persistence, private cash and shares in GET/POST, private hands, hidden deck, host permissions, late-join lock, stale-action rejection, concurrent-action CAS, and rejoin.');

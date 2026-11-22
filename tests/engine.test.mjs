@@ -6,6 +6,33 @@ function put(g,c,ts){for(const t of ts)g.board[t]=c;g.deck=g.deck.filter(t=>!ts.
 function hand(g,who,ts){g.players[who].hand=ts;g.deck=g.deck.filter(t=>!ts.includes(t));}
 function shares(g,c,qs){for(let i=0;i<qs.length;i++)g.players[i].shares[c]=qs[i];g.bank[c]=25-qs.reduce((a,b)=>a+b,0);}
 function assertShares(g){for(let c=0;c<7;c++)assert.equal(g.bank[c]+g.players.reduce((n,p)=>n+p.shares[c],0),25);}
+test('confirming one or three shares buys, replenishes tiles and advances exactly once',()=>{
+  for(const count of [1,3]){
+    const g=setup();put(g,0,[0,1]);hand(g,0,[100,101,102,103,104]);g.phase='buy';
+    applyAction(g,0,{type:'buyAndFinish',quantities:[count,0,0,0,0,0,0]});
+    assert.equal(g.players[0].cash,6000-count*200);
+    assert.equal(g.players[0].shares[0],count);
+    assert.equal(g.bank[0],25-count);
+    assert.equal(g.players[0].hand.length,6);
+    assert.equal(g.turn,1);assert.equal(g.phase,'place');assert.equal(g.bought,0);
+    const snapshot=JSON.stringify(g);
+    assert.throws(()=>applyAction(g,0,{type:'buyAndFinish',quantities:[count,0,0,0,0,0,0]}));
+    assert.equal(JSON.stringify(g),snapshot);assertShares(g);
+  }
+});
+test('failed purchase keeps the current turn; skipping buying remains explicit',()=>{
+  const g=setup();put(g,0,[0,1]);g.phase='buy';g.players[0].cash=100;
+  const snapshot=JSON.stringify(g);
+  assert.throws(()=>applyAction(g,0,{type:'buyAndFinish',quantities:[1,0,0,0,0,0,0]}));
+  assert.equal(JSON.stringify(g),snapshot);
+  applyAction(g,0,{type:'finish'});assert.equal(g.turn,1);assert.equal(g.players[0].cash,100);
+});
+test('buy and finish honours an already declared final turn',()=>{
+  const g=setup();put(g,0,Array.from({length:41},(_,i)=>i));g.phase='buy';
+  applyAction(g,0,{type:'declare'});
+  applyAction(g,0,{type:'buyAndFinish',quantities:[1,0,0,0,0,0,0]});
+  assert.equal(g.phase,'end');assert.equal(g.turn,0);assertShares(g);
+});
 test('opening tiles, closest starter, six unique private tiles and hidden deck',()=>{for(let n=2;n<=6;n++){const g=createGame('TEST','a','Alice');for(let i=1;i<n;i++)g.players.push(makePlayer(String(i),'P'+i));startGame(g);assert.equal(g.board.filter(v=>v>=0).length,n);assert.equal(new Set([...g.deck,...g.players.flatMap(p=>p.hand),...g.board.map((v,i)=>v>=0?i:-1).filter(i=>i>=0)]).size,108);const v=publicState(g,0);assert.equal(v.deck.length,0);assert.equal(v.players[1].hand.length,0);assert.equal(v.players[0].hand.length,6);assert.ok(!JSON.stringify(v).includes('"id":'));}});
 test('stock prices across tier and threshold boundaries',()=>{assert.equal(priceFor(0,2),200);assert.equal(priceFor(2,5),600);assert.equal(priceFor(6,11),900);assert.equal(priceFor(0,41),1000);assert.equal(priceFor(6,41),1200);});
 test('founding absorbs independent cluster, rewards one share; buying cap enforced',()=>{const g=setup();put(g,7,[0,1]);hand(g,0,[2]);applyAction(g,0,{type:'place',tile:2});assert.equal(g.phase,'found');applyAction(g,0,{type:'found',chain:0});assert.equal(size(g,0),3);assert.equal(g.players[0].shares[0],1);applyAction(g,0,{type:'buy',quantities:[3,0,0,0,0,0,0]});assert.throws(()=>applyAction(g,0,{type:'buy',quantities:[1,0,0,0,0,0,0]}));assertShares(g);});

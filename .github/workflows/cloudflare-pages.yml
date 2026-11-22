@@ -36,7 +36,7 @@ jobs:
         run: npx tsc --noEmit
 
       - name: Test Classic rules and price reference
-        run: node --experimental-strip-types --test tests/engine.test.mjs tests/price-reference.test.mjs
+        run: node --experimental-strip-types --test tests/engine.test.mjs tests/price-reference.test.mjs tests/turn-reminder.test.mjs
 
       - name: Build game and room API
         run: npm run build:cloudflare

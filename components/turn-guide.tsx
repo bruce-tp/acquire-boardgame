@@ -14,7 +14,7 @@ export function TurnGuide({phase,bought,mine,selected,cartCount=0}:{phase:string
       </li>
       <li className={!placing&&mine?'current':''} aria-current={!placing?'step':undefined}>
         <span className="turn-step-number">2</span>
-        <div><strong>買股票 <span>Buy shares</span><em>可跳過 · Optional</em></strong><p>{!placing&&cartCount>0?`已選 ${cartCount} 股：確認買入，或取消選股後完成回合。`:!placing&&bought>=3?'已買滿 3 股，按右上「完成回合」。':'可買 0–3 股；唔買亦可以完成回合。'}<br/>{!placing&&cartCount>0?'Confirm the selected shares, or clear the selection to finish.':!placing&&bought>=3?'All three shares bought. Select Finish turn above.':'Buy 0–3 shares, or finish without buying.'}</p>{!placing&&<b className="turn-bought-count">本回合已買 {bought} / 3 股 · {bought} / 3 bought</b>}</div>
+        <div><strong>買股票 <span>Buy shares</span><em>可跳過 · Optional</em></strong><p>{!placing&&cartCount>0?`已選 ${cartCount} 股：確認買入即完成回合；亦可取消選股後跳過買股。`:!placing&&bought>=3?'已買滿 3 股，按右上「完成回合」。':'可買 0–3 股，確認買入即完成回合；唔買請按「完成回合」。'}<br/>{!placing&&cartCount>0?'Confirm to buy and finish your turn, or clear the selection to skip buying.':!placing&&bought>=3?'All three shares bought. Select Finish turn above.':'Buy up to 3 shares and finish automatically, or select Finish turn without buying.'}</p>{!placing&&<b className="turn-bought-count">本回合已買 {bought} / 3 股 · {bought} / 3 bought</b>}</div>
       </li>
     </ol>
 

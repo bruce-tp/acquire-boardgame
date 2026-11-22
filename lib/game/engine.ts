@@ -12,7 +12,11 @@ export const HOTELS = [
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};
 export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[]};
-export type Game = {settings?:GameSettings;purchaseNotices?:PurchaseAnnouncement[];code:string;version:number;players:Player[];board:number[];deck:number[];discard:number[];turn:number;round:number;phase:string;bank:number[];bought:number;log:string[];pending:number[];merger:Merger|null;endDeclared:boolean;stalls:number;lastTile:number|null};
+export type FinalScore = {
+  cashBeforeSettlement: number;
+  hotels: {id:number; shares:number; sharePrice:number; sale:number; bonus:number}[];
+};
+export type Game = {finalScores?:FinalScore[];settings?:GameSettings;purchaseNotices?:PurchaseAnnouncement[];code:string;version:number;players:Player[];board:number[];deck:number[];discard:number[];turn:number;round:number;phase:string;bank:number[];bought:number;log:string[];pending:number[];merger:Merger|null;endDeclared:boolean;stalls:number;lastTile:number|null};
 export type Action = {type:string;tile?:number;chain?:number;quantities?:number[];sell?:number;trade?:number;name?:string};
 export function label(t:number) {return `${t%12+1}${String.fromCharCode(65+Math.floor(t/12))}`;}
 export function size(g:Game,c:number) {return g.board.filter(x=>x===c).length;}
@@ -28,7 +32,31 @@ export function placement(g:Game,t:number) {const group=independentGroup(g,t);co
 export function startGame(g:Game){if(g.players.length<2||g.players.length>6)throw Error('Need 2–6 players · 需要 2–6 位玩家');g.deck=shuffle(Array.from({length:108},(_,i)=>i));let first=Infinity;for(let i=0;i<g.players.length;i++){const t=g.deck.pop()!;g.board[t]=7;note(g,`${g.players[i].name}: opening tile ${label(t)} · 起始地塊`);if(t<first){first=t;g.turn=i;}}for(const p of g.players)p.hand=g.deck.splice(-6);g.phase='place';note(g,`${g.players[g.turn].name} starts · 首先行動`);}
 export function canEnd(g:Game){const sizes=HOTELS.map(h=>size(g,h.id)).filter(Boolean);return sizes.length>0&&(sizes.some(n=>n>=41)||sizes.every(n=>n>=11));}
 function bonus(g:Game,c:number,n:number,bankOpponent:boolean){const {majority,minority}=bonusAmounts(priceFor(c,n),g.settings);const owners=g.players.map((p,i)=>({i,n:p.shares[c]})).filter(p=>p.n>0);if(bankOpponent&&g.players.length===2&&g.deck.length){const t=g.deck.pop()!;owners.push({i:-1,n:t%12+1});g.deck.push(t);shuffle(g.deck);note(g,`Market holds ${t%12+1} ${HOTELS[c].name} · 市場虛擬持股`);}owners.sort((a,b)=>b.n-a.n);if(!owners.length)return;const pay=(i:number,x:number)=>{if(i<0)return;g.players[i].cash+=x;note(g,`${g.players[i].name}: +$${x.toLocaleString()} ${HOTELS[c].name} bonus · 股東獎金`);};const top=owners.filter(p=>p.n===owners[0].n);if(top.length>1){for(const o of top)pay(o.i,Math.ceil((majority+minority)/top.length/100)*100);return;}pay(top[0].i,majority);if(owners.length===1){pay(top[0].i,minority);return;}const second=owners.filter(p=>p.n===owners[1].n);for(const o of second)pay(o.i,second.length===1?minority:Math.ceil(minority/second.length/100)*100);}
-function settle(g:Game){for(const h of HOTELS){const n=size(g,h.id);if(!n)continue;bonus(g,h.id,n,true);for(const p of g.players){p.cash+=p.shares[h.id]*priceFor(h.id,n);g.bank[h.id]+=p.shares[h.id];p.shares[h.id]=0;}}g.phase='end';const max=Math.max(...g.players.map(p=>p.cash));note(g,`${g.players.filter(p=>p.cash===max).map(p=>p.name).join(' & ')} win · 勝出 ($${max.toLocaleString()})`);}
+function settle(g:Game){
+  const scores:FinalScore[]=g.players.map(player=>({cashBeforeSettlement:player.cash,hotels:[]}));
+  for(const hotel of HOTELS){
+    const tiles=size(g,hotel.id);
+    const sharePrice=priceFor(hotel.id,tiles);
+    const cashBeforeBonus=g.players.map(player=>player.cash);
+    if(tiles) bonus(g,hotel.id,tiles,true);
+    for(const [index,player] of g.players.entries()){
+      const shares=player.shares[hotel.id];
+      const sale=shares*sharePrice;
+      scores[index].hotels.push({
+        id:hotel.id, shares, sharePrice, sale, bonus:player.cash-cashBeforeBonus[index],
+      });
+      if(tiles){
+        player.cash+=sale;
+        g.bank[hotel.id]+=shares;
+        player.shares[hotel.id]=0;
+      }
+    }
+  }
+  g.finalScores=scores;
+  g.phase='end';
+  const max=Math.max(...g.players.map(player=>player.cash));
+  note(g,`${g.players.filter(player=>player.cash===max).map(player=>player.name).join(' & ')} win · 勝出 ($${max.toLocaleString()})`);
+}
 function completeMerger(g:Game){const m=g.merger!;for(let i=0;i<108;i++)if(m.chains.includes(g.board[i]))g.board[i]=m.survivor;for(const t of independentGroup(g,m.tile))g.board[t]=m.survivor;note(g,`${HOTELS[m.survivor].name} survives · 合併完成`);g.merger=null;g.phase='buy';}
 function nextLoser(g:Game){const m=g.merger!;if(!m.remaining.length){completeMerger(g);return;}const max=Math.max(...m.remaining.map(c=>m.sizes[c]));g.pending=m.remaining.filter(c=>m.sizes[c]===max);if(g.pending.length>1){g.phase='order';return;}beginDisposal(g,g.pending[0]);}
 function beginDisposal(g:Game,c:number){const m=g.merger!;m.loser=c;m.revealed=g.players.map(p=>p.shares[c]);m.remaining=m.remaining.filter(x=>x!==c);bonus(g,c,m.sizes[c],true);m.order=Array.from({length:g.players.length},(_,i)=>(g.turn+i)%g.players.length).filter(i=>g.players[i].shares[c]>0);m.cursor=0;if(!m.order.length){nextLoser(g);return;}g.phase='dispose';}
@@ -58,7 +86,7 @@ export function publicState(g:Game,viewer:number,delivered?:DeliveredPurchaseAnn
   const purchaseAnnouncements=delivered??recentPurchases(purchaseNotices,now).flatMap(event=>{const remainingMs=PURCHASE_DISPLAY_MS-(now-event.createdAt);return remainingMs>0?[{...event,remainingMs}]:[];});
   const finished=g.phase==='end';
   const merger=g.merger?{...g.merger,revealed:g.phase==='dispose'?(g.merger.revealed??g.players.map(p=>p.shares[g.merger!.loser])):undefined}:null;
-  return {...safeGame,settings:gameSettings(g.settings),purchaseAnnouncements,merger,deck:[],deckCount:g.deck.length,
+  return {...safeGame,finalScores:finished?g.finalScores:undefined,settings:gameSettings(g.settings),purchaseAnnouncements,merger,deck:[],deckCount:g.deck.length,
     players:g.players.map((p,i)=>({...p,id:undefined,cash:i===viewer||finished?p.cash:undefined,shares:i===viewer||finished?p.shares:[],hand:i===viewer?p.hand:[],handCount:p.hand.length})),
     log:g.log.map(hiddenHistory),announcement:finished?null:hiddenHistory(g.log.at(-1)??''),me:viewer};
 }

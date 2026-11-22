@@ -420,3 +420,13 @@
 .market-row.inactive .bank-count {
   color: #a0b3c3;
 }
+
+.header-holdings { margin-left: auto; padding: 10px 14px; }
+.header-holdings h3 { margin-bottom: 6px; }
+.header-holdings dl { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 0; text-align: center; }
+.header-holdings dt { font-size: 11px; }
+.header-holdings dd { margin: 2px 0 0; font-size: 16px; font-weight: 700; }
+@media (max-width: 900px) {
+  .table-heading { flex-wrap: wrap; }
+  .header-holdings { order: 1; flex-basis: 100%; margin-left: 0; }
+}

@@ -31,7 +31,18 @@ function independentGroup(g:Game,t:number){const seen=new Set<number>([t]);const
 export function placement(g:Game,t:number) {const group=independentGroup(g,t);const chains=[...new Set(group.flatMap(x=>neighbours(x)).map(x=>g.board[x]).filter(x=>x>=0&&x<7))];if(chains.filter(c=>size(g,c)>=11).length>1)return {legal:false,reason:'Safe chains cannot merge · 安全酒店不能合併',group,chains};if(!chains.length&&group.length>1&&HOTELS.every(h=>size(g,h.id)>0))return {legal:false,reason:'All seven chains are active · 七間酒店均已成立',group,chains};return {legal:true,reason:'',group,chains};}
 export function startGame(g:Game){if(g.players.length<2||g.players.length>6)throw Error('Need 2–6 players · 需要 2–6 位玩家');g.deck=shuffle(Array.from({length:108},(_,i)=>i));let first=Infinity;for(let i=0;i<g.players.length;i++){const t=g.deck.pop()!;g.board[t]=7;note(g,`${g.players[i].name}: opening tile ${label(t)} · 起始地塊`);if(t<first){first=t;g.turn=i;}}for(const p of g.players)p.hand=g.deck.splice(-6);g.phase='place';note(g,`${g.players[g.turn].name} starts · 首先行動`);}
 export function canEnd(g:Game){const sizes=HOTELS.map(h=>size(g,h.id)).filter(Boolean);return sizes.length>0&&(sizes.some(n=>n>=41)||sizes.every(n=>n>=11));}
-function bonus(g:Game,c:number,n:number,bankOpponent:boolean){const {majority,minority}=bonusAmounts(priceFor(c,n),g.settings);const owners=g.players.map((p,i)=>({i,n:p.shares[c]})).filter(p=>p.n>0);if(bankOpponent&&g.players.length===2&&g.deck.length){const t=g.deck.pop()!;owners.push({i:-1,n:t%12+1});g.deck.push(t);shuffle(g.deck);note(g,`Market holds ${t%12+1} ${HOTELS[c].name} · 市場虛擬持股`);}owners.sort((a,b)=>b.n-a.n);if(!owners.length)return;const pay=(i:number,x:number)=>{if(i<0)return;g.players[i].cash+=x;note(g,`${g.players[i].name}: +$${x.toLocaleString()} ${HOTELS[c].name} bonus · 股東獎金`);};const top=owners.filter(p=>p.n===owners[0].n);if(top.length>1){for(const o of top)pay(o.i,Math.ceil((majority+minority)/top.length/100)*100);return;}pay(top[0].i,majority);if(owners.length===1){pay(top[0].i,minority);return;}const second=owners.filter(p=>p.n===owners[1].n);for(const o of second)pay(o.i,second.length===1?minority:Math.ceil(minority/second.length/100)*100);}
+function bonus(g:Game,c:number,n:number,bankOpponent:boolean){
+  const before=g.players.map(player=>player.cash);
+  payShareholderBonuses(g,c,n,bankOpponent);
+  const payouts=g.players.flatMap((player,index)=>{
+    const amount=player.cash-before[index];
+    return amount>0?[{playerName:player.name,amount}]:[];
+  });
+  if(payouts.length) enqueueAnnouncement(g,{
+    playerName:HOTELS[c].zh,items:[],total:0,bonus:{chain:c,payouts},
+  });
+}
+function payShareholderBonuses(g:Game,c:number,n:number,bankOpponent:boolean){const {majority,minority}=bonusAmounts(priceFor(c,n),g.settings);const owners=g.players.map((p,i)=>({i,n:p.shares[c]})).filter(p=>p.n>0);if(bankOpponent&&g.players.length===2&&g.deck.length){const t=g.deck.pop()!;owners.push({i:-1,n:t%12+1});g.deck.push(t);shuffle(g.deck);note(g,`Market holds ${t%12+1} ${HOTELS[c].name} · 市場虛擬持股`);}owners.sort((a,b)=>b.n-a.n);if(!owners.length)return;const pay=(i:number,x:number)=>{if(i<0)return;g.players[i].cash+=x;note(g,`${g.players[i].name}: +$${x.toLocaleString()} ${HOTELS[c].name} bonus · 股東獎金`);};const top=owners.filter(p=>p.n===owners[0].n);if(top.length>1){for(const o of top)pay(o.i,Math.ceil((majority+minority)/top.length/100)*100);return;}pay(top[0].i,majority);if(owners.length===1){pay(top[0].i,minority);return;}const second=owners.filter(p=>p.n===owners[1].n);for(const o of second)pay(o.i,second.length===1?minority:Math.ceil(minority/second.length/100)*100);}
 function settle(g:Game){
   const scores:FinalScore[]=g.players.map(player=>({cashBeforeSettlement:player.cash,hotels:[]}));
   for(const hotel of HOTELS){
@@ -62,7 +73,10 @@ function nextLoser(g:Game){const m=g.merger!;if(!m.remaining.length){completeMer
 function beginDisposal(g:Game,c:number){const m=g.merger!;m.loser=c;m.revealed=g.players.map(p=>p.shares[c]);m.remaining=m.remaining.filter(x=>x!==c);bonus(g,c,m.sizes[c],true);m.order=Array.from({length:g.players.length},(_,i)=>(g.turn+i)%g.players.length).filter(i=>g.players[i].shares[c]>0);m.cursor=0;if(!m.order.length){nextLoser(g);return;}g.phase='dispose';}
 function chooseSurvivor(g:Game,c:number){const m=g.merger!;m.survivor=c;m.remaining=m.chains.filter(x=>x!==c);nextLoser(g);}
 function announcePurchase(g:Game,p:Player,items:PurchaseAnnouncement['items'],total:number){
-  g.purchaseNotices=[...recentPurchases(g.purchaseNotices),{id:crypto.randomUUID(),playerName:p.name,items,total,createdAt:Date.now()}].slice(-256);
+  enqueueAnnouncement(g,{playerName:p.name,items,total});
+}
+function enqueueAnnouncement(g:Game,notice:Omit<PurchaseAnnouncement,'id'|'createdAt'>){
+  g.purchaseNotices=[...recentPurchases(g.purchaseNotices),{...notice,id:crypto.randomUUID(),createdAt:Date.now()}].slice(-256);
 }
 function finishTurn(g:Game){const p=g.players[g.turn];if(g.bought===0){announcePurchase(g,p,[],0);note(g,`${p.name}: no shares bought · 本回合冇買股`);}while(p.hand.length<6&&g.deck.length)p.hand.push(g.deck.pop()!);const dead=p.hand.filter(t=>placement(g,t).chains.filter(c=>size(g,c)>=11).length>1);p.hand=p.hand.filter(t=>!dead.includes(t));g.discard.push(...dead);for(const _ of dead)if(g.deck.length)p.hand.push(g.deck.pop()!);if(dead.length)note(g,`${p.name}: replaced ${dead.length} blocked tile(s) · 更換永久不可用地塊`);if(g.endDeclared){settle(g);return;}if(g.stalls>=g.players.length){note(g,'No playable tiles remain: automatic settlement · 無人能落地塊，自動結算（防停局規則）');settle(g);return;}g.turn=(g.turn+1)%g.players.length;if(g.turn===0)g.round++;g.bought=0;g.phase='place';}
 export function actor(g:Game){return g.phase==='dispose'?g.merger!.order[g.merger!.cursor]:g.turn;}

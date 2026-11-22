@@ -7,6 +7,7 @@ export type PurchaseAnnouncement = {
   items: {chain: number; quantity: number; unitPrice: number}[];
   total: number;
   createdAt: number;
+  bonus?: {chain: number; payouts: {playerName: string; amount: number}[]};
 };
 export type DeliveredPurchaseAnnouncement = PurchaseAnnouncement & {remainingMs: number};
 

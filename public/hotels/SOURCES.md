@@ -13,3 +13,5 @@ Official brand assets used as game identifiers, colour-tinted in the interface.
 Brand names and logos belong to their respective owners. This fan game is not affiliated with or endorsed by these hotels.
 
 - sheraton.png: https://cache.marriott.com/content/dam/marriott-digital/bonvoy/global/en_us/logo/internal/assets/bonvoy-si-logo-l-aries-23319.png (Sheraton brand logo from the official Marriott hotel page).
+
+- new-otani.svg: https://www.newotani.co.jp/fileadmin/sites/_assets/logo/logo-tokyo.svg (official Hotel New Otani Tokyo logo).

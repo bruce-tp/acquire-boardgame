@@ -23,3 +23,7 @@ Pushes to main run checks and deploy to the existing Cloudflare Pages project ac
 The existing production D1 binding must remain DB → acquire-rooms. Deployments do not recreate the database or run schema migrations.
 
 Only changes pushed to this repository trigger its workflow.
+
+## Purchase announcements
+
+A confirmed basket announces every hotel, quantity and line cost, plus total spending. Finishing without buying announces zero shares. Each authenticated seat receives a separate 15-second display window; receipts use namespaced auxiliary rows in the existing rooms table and do not change the game version. The server keeps a five-minute bounded delivery buffer for delayed polls. Expired receipts cannot be replayed by refreshing or rejoining the same seat. Live details are excluded from permanent public history; cash and cumulative holdings remain private. No schema migration or additional service is required.

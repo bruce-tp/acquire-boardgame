@@ -253,3 +253,15 @@
 @media(max-width:1100px) and (min-width:761px){.landing-immersive .landing-toast-art{top:150px;width:78%;right:-8%}}
 @media(max-width:760px){.landing-immersive .hero.hotel-landing-hero{min-height:900px}.landing-immersive .landing-toast-art{top:460px;right:-7%;width:112%;max-width:none}}
 @media(min-width:761px){.landing-immersive .hero h1{font-size:clamp(36px,3.8vw,52px);letter-spacing:2px}}
+
+/* Public purchase notices are independent of the current turn. */
+.purchase-notice-tray{position:fixed;right:18px;bottom:18px;z-index:35;width:min(420px,calc(100vw - 36px));max-height:65dvh;overflow-y:auto;display:flex;flex-direction:column;gap:10px;overscroll-behavior:contain;scrollbar-width:thin}
+.purchase-notice{position:relative;flex:none;padding:16px 18px 18px;background:#172c3cf5;border:1px solid #dfbc8080;border-radius:8px;box-shadow:0 10px 36px #0008;overflow:hidden;color:var(--text)}
+.purchase-notice header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:10px}.purchase-notice header strong{font-size:17px;overflow-wrap:anywhere}.purchase-notice header>span{font-size:11px;color:var(--gold);letter-spacing:.7px;flex:none}
+.purchase-notice ul{list-style:none;padding:0;margin:0}.purchase-notice li{display:flex;gap:9px;align-items:center;padding:7px 0;border-top:1px solid #ffffff0d;font-size:15px}.purchase-notice li>i{width:7px;height:24px;border-radius:2px;flex:none}.purchase-notice li>span:nth-child(2){flex:1;min-width:0}.purchase-notice li small{display:block;font-size:11px;color:#a9bdc9;margin-top:2px}.purchase-notice li>b{font-size:17px;text-align:right;white-space:nowrap}.purchase-line-cost{font-variant-numeric:tabular-nums;color:var(--goldlight);min-width:54px;text-align:right}
+.purchase-notice>p{font-size:16px;margin:12px 0}.purchase-notice>p small{display:block;color:#a9bdc9;font-size:13px;margin-top:4px}.purchase-notice footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;margin-top:7px;border-top:1px solid #dfbc8033;font-size:14px;color:#c0ccd4}.purchase-notice footer strong{font-size:22px;color:var(--goldlight);font-variant-numeric:tabular-nums}
+.purchase-notice-lifetime{position:absolute;left:0;bottom:0;width:100%;height:3px;background:var(--gold);transform-origin:left;animation:purchase-notice-expiry linear forwards}@keyframes purchase-notice-expiry{to{transform:scaleX(0)}}
+@media(max-width:760px){.purchase-notice-tray{right:12px;bottom:12px;width:min(390px,calc(100vw - 24px));max-height:48dvh}.purchase-notice{padding:12px 14px 14px}.purchase-notice li{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.purchase-notice-lifetime{animation:none}}
+
+.purchase-notice{padding:12px 16px 14px}.purchase-notice header{margin-bottom:6px}.purchase-notice li{padding:4px 0;min-height:27px}.purchase-notice li>i{height:19px}.purchase-notice footer{padding-top:7px;margin-top:5px}.purchase-notice footer strong{font-size:20px}

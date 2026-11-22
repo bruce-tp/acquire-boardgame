@@ -48,5 +48,53 @@ assert.equal(finished.version,row.version+1);assert.equal(finished.turn,1);asser
 assert.equal(finished.players[0].cash,5800);assert.equal(finished.players[0].shares[0],1);assert.equal(finished.players[0].hand.length,6);
 assert.equal((await post(purchase,host.data.token)).status,409);
 assert.equal((await state(code,host.data.token)).data.players[0].cash,5800);
+assert.equal(finished.purchaseAnnouncements.length,1);
+const noticeId=finished.purchaseAnnouncements[0].id;
+assert.equal(finished.purchaseAnnouncements[0].total,200);
+assert.deepEqual(finished.purchaseAnnouncements[0].items,[{chain:0,quantity:1,unitPrice:200}]);
+assert.ok(!('purchaseNotices' in finished));
+const mainVersion=finished.version;
+const observers=await Promise.all([1,2].map(()=>state(code,guest.data.token)));
+for(const response of observers){
+  assert.equal(response.data.version,mainVersion);
+  assert.equal(response.data.purchaseAnnouncements[0].id,noticeId);
+  assert.ok(response.data.purchaseAnnouncements[0].remainingMs>14_000);
+  assert.equal(response.data.players[0].cash,undefined);assert.deepEqual(response.data.players[0].shares,[]);
+}
+assert.equal((await db.prepare('SELECT version FROM rooms WHERE code=?').bind(code).first()).version,mainVersion);
+// Expire only one viewer's delivery window: refresh cannot replay it for that viewer.
+const receiptKey=`!purchase-receipts:${code}:0`;
+await db.prepare('UPDATE rooms SET state=? WHERE code=?').bind(JSON.stringify({[noticeId]:Date.now()-16_000}),receiptKey).run();
+assert.deepEqual((await state(code,host.data.token)).data.purchaseAnnouncements,[]);
+assert.equal((await state(code,guest.data.token)).data.purchaseAnnouncements[0].id,noticeId);
+// Two fast subsequent turns must survive until the first viewer's next poll.
+async function skipPurchase(playerToken){
+  let current=(await state(code,playerToken)).data;
+  let response=await post({type:'action',code,version:current.version,action:{type:'place',tile:current.players[current.me].hand[0]}},playerToken);
+  assert.equal(response.status,200);current=response.data.state;
+  if(current.phase==='found'){
+    const chain=Array.from({length:7},(_,i)=>i).find(c=>!current.board.includes(c));
+    response=await post({type:'action',code,version:current.version,action:{type:'found',chain}},playerToken);
+    assert.equal(response.status,200);current=response.data.state;
+  }
+  assert.equal(current.phase,'buy');
+  response=await post({type:'action',code,version:current.version,action:{type:'finish'}},playerToken);
+  assert.equal(response.status,200);return response.data.state;
+}
+await skipPurchase(guest.data.token);await skipPurchase(third.data.token);
+const caughtUp=(await state(code,host.data.token)).data;
+assert.deepEqual(caughtUp.purchaseAnnouncements.map(n=>n.playerName),['Integration guest','Integration third']);
+assert.ok(caughtUp.purchaseAnnouncements.every(n=>n.total===0&&n.items.length===0&&n.remainingMs>14_000));
+assert.ok(caughtUp.log.every(line=>!line.includes('bought 1')&&!line.includes('@ $')));
+const lagRow=await db.prepare('SELECT state,version FROM rooms WHERE code=?').bind(code).first();
+const lagState=JSON.parse(lagRow.state);
+lagState.purchaseNotices.push({id:'delayed-poll',playerName:'Delayed purchase',items:[{chain:0,quantity:1,unitPrice:200}],total:200,createdAt:Date.now()-45_000});
+lagState.purchaseNotices.push({id:'expired-buffer',playerName:'Expired purchase',items:[{chain:0,quantity:1,unitPrice:200}],total:200,createdAt:Date.now()-360_000});
+await db.prepare('UPDATE rooms SET state=? WHERE code=?').bind(JSON.stringify(lagState),code).run();
+const delayed=(await state(code,guest.data.token)).data;
+assert.ok(delayed.purchaseAnnouncements.some(n=>n.id==='delayed-poll'&&n.remainingMs>14_000));
+assert.ok(!delayed.purchaseAnnouncements.some(n=>n.id==='expired-buffer'));
+assert.ok(!JSON.stringify(delayed).includes('Expired purchase'));
+assert.equal(delayed.version,lagRow.version);
 await mf.dispose();
 console.log('PASS: 3-player persistence, private cash and shares in GET/POST, private hands, hidden deck, host permissions, late-join lock, stale-action rejection, concurrent-action CAS, and rejoin.');

@@ -9,7 +9,7 @@
     "build": "node scripts/build-cloudflare-pages.mjs",
     "build:cloudflare": "node scripts/build-cloudflare-pages.mjs",
     "check": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test tests/engine.test.mjs tests/price-reference.test.mjs tests/turn-reminder.test.mjs"
+    "test": "node --experimental-strip-types --test tests/engine.test.mjs tests/price-reference.test.mjs tests/turn-reminder.test.mjs tests/purchase-announcements.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",

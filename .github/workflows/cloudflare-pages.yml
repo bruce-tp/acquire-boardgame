@@ -1,0 +1,70 @@
+name: Deploy Acquire to Cloudflare Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: acquire-cloudflare-production
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      CI: 'true'
+      WRANGLER_SEND_METRICS: 'false'
+    steps:
+      - name: Check out game source
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --include=dev --include=optional
+
+      - name: Check TypeScript
+        run: npx tsc --noEmit
+
+      - name: Test Classic rules and price reference
+        run: node --experimental-strip-types --test tests/engine.test.mjs tests/price-reference.test.mjs
+
+      - name: Build game and room API
+        run: npm run build:cloudflare
+
+      - name: Test bundled multiplayer API
+        run: node tests/api.test.mjs
+        env:
+          ACQUIRE_API_WORKER: outputs/cloudflare-pages/_worker.js
+
+      - name: Verify deployment credentials are configured
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_ACCOUNT_ID" ] || [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo 'Add CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN in repository Settings > Secrets and variables > Actions.'
+            exit 1
+          fi
+
+      - name: Deploy to existing Pages project
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npx wrangler pages deploy outputs/cloudflare-pages --project-name=acquire-boardgame --branch=main --commit-hash="$GITHUB_SHA"
+
+      - name: Verify live database connection
+        run: |
+          curl --fail --silent --show-error --max-time 30 --retry 3 --retry-delay 5 --retry-all-errors \
+            --user-agent 'AcquireDeploymentCheck/1.0' \
+            https://acquire-boardgame.pages.dev/api/health \
+            | node -e 'let s="";process.stdin.on("data",c=>s+=c);process.stdin.on("end",()=>{const v=JSON.parse(s);if(v.ok!==true||v.storage!=="D1")process.exit(1);console.log("Room database connection verified.")})'

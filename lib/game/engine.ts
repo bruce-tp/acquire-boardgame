@@ -6,7 +6,7 @@ export const HOTELS = [
   {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:1,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
   {id:4,name:'Shangri-La',zh:'香港香格里拉',short:'香格',colour:'#83bd85',tier:1,mark:'S',original:'Festival',logo:'/hotels/shangrila-hotel.png',region:'香港 · HK'},
   {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:2,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},
-  {id:6,name:'Hoshino Resorts',zh:'星野リゾート',short:'星野',colour:'#64c3bb',tier:2,mark:'H',original:'Continental',logo:'/hotels/hoshino.png',region:'日本 · JP'},
+  {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:2,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};
 export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[]};

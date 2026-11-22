@@ -11,3 +11,5 @@ Official brand assets used as game identifiers, colour-tinted in the interface.
 - hoshino.png: https://hoshinoresorts.com/wpadmin2022/wp-content/uploads/2022/08/483b205ed9c25c13c31d18387ad03bfb-1200x120.png
 
 Brand names and logos belong to their respective owners. This fan game is not affiliated with or endorsed by these hotels.
+
+- sheraton.png: https://cache.marriott.com/content/dam/marriott-digital/bonvoy/global/en_us/logo/internal/assets/bonvoy-si-logo-l-aries-23319.png (Sheraton brand logo from the official Marriott hotel page).

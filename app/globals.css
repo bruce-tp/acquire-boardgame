@@ -249,3 +249,10 @@
 @media(prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
 
 @media(min-width:761px){.landing-immersive .hero h1 br,.landing-immersive .hero-en br{display:none}.landing-immersive .hero-en em{margin-left:8px}}
+
+/* Decorative sky layer only; the shared Peninsula/Okura artwork stays above it. */
+.landing-toast-art{display:none}
+.landing-immersive .landing-toast-art{display:block;position:absolute;z-index:0;top:14px;right:-1%;width:70%;height:auto;pointer-events:none;user-select:none;mask-image:radial-gradient(ellipse 76% 80% at 75% 33%,#000 36%,#000c 58%,transparent 84%);-webkit-mask-image:radial-gradient(ellipse 76% 80% at 75% 33%,#000 36%,#000c 58%,transparent 84%)}
+@media(max-width:1100px) and (min-width:761px){.landing-immersive .landing-toast-art{top:150px;width:78%;right:-8%}}
+@media(max-width:760px){.landing-immersive .hero.hotel-landing-hero{min-height:900px}.landing-immersive .landing-toast-art{top:460px;right:-7%;width:112%;max-width:none}}
+@media(min-width:761px){.landing-immersive .hero h1{font-size:clamp(36px,3.8vw,52px);letter-spacing:2px}}

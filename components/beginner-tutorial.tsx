@@ -85,11 +85,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const [lesson, setLesson] = useState<Lesson>('place');
   const [game, setGame] = useState(createPracticeGame);
   const [selected, setSelected] = useState<number | null>(null);
+  const [foundedHotel, setFoundedHotel] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);
   const [trade, setTrade] = useState(0);
   const [error, setError] = useState('');
   const player = game.players[0];
+  const buyingHotel = HOTELS[foundedHotel ?? HOSHINO];
+  const founderShares = foundedHotel === null ? 0 : 1;
   const chapter = lesson === 'buy' || lesson === 'settle' ? lesson : 'place';
   const heading = buildLessons.find(([id]) => id === lesson) ?? chapters.find(([id]) => id === chapter)!;
   const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, buy: FOUNDING_TILE, settle: FINAL_TILE}[lesson];
@@ -101,7 +104,11 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
     const next = id === 'place' ? createPracticeGame() : createTutorialGame(id === 'buy' ? 'found' : id);
     if (id === 'buy') {
       applyAction(next, 0, {type: 'place', tile: FOUNDING_TILE});
-      applyAction(next, 0, {type: 'found', chain: HOSHINO});
+      applyAction(next, 0, {type: 'found', chain: buyingHotel.id});
+      if (founderShares === 0) {
+        next.players[0].shares[buyingHotel.id]--;
+        next.bank[buyingHotel.id]++;
+      }
     }
     setGame(next);
     setSelected(null);
@@ -122,6 +129,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       if (action.type === 'dispose' && next.phase === 'dispose') {
         // Jamie holds the only other acquired shares in this exercise.
         applyAction(next, 1, {type: 'dispose', sell: 0, trade: 0});
+      }
+      if (action.type === 'found' && action.chain !== undefined) {
+        setFoundedHotel(action.chain);
       }
       setGame(next);
       setError('');
@@ -233,18 +243,20 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {lesson === 'buy' && game.phase === 'buy' && <>
         <Explanation zh="而家去「酒店交易所」揀股。每回合最多買 3 股，只可買已成立嘅酒店，亦可以一股都唔買。試撳 + 加股，再買入並完成回合。"
           en="Use the Stock Exchange to buy up to three shares per turn across active hotels. Buying is optional. Try adding a share, then buy and finish your turn."/>
+        {founderShares > 0 && <Explanation zh={`你已有 1 股${buyingHotel.zh}創辦人股票。`}
+          en={`You already have one founder’s share in ${buyingHotel.name}.`}/>}
         <div className="tutorial-controls">
-          <span>{hotelText('星野 · Hoshino', true)} <strong>{money(price(game, HOSHINO))} / 股</strong></span>
+          <span>{hotelText(buyingHotel.zh + ' · ' + buyingHotel.name)} <strong>{money(price(game, buyingHotel.id))} / 股</strong></span>
           <div className="stepper">
             <button type="button" disabled={quantity === 0} onClick={() => setQuantity(quantity - 1)} aria-label="減一股 · Remove one share">−</button>
             <output aria-live="polite">{quantity}</output>
             <button type="button" disabled={quantity === 3} onClick={() => setQuantity(quantity + 1)} aria-label="加一股 · Add one share">+</button>
           </div>
-          <span>總額 · Total <strong>{money(quantity * price(game, HOSHINO))}</strong></span>
+          <span>總額 · Total <strong>{money(quantity * price(game, buyingHotel.id))}</strong></span>
         </div>
         <div className="tutorial-actions">
           <button type="button" className="primary" disabled={!quantity} onClick={() => {
-            const quantities = HOTELS.map(hotel => hotel.id === HOSHINO ? quantity : 0);
+            const quantities = HOTELS.map(hotel => hotel.id === buyingHotel.id ? quantity : 0);
             advance({type: 'buyAndFinish', quantities});
           }}>買入並完成回合 · Buy &amp; finish turn</button>
           <button type="button" className="secondary" onClick={() => advance({type: 'finish'})}>
@@ -254,8 +266,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {buyingFinished && <>
-        <Explanation zh={`回合完成。你有 ${player.shares[HOSHINO]} 股星野、${money(player.cash)} 現金，遊戲已補返一個專屬地塊。下次落地塊接住一間酒店，酒店就會擴張。`}
-          en={`Turn complete. You have ${player.shares[HOSHINO]} Hoshino shares, ${money(player.cash)} in cash and one new private building spot. Placing next to one active hotel expands that hotel.`}/>
+        <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}今次買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
+          en={`Turn complete. ${buyingHotel.name}: ${founderShares ? '1 founder’s share + ' : ''}${player.shares[buyingHotel.id] - founderShares} bought this turn, ${player.shares[buyingHotel.id]} in total. Cash remaining: ${money(player.cash)}.`}/>
         <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節：終局 · Next: Game end</button>
       </>}
 

@@ -492,45 +492,51 @@
 .merger-results th:first-child { text-align: left; overflow-wrap: anywhere; }
 .merger-results td { font-variant-numeric: tabular-nums; white-space: nowrap; }
 
-.hotel-landing-hero .hotel-collection {
-  position: relative;
-  z-index: 2;
+.landing-showcase {
   display: grid;
-  grid-template-columns: repeat(7, minmax(0, 1fr));
-  flex: none;
-  width: min(57%, 720px);
-  margin-top: 28px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+.landing-showcase .hotel-collection {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
   gap: 8px;
-  text-shadow: 0 1px 4px #030c16;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding: 4px 0 8px;
 }
-.hotel-landing-hero .hotel-mini { gap: 3px; }
-.hotel-landing-hero .hotel-mini .emblem.brand-emblem {
-  width: min(100%, 72px);
-  height: 44px;
+.hotel-rail { display: contents; }
+.landing-showcase .hotel-mini { gap: 4px; }
+.landing-showcase .hotel-mini .emblem.brand-emblem {
+  width: min(100%, 82px);
+  height: 48px;
 }
-.hotel-landing-hero .hotel-mini > :is(strong, small) {
+.landing-showcase .hotel-mini > :is(strong, small) {
   color: var(--hotel);
   line-height: 1.15;
 }
-.hotel-landing-hero .hotel-mini strong { margin-top: 3px; font-size: 12px; }
-.hotel-landing-hero .hotel-mini small {
+.landing-showcase .hotel-mini strong { margin-top: 3px; font-size: 12px; }
+.landing-showcase .hotel-mini small {
   font-family: 'Cormorant Garamond', var(--serif);
   font-size: 15px;
   font-weight: 600;
 }
-@media (min-width: 761px) and (max-width: 1100px) {
-  .hotel-landing-hero .hotel-collection { width: 49%; }
-}
-@media (max-width: 1100px) {
-  .hotel-landing-hero .hotel-collection {
-    grid-template-columns: repeat(7, minmax(80px, 1fr));
-    overflow-x: auto;
-    padding-bottom: 6px;
-    scrollbar-width: thin;
+@media (min-width: 1440px) {
+  .landing.landing-immersive { max-width: 1680px; padding-inline: 12px; }
+  .landing-showcase {
+    grid-template-columns: clamp(94px, 6.5vw, 112px) minmax(0, 1fr) clamp(94px, 6.5vw, 112px);
   }
-}
-@media (max-width: 760px) {
-  .hotel-landing-hero .hotel-collection { width: 100%; margin-top: 16px; }
+  .landing-showcase > .hero { grid-area: 1 / 2; min-width: 0; width: 100%; }
+  .landing-showcase .hotel-collection { display: contents; }
+  .hotel-rail {
+    display: flex;
+    flex-direction: column;
+    align-self: start;
+    gap: 24px;
+    padding: 20px 4px 0;
+  }
+  .hotel-rail:first-child { grid-area: 1 / 1; }
+  .hotel-rail:last-child { grid-area: 1 / 3; }
 }
 
 .holdings-panel .scorecard-hotel-row > :is(th, td) { color: var(--hotel); }

@@ -113,10 +113,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="開局時遊戲會自動放好起始地塊，再派每人 6 塊手牌。輪到你，就揀其中一塊放到同座標嘅空格。5C 即係第 5 欄、C 行。試揀手牌或者棋盤上嘅 5C，再撳「確認放置」。"
-            en="The game places the starting tiles and deals six tiles to each player. On your turn, choose one tile and place it on its matching empty square. 5C means column 5, row C. Select 5C in your hand or on the board, then confirm."/>
-          <Explanation zh="棋盤上亮起嘅空格，係你手牌地塊嘅位置提示，只有你自己見到。輪到你時，撳可放置嘅亮格，就等於揀咗手上同座標嘅地塊。撳「確認放置」之後，其他玩家先會見到落咗嘅地塊。"
-            en="Highlighted empty squares show where the tiles in your hand go. Only you can see those hints. On your turn, clicking a playable highlighted square selects the matching tile from your hand. Everyone can see the tile once you confirm the placement."/>
+          <Explanation zh="開局時遊戲會自動放好起始地塊，再派每人 6 塊手牌。輪到你，就揀其中一塊放到同座標嘅空格。5C 即係第 5 欄、C 行。"
+            en="The game places the starting tiles and deals six tiles to each player. On your turn, choose one tile and place it on its matching empty square. 5C means column 5, row C."/>
+          <Explanation zh="3C 已有一幢獨立建築。撳手牌 5C，或者撳棋盤上標有「可放置」嘅 5C 空格。見到「已選取」之後，撳「確認放置」。可放置提示只有你自己見到，確認落地後其他玩家先會見到新地塊。"
+            en="3C already has an independent building. Select 5C in your hand or click the empty 5C square marked ‘Place here’. When it shows ‘Selected’, confirm the placement. Only you see the placement hints. Once confirmed, everyone sees the new tile."/>
           <div className="tutorial-controls tutorial-placement-hand">
             <span>練習用手牌 · Tile to practise with</span>
             <button type="button" className="secondary compact" aria-pressed={selected}

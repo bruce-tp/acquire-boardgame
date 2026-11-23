@@ -365,31 +365,54 @@
   }
 }
 
-.tile.tile-event {
-  position: relative;
-  overflow: visible;
-  z-index: 1;
-  --event-colour: #f5ca80;
-  outline: 2px solid var(--event-colour);
-  outline-offset: -2px;
+.board-frame .tile { min-height: 36px; }
+.tile.playable {
+  flex-direction: column;
+  gap: 1px;
+  background: #3b311e;
+  border: 2px solid #f5ca80;
+  color: #ffe5b0;
+  font-weight: 700;
+  line-height: 1;
 }
-.tile.tile-event-merge { --event-colour: #ffa696; }
-.tile .tile-event-badge {
-  position: absolute;
-  top: 1px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 1px 3px;
-  border-radius: 3px;
-  background: var(--event-colour);
-  color: #162130;
-  font-size: 9px;
-  font-weight: 800;
-  line-height: 1.15;
+.tile.held.playable:not(:disabled):hover, .tile.playable.selected {
+  background: #f5ca80;
+  border-color: #ffe5b0;
+  color: #1e291f;
+}
+.tile.playable :is(.tile-placement-label, .tile-event-badge) {
+  font-size: clamp(7px, 0.72vw, 10px);
+  line-height: 1;
   white-space: nowrap;
-  pointer-events: none;
 }
-
+.tile.playable .tile-event-badge {
+  background: #f5ca80;
+  color: #162130;
+  padding: 0 2px;
+  border-radius: 2px;
+}
+.tile.playable.tile-event-merge .tile-event-badge { background: #ffa696; }
+.tile.independent {
+  background: #344b59;
+  border-color: #687f8b;
+}
+.tile.independent svg {
+  position: absolute;
+  top: 6%;
+  height: 48%;
+  margin: 0;
+}
+.tile.independent .tile-coordinate { top: 2px; bottom: auto; right: 2px; font-size: 8px; }
+.tile.independent .independent-tile-label {
+  right: 0;
+  left: 0;
+  bottom: 3px;
+  text-align: center;
+  font-size: clamp(6px, 0.68vw, 9px);
+  line-height: 1;
+  white-space: nowrap;
+}
+.tile.independent.last > .latest-tile-badge { top: 1px; left: 1px; padding: 1px; font-size: 7px; }
 
 /* Make trading availability clear while keeping every row readable. */
 .market-row:not(.inactive) {

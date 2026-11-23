@@ -8,6 +8,10 @@ const eventLabels = {
   merge: ['合併', 'Merger'],
 } as const;
 
+export function boardHotelLogo(hotel: (typeof HOTELS)[number]) {
+  return hotel.mark === 'HR' ? '/hotels/hoshinoya-board.png' : hotel.logo;
+}
+
 type BoardTileProps = {
   tile: number;
   value: number;
@@ -32,7 +36,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
     plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
   ].filter(Boolean).join(' ');
-  const maskImage = hotel ? 'url("' + (hotel.mark === 'HR' ? '/hotels/hoshinoya-board.png' : hotel.logo) + '")' : undefined;
+  const maskImage = hotel ? 'url("' + boardHotelLogo(hotel) + '")' : undefined;
 
   return <button type="button" className={classes}
     title={coordinate + ' · ' + (plan?.reason || description)}

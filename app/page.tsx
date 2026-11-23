@@ -12,7 +12,7 @@ import {HotelPoster} from '../components/hotel-poster';
 import {createPracticeGame} from '../lib/game/practice';
 import {BeginnerTutorial} from '../components/beginner-tutorial';
 import {FinalScorecard} from '../components/final-scorecard';
-import {BoardTile} from '../components/board-tile';
+import {BoardTile, boardHotelLogo} from '../components/board-tile';
 import {MergerResults} from '../components/merger-results';
 import {PurchaseAnnouncements} from '../components/purchase-announcements';
 import {acceptRoomView} from '../lib/purchase-notice-queue';
@@ -34,7 +34,7 @@ function activityText(message:string){
   );
 }
 
-function Emblem({c=0,small=false}:{c?:number;small?:boolean}){const h=HOTELS[c];return <span className={'emblem brand-emblem '+(small?'small':'')} style={{'--hotel':h.colour} as React.CSSProperties} role="img" aria-label={`${h.zh} ${h.name} · ${h.region}`} title={`${h.zh} · ${h.name}`}><span className="hotel-logo" style={{maskImage:`url("${h.logo}")`,WebkitMaskImage:`url("${h.logo}")`}}/><span className="brand-code" aria-hidden="true">{h.mark}</span></span>}
+function Emblem({c=0,small=false}:{c?:number;small?:boolean}){const h=HOTELS[c];const logo=small?boardHotelLogo(h):h.logo;return <span className={'emblem brand-emblem '+(small?'small':'')} style={{'--hotel':h.colour} as React.CSSProperties} role="img" aria-label={`${h.zh} ${h.name} · ${h.region}`} title={`${h.zh} · ${h.name}`}><span className="hotel-logo" style={{maskImage:`url("${logo}")`,WebkitMaskImage:`url("${logo}")`}}/><span className="brand-code" aria-hidden="true">{h.mark}</span></span>}
 
 function createScorecardPreview(settings:GameSettings){
   const game=createGame('PREVIEW','sample-1','Alex',settings);

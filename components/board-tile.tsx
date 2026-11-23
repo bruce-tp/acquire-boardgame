@@ -8,12 +8,6 @@ const eventLabels = {
   merge: ['合併', 'Merger'],
 } as const;
 
-const compactHotelNames: Record<string, readonly [string, string]> = {
-  P: ['The', 'Peninsula'],
-  HR: ['星野', 'リゾート'],
-  IH: ['Imperial', 'Hotel'],
-};
-
 type BoardTileProps = {
   tile: number;
   value: number;
@@ -26,7 +20,6 @@ type BoardTileProps = {
 
 export function BoardTile({tile, value, plan, playable, selected, latest, onSelect}: BoardTileProps) {
   const hotel = HOTELS[value];
-  const compactName = hotel && compactHotelNames[hotel.mark];
   const independent = value === 7;
   const coordinate = label(tile);
   const event = playable && plan
@@ -37,10 +30,9 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   const description = hotel ? hotel.name : independent ? '獨立建築 · Independent building' : plan ? '你的專屬地塊 · Your private building spot' : '空地 · Empty lot';
   const classes = [
     'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
-    compactName && 'hotel-tile-wordmark',
     plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
   ].filter(Boolean).join(' ');
-  const maskImage = hotel ? 'url("' + hotel.logo + '")' : undefined;
+  const maskImage = hotel ? 'url("' + (hotel.mark === 'HR' ? '/hotels/hoshinoya-board.png' : hotel.logo) + '")' : undefined;
 
   return <button type="button" className={classes}
     title={coordinate + ' · ' + (plan?.reason || description)}
@@ -50,9 +42,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}<small lang="en">{eventLabels[event][1]}</small></span>}
     {hotel ? <>
-      {compactName
-        ? <span className="board-hotel-wordmark" lang={hotel.mark === 'HR' ? 'ja' : 'en'} aria-hidden="true">{compactName.map(line => <span key={line}>{line}</span>)}</span>
-        : <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>}
+      <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>
       <span className="tile-coordinate">{coordinate}</span>
     </> : independent ? <>
       <Building2 size={20} aria-hidden="true"/>

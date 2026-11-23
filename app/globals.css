@@ -590,6 +590,12 @@
   color: #ffe4a9;
   font-size: clamp(4px, 1.22cqw, 18px);
   text-shadow: 0 0 4px #d8964988;
+  border: 1px solid #85c8ff;
+  border-radius: 3px;
+  box-shadow:
+    0 0 0.35em #65a9e5bf,
+    0 0 1.05em #489ce77a,
+    inset 0 0 0.5em #65a9e54d;
 }
 
 .hoshinoya-sign-crests { display: flex; align-items: center; gap: 0.15em; }

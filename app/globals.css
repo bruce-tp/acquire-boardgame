@@ -365,7 +365,7 @@
   }
 }
 
-.board-frame .tile { min-height: 51px; }
+.board-frame .tile { width: 100%; min-width: 0; min-height: 51px; }
 .tile.playable {
   flex-direction: column;
   gap: 1px;

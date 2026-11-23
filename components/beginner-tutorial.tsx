@@ -31,6 +31,14 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{hotelText(zh, true)}<small lang="en">{hotelText(en, true)}</small></p>;
 }
 
+function PrivateSpotCoordinates({english = false}: {english?: boolean}) {
+  const spots = ['5C', '7E', '8B', '8G', '8H', '9E'];
+  return spots.map((spot, index) => <span key={spot} style={{whiteSpace: 'nowrap'}}>
+    {index === 0 ? '' : index === spots.length - 1 ? (english ? ' and ' : ' 同 ') : (english ? ', ' : '、')}
+    <span style={{display: 'inline-block', paddingInline: 5, border: '1px solid #dfbc8080', borderRadius: 4, color: 'var(--goldlight)', fontWeight: 700}}>{spot}</span>
+  </span>);
+}
+
 function SuccessFeedback({zh, en}: {zh: string; en: string}) {
   return <div role="status" className="tutorial-explanation" style={{borderInlineStart: '3px solid var(--goldlight)', paddingInlineStart: 12}}>
     <strong style={{color: 'var(--goldlight)'}}>{zh}</strong>
@@ -196,8 +204,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           </p>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
-          <Explanation zh="用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到你時，就可以喺棋盤撳呢啲格起樓。"
-            en="In this example, the player’s six private building spots are 5C, 7E, 8B, 8G, 8H and 9E. On their turn, they can click any of these squares to build."/>
+          <p className="tutorial-explanation">
+            用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 <PrivateSpotCoordinates/>。輪到你時，就可以喺棋盤撳呢啲格起樓。
+            <small lang="en">In this example, the player’s six private building spots are <PrivateSpotCoordinates english/>. On their turn, they can click any of these squares to build.</small>
+          </p>
         </>}
         {placing && lesson === 'found' && <>
           <Explanation

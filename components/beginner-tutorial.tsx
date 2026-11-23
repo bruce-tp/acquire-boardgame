@@ -4,7 +4,7 @@ import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
 import {BoardTile} from './board-tile';
 import {PriceReference} from './price-reference';
-import {applyAction, HOTELS, placement, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
+import {applyAction, HOTELS, label, placement, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
 import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const lessons = [
@@ -140,6 +140,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
             en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
         </>}
+        {placing && <p className="tutorial-explanation" aria-live="polite">
+          <strong>{selected ? '而家撳棋盤下方嘅「確認放置」。' : `試吓撳下面棋盤嘅 ${label(target)} 格。`}</strong>
+          <small lang="en">{selected ? 'Now click “Build tile” below the board.' : `Try clicking the ${label(target)} square on the board below.`}</small>
+        </p>}
         <LessonBoard game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
         {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
           確認放置 · Build tile

@@ -143,17 +143,13 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <span>{zh}</span><small lang="en">{en}</small>
       </button>)}
     </nav>
-    {chapter === 'place' && <nav className="tutorial-build-lessons" aria-label="起樓練習 · Build exercises">
-      {buildLessons.map(([id, zh, en]) => <button type="button" className="secondary compact" key={id}
-        aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>
-        {zh} · <span lang="en">{en}</span>
-      </button>)}
-    </nav>}
     <section aria-labelledby="tutorial-exercise-title">
       <h3 id="tutorial-exercise-title" className={chapter === 'place' ? 'tutorial-build' : chapter === 'buy' ? 'tutorial-buy' : 'tutorial-end'}>{heading[1]} · {heading[2]}</h3>
 
       {chapter === 'place' && <>
         {placing && lesson === 'place' && <>
+          <Explanation zh="放置地塊之後，可能會起一幢獨立建築、成立酒店、擴展酒店，或者觸發合併同換股。下面會逐步練習。"
+            en="Placing a tile can add an independent building, found or expand a hotel, or trigger a merger and share exchanges. Try these in the exercises below."/>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <Explanation zh="用呢個盤面做例子。呢位玩家嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到佢時，就可以喺棋盤撳呢啲格起樓。"
@@ -201,7 +197,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           en="Tile placed. It touches no other buildings, so it stays independent."/>
         : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
           en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
-        <button type="button" className="primary" onClick={() => openLesson('found')}>下一節：成立酒店 · Next: Found a hotel</button>
+        <button type="button" className="primary" onClick={() => openLesson('found')}>繼續起樓練習 · Continue building</button>
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
@@ -214,7 +210,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson === 'found' && game.phase === 'buy' && <>
         <Explanation zh="酒店成立咗，你攞到一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
-        <button type="button" className="primary" onClick={() => openLesson('merge')}>下一個起樓練習：合併與換股 · Next build exercise: Mergers and shares</button>
+        <button type="button" className="primary" onClick={() => openLesson('merge')}>繼續起樓練習 · Continue building</button>
       </>}
 
       {lesson === 'buy' && game.phase === 'buy' && <>

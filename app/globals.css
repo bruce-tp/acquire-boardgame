@@ -580,8 +580,6 @@
 .beginner-tutorial :is(.tutorial-build, .tutorial-buy, .tutorial-end) :is(p, small) { color: var(--lesson-colour); }
 .tutorial-lessons .secondary { border-color: color-mix(in srgb, var(--lesson-colour) 45%, transparent); white-space: normal; }
 .tutorial-lessons .secondary[aria-current="step"] { border-color: var(--lesson-colour); background: color-mix(in srgb, var(--lesson-colour) 14%, transparent); }
-.tutorial-build-lessons { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
-.tutorial-build-lessons [aria-current="step"] { border-color: var(--goldlight); }
 .board-frame.tutorial-board {
   grid-template-columns: 18px repeat(5, minmax(0, 1fr));
   min-width: 0;

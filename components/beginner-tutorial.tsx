@@ -160,17 +160,25 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <Explanation zh="勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。"
-      en="To win, finish with the most cash after share sales and bonuses."/>
-    <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
-    <ol>
-      <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
-      <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
-    </ol>
-    <p className="tutorial-explanation">
-      買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
-      <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>
-    </p>
+    <section aria-labelledby="tutorial-game-flow" style={{
+      border: '1px solid #829bb24d',
+      borderRadius: 8,
+      padding: '12px 16px',
+      marginBottom: 12,
+    }}>
+      <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>遊戲流程 · <span lang="en">Game flow</span></h3>
+      <Explanation zh="勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。"
+        en="To win, finish with the most cash after share sales and bonuses."/>
+      <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
+      <ol>
+        <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
+        <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
+      </ol>
+      <p className="tutorial-explanation">
+        買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
+        <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>
+      </p>
+    </section>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {chapters.map(([id, zh, en, colour]) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
         aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>

@@ -52,6 +52,6 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     {playable && (!event || selected) && <span className="tile-placement-label" aria-hidden="true">
       {placementStatus[0]}<small lang="en">{placementStatus[1]}</small>
     </span>}
-    {latest && <span className="latest-tile-badge" aria-hidden="true">最新<small lang="en">Latest</small></span>}
+    {latest && <span className="latest-tile-badge" lang="en" aria-hidden="true">Latest</span>}
   </button>;
 }

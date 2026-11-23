@@ -13,7 +13,7 @@
   padding: 1px 3px;
   background: #0b2535;
   color: #d9f9ff;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 800;
   line-height: 1.2;
   white-space: nowrap;
@@ -416,7 +416,7 @@
   line-height: 1;
   white-space: nowrap;
 }
-.tile.independent.last > .latest-tile-badge { top: 1px; left: 1px; padding: 1px; font-size: 7px; }
+.tile.independent.last > .latest-tile-badge { top: 1px; left: 1px; padding: 1px 2px; }
 
 /* Make trading availability clear while keeping every row readable. */
 .market-row:not(.inactive) {
@@ -668,14 +668,13 @@
 .hoshinoya-sign-wordmark small { font-size: 0.43em; letter-spacing: 0.09em; }
 
 /* Compact translations beneath the existing board badges. */
-.tile :is(.tile-placement-label, .tile-event-badge, .independent-tile-label, .latest-tile-badge) > small {
+.tile :is(.tile-placement-label, .tile-event-badge, .independent-tile-label) > small {
   display: block;
   font-size: clamp(6px, 0.64vw, 9px);
   line-height: 1;
   font-weight: 600;
   letter-spacing: 0;
 }
-.tile .latest-tile-badge > small { font-size: 6px; }
 .tile.independent svg { height: 40%; }
 
 .tutorial-practice-opening { margin: 12px 0; }

@@ -106,8 +106,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <Explanation zh="目標係終局現金最多。每回合先落一塊地，如果觸發成立、擴張或者合併，就即時處理。之後可以買股，最後補牌交棒。"
-      en="Finish with the most cash. Place one tile, resolve any hotel founding, expansion or merger it triggers, then decide whether to buy shares. Draw a replacement tile to finish your turn."/>
+    <Explanation zh="目標係終局現金最多。每回合先落一塊地，如果觸發成立、擴張或者合併，就即時處理。之後可以買股，回合結束時，遊戲會自動補一個地塊。"
+      en="Finish with the most cash. Place one tile, resolve any hotel founding, expansion or merger it triggers, then decide whether to buy shares. The game replenishes your building spots at the end of your turn."/>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}
         aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>
@@ -119,15 +119,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="開局時遊戲會自動放好起始地塊，再派每人 6 塊手牌。輪到你，就揀其中一塊放到同座標嘅空格。5C 即係第 5 欄、C 行。"
-            en="The game places the starting tiles and deals six tiles to each player. On your turn, choose one tile and place it on its matching empty square. 5C means column 5, row C."/>
-          <Explanation zh="3C 已有一幢獨立建築。撳手牌 5C，或者撳棋盤上標有「可放置」嘅 5C 空格。見到「已選取」之後，撳「確認放置」。可放置提示只有你自己見到，確認落地後其他玩家先會見到新地塊。"
-            en="3C already has an independent building. Select 5C in your hand or click the empty 5C square marked ‘Place here’. When it shows ‘Selected’, confirm the placement. Only you see the placement hints. Once confirmed, everyone sees the new tile."/>
-          <div className="tutorial-controls tutorial-placement-hand">
-            <span>練習用手牌 · Tile to practise with</span>
-            <button type="button" className="secondary compact" aria-pressed={selected}
-              onClick={() => setSelected(!selected)}>5C</button>
-          </div>
+          <Explanation zh="開局時，你會有 6 個專屬地塊。棋盤上嘅提示只有你自己睇到。輪到你時，喺棋盤揀一格可以落嘅位置。用咗一格，其餘 5 格會留低，回合結束時遊戲會自動補一個新位置。"
+            en="You start with six private building spots. Only you can see their markers on the board. On your turn, choose one available spot. You keep the other five, and the game gives you one new spot at the end of your turn."/>
+          <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
+            en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}
         {placing && lesson === 'found' && <>
           <Explanation
@@ -193,8 +188,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {founded && <>
-        <Explanation zh={`回合完成。你有 ${player.shares[HOSHINO]} 股星野、${money(player.cash)} 現金，手牌補回 6 塊。下次落地塊接住一間酒店，酒店就會擴張。`}
-          en={`Turn complete. You have ${player.shares[HOSHINO]} Hoshino shares, ${money(player.cash)} in cash and six tiles again. Placing next to one active hotel expands that hotel.`}/>
+        <Explanation zh={`回合完成。你有 ${player.shares[HOSHINO]} 股星野、${money(player.cash)} 現金，遊戲已補返一個專屬地塊。下次落地塊接住一間酒店，酒店就會擴張。`}
+          en={`Turn complete. You have ${player.shares[HOSHINO]} Hoshino shares, ${money(player.cash)} in cash and one new private building spot. Placing next to one active hotel expands that hotel.`}/>
         <button type="button" className="primary" onClick={() => openLesson('merge')}>下一節 · Next lesson</button>
       </>}
 

@@ -9,7 +9,7 @@ export function TurnGuide({phase,bought,mine,selected,cartCount=0}:{phase:string
     <ol className="turn-guide-steps">
       <li className={(placing&&mine?'current ':'')+(!placing?'completed':'')} aria-current={placing?'step':undefined}>
         <span className="turn-step-number">{placing?'1':<Check size={21}/>}</span>
-        <div><strong>放置地塊 <span>Place a tile</span></strong><p>{resolving?'地塊已放置，先處理酒店成立或合併。':placing?'選下方手牌或版圖高亮位置，再按右上「確認放置」。':'地塊已放好，相關酒店事件已處理。'}<br/>{resolving?'Tile placed: resolve the founding or merger before buying.':placing?'Select a tile below or on the map, then confirm above.':'Tile placement and hotel events are complete.'}</p>{placing&&!resolving&&selected&&<b className="turn-selected-tile">已選 {selected} · Selected {selected}</b>}</div>
+        <div><strong>放置地塊 <span>Place a tile</span></strong><p>{resolving?'地塊已放置，先處理酒店成立或合併。':placing?'喺棋盤揀一個可用嘅專屬地塊，再按右上「確認放置」。':'地塊已放好，相關酒店事件已處理。'}<br/>{resolving?'Tile placed: resolve the founding or merger before buying.':placing?'Choose an available private building spot on the board, then confirm above.':'Tile placement and hotel events are complete.'}</p>{placing&&!resolving&&selected&&<b className="turn-selected-tile">已選 {selected} · Selected {selected}</b>}</div>
         <span className="turn-step-state">{placing?'先完成':'已完成'}</span>
       </li>
       <li className={!placing&&mine?'current':''} aria-current={!placing?'step':undefined}>

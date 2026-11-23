@@ -585,7 +585,6 @@
 .tutorial-controls .stepper { margin: 0; }
 .tutorial-controls .stepper > button { width: 42px; height: 42px; }
 .tutorial-controls output { min-width: 20px; text-align: center; }
-.tutorial-placement-hand [aria-pressed="true"] { border-color: var(--gold); color: var(--goldlight); }
 .tutorial-disposal > * { display: grid; gap: 4px; }
 .tutorial-disposal select {
   background: #0c1a29;

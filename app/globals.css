@@ -525,30 +525,12 @@
 .tutorial-lessons .secondary { min-width: 0; padding: 8px 4px; }
 .tutorial-lessons small { display: block; margin-top: 3px; font-size: 11px; }
 .tutorial-lessons [aria-current="step"] { border-color: var(--gold); color: var(--goldlight); }
-.tutorial-board {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 5px;
-  margin-bottom: 12px;
+.board-frame.tutorial-board {
+  grid-template-columns: 18px repeat(5, minmax(0, 1fr));
+  min-width: 0;
+  max-width: 490px;
+  margin-bottom: 17px;
 }
-.tutorial-tile {
-  display: grid;
-  align-content: center;
-  justify-items: center;
-  min-height: 50px;
-  padding: 4px 1px;
-  border: 1px solid #ffffff18;
-  border-radius: 4px;
-  background: #0d1d2d;
-  color: #97afc0;
-  font-size: 13px;
-  line-height: 1.2;
-}
-.tutorial-tile small { margin-top: 3px; font-size: 10px; text-align: center; }
-.tutorial-independent { background: #304657; color: #e2edf2; }
-.tutorial-hotel-tile { background: #23394b; border-color: currentColor; }
-.tutorial-target { color: var(--goldlight); border-color: var(--gold); }
-.tutorial-target.selected { background: var(--goldlight); color: #162536; }
 .tutorial-controls, .tutorial-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
 .tutorial-controls { margin: 10px 0; }
 .tutorial-controls .stepper { margin: 0; }
@@ -574,7 +556,7 @@
   .beginner-tutorial { padding: 18px 12px; }
   .beginner-tutorial .tutorial-explanation { font-size: 14px; }
   .tutorial-lessons { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tutorial-lessons small, .tutorial-tile small { font-size: 10px; }
+  .tutorial-lessons small { font-size: 10px; }
   .tutorial-actions .primary, .tutorial-actions .secondary { white-space: normal; }
 }
 

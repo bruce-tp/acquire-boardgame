@@ -2,7 +2,8 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
-import {applyAction, HOTELS, label, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
+import {BoardTile} from './board-tile';
+import {applyAction, HOTELS, placement, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
 import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const lessons = [
@@ -13,7 +14,8 @@ const lessons = [
 ] as const;
 
 const money = (amount: number) => '$' + amount.toLocaleString('en-GB');
-const visibleTiles = [26, 27, 28, 29, 30, 38, 39, 40, 41, 42, 50, 51, 52, 53, 54];
+const boardColumns = [3, 4, 5, 6, 7];
+const boardRows = ['C', 'D', 'E'];
 
 function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{zh}<small lang="en">{en}</small></p>;
@@ -25,22 +27,20 @@ function LessonBoard({game, target, selected, onSelect}: {
   selected: boolean;
   onSelect: () => void;
 }) {
-  return <div className="tutorial-board" aria-label="練習棋盤 · Practice board">
-    {visibleTiles.map(tile => {
-      const value = game.board[tile];
-      const hotel = HOTELS[value];
-      const available = game.phase === 'place' && game.turn === 0 && tile === target;
-      const classes = 'tutorial-tile' + (hotel ? ' tutorial-hotel-tile' : value === 7 ? ' tutorial-independent' : '');
-      const style = hotel ? {color: hotel.colour} : undefined;
-      return available
-        ? <button key={tile} type="button" className={'tutorial-tile tutorial-target' + (selected ? ' selected' : '')}
-            aria-pressed={selected} onClick={onSelect}>{label(tile)}<small>可落 · Playable</small></button>
-        : <div key={tile} className={classes} style={style}>
-            {label(tile)}
-            {hotel && <small>{hotel.short}</small>}
-            {value === 7 && <small>獨立 · Solo</small>}
-          </div>;
-    })}
+  const placing = game.phase === 'place' && game.turn === 0;
+  return <div className="board-frame tutorial-board" role="group" aria-label="練習棋盤 · Practice board">
+    <div className="grid-label corner" aria-hidden="true">A</div>
+    {boardColumns.map(column => <div className="grid-label" key={column}>{column}</div>)}
+    {boardRows.map(row => <div className="board-row" key={row}>
+      <div className="grid-label">{row}</div>
+      {boardColumns.map(column => {
+        const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
+        const plan = placing && tile === target ? placement(game, tile) : null;
+        return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
+          playable={!!plan?.legal} selected={!!plan && selected}
+          latest={game.lastTile === tile} onSelect={onSelect}/>;
+      })}
+    </div>)}
   </div>;
 }
 

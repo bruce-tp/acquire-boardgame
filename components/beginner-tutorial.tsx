@@ -10,12 +10,18 @@ import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
 import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
-const lessons = [
+const buildLessons = [
   ['place', '放置地塊', 'Placing a tile'],
   ['found', '成立酒店', 'Founding a hotel'],
   ['merge', '合併與換股', 'Mergers and shares'],
-  ['settle', '終局結算', 'Final scoring'],
 ] as const;
+
+const chapters = [
+  ['place', '起樓（放置地塊）', 'Build (place a tile)', 'build'],
+  ['buy', '買股票', 'Buy shares', 'buy'],
+  ['settle', '終局', 'Game end', 'end'],
+] as const;
+type Lesson = TutorialExercise | 'buy';
 
 const money = (amount: number) => '$' + amount.toLocaleString('en-GB');
 const boardColumns = [3, 4, 5, 6, 7];
@@ -61,7 +67,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   startPractice?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [lesson, setLesson] = useState<TutorialExercise>('place');
+  const [lesson, setLesson] = useState<Lesson>('place');
   const [game, setGame] = useState(createPracticeGame);
   const [selected, setSelected] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(0);
@@ -69,14 +75,20 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const [trade, setTrade] = useState(0);
   const [error, setError] = useState('');
   const player = game.players[0];
-  const lessonIndex = lessons.findIndex(([id]) => id === lesson);
-  const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, settle: FINAL_TILE}[lesson];
+  const chapter = lesson === 'buy' || lesson === 'settle' ? lesson : 'place';
+  const heading = buildLessons.find(([id]) => id === lesson) ?? chapters.find(([id]) => id === chapter)!;
+  const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, buy: FOUNDING_TILE, settle: FINAL_TILE}[lesson];
 
   useEffect(() => {dialog.current?.showModal();}, []);
 
-  function openLesson(id: TutorialExercise) {
+  function openLesson(id: Lesson) {
     setLesson(id);
-    setGame(id === 'place' ? createPracticeGame() : createTutorialGame(id));
+    const next = id === 'place' ? createPracticeGame() : createTutorialGame(id === 'buy' ? 'found' : id);
+    if (id === 'buy') {
+      applyAction(next, 0, {type: 'place', tile: FOUNDING_TILE});
+      applyAction(next, 0, {type: 'found', chain: HOSHINO});
+    }
+    setGame(next);
     setSelected(null);
     setQuantity(0);
     setSell(0);
@@ -104,7 +116,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   }
 
   const placing = game.phase === 'place' && game.turn === 0;
-  const founded = lesson === 'found' && game.phase === 'place' && game.turn !== 0;
+  const buyingFinished = lesson === 'buy' && game.phase === 'place' && game.turn !== 0;
   const disposed = lesson === 'merge' && game.phase === 'buy';
   const mergerPrice = game.merger ? priceFor(HOSHINO, game.merger.sizes[HOSHINO]) : 0;
   const award = game.merger?.awards?.[0]?.amount ?? 0;
@@ -120,21 +132,27 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       en="To win, finish with the most cash after share sales and bonuses."/>
     <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
     <ol>
-      <li><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
-      <li><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
+      <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
+      <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
     </ol>
     <Explanation zh="買完或者揀唔買，就到下一位玩家做同樣嘅嘢。"
       en="Once you buy or skip buying, the next player takes their turn."/>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
-      {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}
-        aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>
-        <span>{index + 1}. {zh}</span><small lang="en">{en}</small>
+      {chapters.map(([id, zh, en, colour]) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
+        aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>
+        <span>{zh}</span><small lang="en">{en}</small>
       </button>)}
     </nav>
+    {chapter === 'place' && <nav className="tutorial-build-lessons" aria-label="起樓練習 · Build exercises">
+      {buildLessons.map(([id, zh, en]) => <button type="button" className="secondary compact" key={id}
+        aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>
+        {zh} · <span lang="en">{en}</span>
+      </button>)}
+    </nav>}
     <section aria-labelledby="tutorial-exercise-title">
-      <h3 id="tutorial-exercise-title">{lessons[lessonIndex][1]} · {lessons[lessonIndex][2]}</h3>
+      <h3 id="tutorial-exercise-title" className={chapter === 'place' ? 'tutorial-build' : chapter === 'buy' ? 'tutorial-buy' : 'tutorial-end'}>{heading[1]} · {heading[2]}</h3>
 
-      {lesson !== 'settle' && <>
+      {chapter === 'place' && <>
         {placing && lesson === 'place' && <>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
@@ -178,7 +196,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson === 'place' && !placing && game.lastTile !== null && <>
         {game.phase === 'found' ? <Explanation zh="你揀嘅地塊連住獨立建築，可以成立一間酒店。下一節試吓揀品牌同買股。"
-          en="Your tile connects to an independent building, so you can found a hotel. Try choosing a brand and buying shares in the next lesson."/>
+          en="Your tile connects to an independent building, so you can found a hotel. Try choosing a brand in the next exercise."/>
         : game.board[game.lastTile] === 7 ? <Explanation zh="放置成功。呢格冇接到其他建築，所以成為一幢獨立建築。"
           en="Tile placed. It touches no other buildings, so it stays independent."/>
         : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
@@ -195,6 +213,11 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'found' && game.phase === 'buy' && <>
+        <Explanation zh="酒店成立咗，你攞到一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
+        <button type="button" className="primary" onClick={() => openLesson('merge')}>下一個起樓練習：合併與換股 · Next build exercise: Mergers and shares</button>
+      </>}
+
+      {lesson === 'buy' && game.phase === 'buy' && <>
         <Explanation zh="而家去「酒店交易所」揀股。每回合最多買 3 股，只可買已成立嘅酒店，亦可以一股都唔買。試撳 + 加股，再買入並完成回合。"
           en="Use the Stock Exchange to buy up to three shares per turn across active hotels. Buying is optional. Try adding a share, then buy and finish your turn."/>
         <div className="tutorial-controls">
@@ -217,10 +240,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         </div>
       </>}
 
-      {founded && <>
+      {buyingFinished && <>
         <Explanation zh={`回合完成。你有 ${player.shares[HOSHINO]} 股星野、${money(player.cash)} 現金，遊戲已補返一個專屬地塊。下次落地塊接住一間酒店，酒店就會擴張。`}
           en={`Turn complete. You have ${player.shares[HOSHINO]} Hoshino shares, ${money(player.cash)} in cash and one new private building spot. Placing next to one active hotel expands that hotel.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('merge')}>下一節 · Next lesson</button>
+        <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節：終局 · Next: Game end</button>
       </>}
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
@@ -256,7 +279,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {disposed && <>
         <Explanation zh={`合併完成。同規模時，由落地塊嘅玩家揀邊間保留。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金有 ${money(player.cash)}。保留嘅股票可等酒店重開。11 格或以上嘅酒店屬安全酒店，唔可以用一塊地連接兩間安全酒店。`}
           en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[HOSHINO]} Hoshino shares and now have ${money(player.cash)} in cash. Kept shares matter if Hoshino reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節 · Next lesson</button>
+        <button type="button" className="primary" onClick={() => openLesson('buy')}>下一節：買股票 · Next: Buy shares</button>
       </>}
 
       {lesson === 'settle' && <>

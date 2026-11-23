@@ -685,14 +685,15 @@
 .tile.hotel-tile-wordmark { container-type: inline-size; }
 .tile.hotel-tile > .board-hotel-wordmark {
   position: absolute;
-  inset: 12% 1px 22%;
+  inset: 11px 1px 11px;
   display: grid;
-  place-items: center;
+  place-content: center;
+  justify-items: center;
   color: #102637;
-  font-size: min(17cqi, 15px);
+  font-size: min(16cqi, 14px);
   font-weight: 800;
   line-height: 1;
   white-space: nowrap;
   pointer-events: none;
 }
-.tile.hotel-tile > .board-hotel-wordmark:lang(ja) { font-size: min(26cqi, 19px); }
+.tile.hotel-tile > .board-hotel-wordmark:lang(ja) { font-size: min(20cqi, 16px); }

@@ -8,10 +8,10 @@ const eventLabels = {
   merge: ['合併', 'Merger'],
 } as const;
 
-const compactHotelNames: Record<string, string> = {
-  P: 'Peninsula',
-  HR: '星野',
-  IH: 'Imperial',
+const compactHotelNames: Record<string, readonly [string, string]> = {
+  P: ['The', 'Peninsula'],
+  HR: ['星野', 'リゾート'],
+  IH: ['Imperial', 'Hotel'],
 };
 
 type BoardTileProps = {
@@ -51,7 +51,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}<small lang="en">{eventLabels[event][1]}</small></span>}
     {hotel ? <>
       {compactName
-        ? <span className="board-hotel-wordmark" lang={hotel.mark === 'HR' ? 'ja' : 'en'} aria-hidden="true">{compactName}</span>
+        ? <span className="board-hotel-wordmark" lang={hotel.mark === 'HR' ? 'ja' : 'en'} aria-hidden="true">{compactName.map(line => <span key={line}>{line}</span>)}</span>
         : <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>}
       <span className="tile-coordinate">{coordinate}</span>
     </> : independent ? <>

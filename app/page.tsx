@@ -113,9 +113,9 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
 </blockquote>
 <HotelPoster landing/><div className="art-caption"><span>THE CITY IS YOURS TO BUILD</span><span>BIG AMBITION</span></div></section>
 <div className="hotel-collection" tabIndex={0} role="region" aria-label="七大酒店品牌 · Seven hotel brands">
-  {[HOTELS.slice(0, 4), HOTELS.slice(4)].map((hotels, side) => (
+  {[[0, 1, 6, 3], [4, 5, 2]].map((hotelIds, side) => (
     <div className="hotel-rail" key={side}>
-      {hotels.map(h => (
+      {hotelIds.map(id => HOTELS[id]).map(h => (
         <div className="hotel-mini" key={h.id} style={{'--hotel': h.colour} as React.CSSProperties}>
           <Emblem c={h.id}/><strong>{h.zh}</strong><small lang="en">{h.name}</small>
         </div>

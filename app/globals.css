@@ -369,29 +369,33 @@
 .tile.playable {
   flex-direction: column;
   gap: 1px;
-  background: #3b311e;
-  border: 2px solid #f5ca80;
-  color: #ffe5b0;
+  --placement-colour: #f3f6fa;
+  background: color-mix(in srgb, var(--placement-colour) 13%, #162632);
+  border: 2px solid var(--placement-colour);
+  color: var(--placement-colour);
   font-weight: 700;
   line-height: 1;
 }
+.tile.playable.tile-event-found { --placement-colour: #f5ca80; }
+.tile.playable.tile-event-expand { --placement-colour: #8cddcc; }
+.tile.playable.tile-event-merge { --placement-colour: #ffa696; }
 .tile.held.playable:not(:disabled):hover, .tile.playable.selected {
-  background: #f5ca80;
-  border-color: #ffe5b0;
-  color: #1e291f;
+  background: var(--placement-colour);
+  border-color: var(--placement-colour);
+  color: #162130;
 }
+.tile.playable.selected::before { border-color: var(--placement-colour); }
 .tile.playable :is(.tile-placement-label, .tile-event-badge) {
   font-size: clamp(7px, 0.72vw, 10px);
   line-height: 1;
   white-space: nowrap;
 }
 .tile.playable .tile-event-badge {
-  background: #f5ca80;
+  background: var(--placement-colour);
   color: #162130;
   padding: 0 2px;
   border-radius: 2px;
 }
-.tile.playable.tile-event-merge .tile-event-badge { background: #ffa696; }
 .tile.independent {
   background: #344b59;
   border-color: #687f8b;

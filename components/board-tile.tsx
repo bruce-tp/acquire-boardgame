@@ -2,6 +2,12 @@ import type {CSSProperties} from 'react';
 import {Building2} from 'lucide-react';
 import {HOTELS, label, type placement} from '../lib/game/engine.ts';
 
+const eventLabels = {
+  found: ['成立', 'Founding'],
+  expand: ['擴展', 'Expansion'],
+  merge: ['合併', 'Merger'],
+} as const;
+
 type BoardTileProps = {
   tile: number;
   value: number;
@@ -17,9 +23,9 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   const independent = value === 7;
   const coordinate = label(tile);
   const event = playable && plan
-    ? plan.chains.length > 1 ? 'merge' : plan.chains.length === 0 && plan.group.length > 1 ? 'found' : null
+    ? plan.chains.length > 1 ? 'merge' : plan.chains.length === 1 ? 'expand' : plan.group.length > 1 ? 'found' : null
     : null;
-  const eventLabel = event === 'merge' ? '合併 · Merger' : event === 'found' ? '成立酒店 · Founding' : '';
+  const eventLabel = event ? eventLabels[event].join(' · ') : '';
   const placementStatus = selected ? '已選取 · Selected' : '可放置 · Place here';
   const description = hotel ? hotel.name : independent ? '獨立建築 · Independent building' : plan ? '你的地塊 · Your tile' : '空地 · Empty lot';
   const classes = [
@@ -34,7 +40,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     aria-pressed={playable ? selected : undefined}
     disabled={!playable} onClick={onSelect}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
-    {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{event === 'merge' ? '合併' : '成立'}</span>}
+    {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}</span>}
     {hotel ? <>
       <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>
       <span className="tile-coordinate">{coordinate}</span>

@@ -133,8 +133,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="用呢個盤面做例子。輪到你時，可以喺棋盤揀一個有提示嘅位置起樓。"
-            en="On your turn, choose a marked square on the board to build on."/>
+          <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
+            en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
+          <Explanation zh="用呢個盤面做例子。呢位玩家嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到佢時，就可以喺棋盤撳呢啲格起樓。"
+            en="In this example, the player’s six private building spots are 5C, 7E, 8B, 8G, 8H and 9E. On their turn, they can click any of these squares to build."/>
           <figure className="tutorial-practice-opening">
             <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
             <div className="board-scroll" tabIndex={0} role="region" aria-label="你見到嘅棋盤 · Your view of the board">

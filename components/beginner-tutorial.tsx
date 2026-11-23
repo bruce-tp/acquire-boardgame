@@ -31,6 +31,13 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{hotelText(zh, true)}<small lang="en">{hotelText(en, true)}</small></p>;
 }
 
+function SuccessFeedback({zh, en}: {zh: string; en: string}) {
+  return <div role="status" className="tutorial-explanation" style={{borderInlineStart: '3px solid var(--goldlight)', paddingInlineStart: 12}}>
+    <strong style={{color: 'var(--goldlight)'}}>{zh}</strong>
+    <small lang="en">{en}</small>
+  </div>;
+}
+
 function LessonBoard({game, target, selected, onSelect, full = false, overviewViewer}: {
   game: Game;
   target: number;
@@ -215,6 +222,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'place' && !placing && game.lastTile !== null && <>
+        <SuccessFeedback zh="做得好！你成功放咗一塊地。" en="Well done! You placed a tile."/>
         {game.phase === 'found' ? <>
           <Explanation zh="你揀嘅地塊連住獨立建築。揀一間未成立嘅酒店，遊戲會喺棋盤上成立嗰間酒店，仲會送你一股。"
             en="Your tile connects to an independent building. Choose an inactive hotel to found it on the board and receive one free share."/>
@@ -236,6 +244,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'found' && game.phase === 'buy' && <>
+        <SuccessFeedback zh="恭喜！你成立咗一間酒店。" en="Congratulations! You founded a hotel."/>
         <Explanation zh="酒店成立咗，你攞到一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
         <button type="button" className="primary" onClick={() => openLesson('merge')}>繼續起樓練習 · Continue building</button>
       </>}
@@ -266,6 +275,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {buyingFinished && <>
+        <SuccessFeedback zh="做得好！你完成咗買股練習。" en="Well done! You completed the buying exercise."/>
         <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}今次買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
           en={`Turn complete. ${buyingHotel.name}: ${founderShares ? '1 founder’s share + ' : ''}${player.shares[buyingHotel.id] - founderShares} bought this turn, ${player.shares[buyingHotel.id]} in total. Cash remaining: ${money(player.cash)}.`}/>
         <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節：終局 · Next: Game end</button>
@@ -302,6 +312,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {disposed && <>
+        <SuccessFeedback zh="做得好！你處理完今次合併嘅股票。" en="Well done! You handled your shares in the merger."/>
         <Explanation zh={`合併完成。同規模時，由落地塊嘅玩家揀邊間保留。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金有 ${money(player.cash)}。保留嘅股票可等酒店重開。11 格或以上嘅酒店屬安全酒店，唔可以用一塊地連接兩間安全酒店。`}
           en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[HOSHINO]} Hoshino shares and now have ${money(player.cash)} in cash. Kept shares matter if Hoshino reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
         <button type="button" className="primary" onClick={() => openLesson('buy')}>下一節：買股票 · Next: Buy shares</button>
@@ -326,6 +337,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           確認放置 · Build tile
         </button>}
         {game.phase === 'buy' && <>
+          <SuccessFeedback zh="做得好！你令最後一間酒店達到安全規模。" en="Well done! You brought the last hotel up to safe size."/>
           <Explanation zh="瑰麗而家有 11 格，四間酒店都安全，可以選擇結束遊戲。呢個例子入面，你選擇完結遊戲，今個回合唔再買股。"
             en="Rosewood now has 11 tiles, so all four hotels are safe and you may end the game. In this example, you choose to end the game and skip buying more shares."/>
           <button type="button" className="primary" onClick={() => {
@@ -338,6 +350,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'settle' && score && <>
+        <SuccessFeedback zh="恭喜！你完成咗終局結算練習。" en="Congratulations! You completed the final scoring exercise."/>
         <Explanation
           zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。將表內各間酒店嘅賣股收入加埋，係 ${money(proceeds)}，再加 ${money(bonuses)} 股東獎金。你嘅最終總額係 ${money(player.cash)}。最終總額最高嘅玩家排第一。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>

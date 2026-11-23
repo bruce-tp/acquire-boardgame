@@ -122,12 +122,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
     <ul>
       <li><Explanation zh="完場計埋賣股同獎金，最多錢嗰個贏。"
         en="Most cash after share sales and bonuses wins."/></li>
-      <li><Explanation zh="輪到你，喺棋盤揀一格起樓。酒店有變動，跟畫面提示做。"
+      <li><Explanation zh="輪到你，喺棋盤揀一格起樓。起樓有可能會觸發變動，如果有變動，跟畫面提示做。"
         en="Choose a square to build on. Follow the prompts if a hotel changes."/></li>
       <li><Explanation zh="之後可以買股票，唔買都得。"
         en="Buy shares or skip buying."/></li>
-      <li><Explanation zh="回合完咗，有地塊剩就自動補一個新位置畀你。"
-        en="At turn end, you get a new spot if any tiles remain."/></li>
     </ul>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}

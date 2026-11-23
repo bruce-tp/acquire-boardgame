@@ -60,6 +60,7 @@ function Rulebook({close}: {close: () => void}) {
     <section className="dialog rules" role="dialog" aria-modal="true" aria-label="完整規則 · Full rules" onClick={event => event.stopPropagation()}>
       <button className="icon close" onClick={close} aria-label="關閉 · Close"><X size={20}/></button>
       <h2>完整規則 <em>Full rules</em></h2>
+    <p className="tutorial-explanation"><strong style={{color: 'var(--goldlight)'}}>編寫中</strong> · 呢份完整規則仲寫緊，內容會繼續更新。<br/><span lang="en">This rulebook is a work in progress.</span></p>
       <RulebookPreview/>
     </section>
   </div>;

@@ -168,6 +168,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
+    <p className="tutorial-explanation"><strong style={{color: 'var(--goldlight)'}}>編寫中</strong> · 呢份新手教學仲寫緊，內容會繼續更新。<br/><span lang="en">This tutorial is a work in progress.</span></p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
       borderRadius: 8,

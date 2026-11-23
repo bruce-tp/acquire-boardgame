@@ -12,8 +12,8 @@ The landing page now shares `peninsula-okura-night-v3.png` and the same illumina
 
 - gatsby-toast-v1.webp: user-approved generated painterly toast illustration, used only as the decorative homepage sky layer. The shared Peninsula/Okura artwork remains separate and unchanged.
 
-The homepage uses `hotel-dusk-oil.webp` by default. Open `/?cover=hoshinoya` to preview
-`hotel-dusk-hoshinoya-preview.webp` on the right. The browser blends the preview over
-the approved image, leaving the left half intact. The preview is inspired by
-[HOSHINOYA Tokyo’s Edo-komon façade](https://www.mjd.co.jp/en/projects/27832/).
-The normal homepage URL restores the approved artwork.
+The homepage blends the HOSHINOYA Tokyo artwork (`hotel-dusk-hoshinoya-preview.webp`)
+over the right-hand side of `hotel-dusk-oil.webp`. The new tower draws on
+[HOSHINOYA Tokyo’s Edo-komon façade](https://www.mjd.co.jp/en/projects/27832/),
+with a sign based on the former entrance lettering. Open `/?cover=original`
+to view the previous cover.

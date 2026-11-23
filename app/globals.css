@@ -576,15 +576,55 @@
   .tutorial-actions .primary, .tutorial-actions .secondary { white-space: normal; }
 }
 
-/* Keep the approved left-hand scene and blend the preview through the central trees. */
+/* Preserve the left-hand scene and blend the two paintings through the central trees. */
 .hotel-poster-stage > .hoshinoya-cover-layer {
   position: absolute;
   inset: 0;
   height: 100%;
   mask-image: linear-gradient(to right, transparent 50%, #000 57%);
 }
-.hoshino-sign.hoshinoya-preview-sign {
+.hoshino-sign.hoshinoya-cover-sign {
   top: 59.3%;
   height: 6.2%;
-  text-shadow: 0 0 4px #ffcc8d, 0 0 8px #d89649;
+  gap: 0.42em;
+  color: #ffe4a9;
+  font-size: clamp(4px, 1.22cqw, 18px);
+  text-shadow: 0 0 4px #d8964988;
 }
+
+.hoshinoya-sign-crests { display: flex; align-items: center; gap: 0.15em; }
+.hoshinoya-sign-crests > span {
+  display: grid;
+  width: 0.93em;
+  height: 0.93em;
+  place-items: center;
+  border-radius: 50%;
+  letter-spacing: 0;
+}
+.hoshinoya-flower { box-shadow: inset 0 0 0 max(0.6px, 0.08em) currentColor; }
+.hoshinoya-name-seal {
+  position: relative;
+  background: #ffe4a9;
+  color: transparent;
+  text-shadow: none;
+}
+.hoshinoya-name-seal::after {
+  content: '星のや';
+  position: absolute;
+  color: #211a13;
+  font-size: 0.25em;
+  writing-mode: vertical-rl;
+}
+.hoshinoya-sign-crests .hoshinoya-moon {
+  background: #ffe4a9;
+  position: relative;
+}
+.hoshinoya-moon::before, .hoshinoya-moon::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+}
+.hoshinoya-moon::before { inset: 0 15% 17% 0; background: #14181a; }
+.hoshinoya-moon::after { top: 12%; left: 15%; width: 25%; height: 25%; background: #ffe4a9; }
+.hoshinoya-sign-wordmark { display: grid; justify-items: center; gap: 0.04em; line-height: 1; }
+.hoshinoya-sign-wordmark small { font-size: 0.43em; letter-spacing: 0.09em; }

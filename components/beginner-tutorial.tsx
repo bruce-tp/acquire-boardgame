@@ -123,7 +123,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       en="To win, finish with the most cash after share sales and bonuses."/>
     <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
     <ol>
-      <li><Explanation zh="起樓" en="Build"/></li>
+      <li><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
       <li><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
     </ol>
     <Explanation zh="買完或者揀唔買，就到下一位玩家做同樣嘅嘢。"

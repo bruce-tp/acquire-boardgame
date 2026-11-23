@@ -24,15 +24,18 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{zh}<small lang="en">{en}</small></p>;
 }
 
-function LessonBoard({game, target, selected, onSelect, full = false, overview = false}: {
+function LessonBoard({game, target, selected, onSelect, full = false, overviewViewer}: {
   game: Game;
   target: number;
   selected: boolean;
   onSelect?: () => void;
   full?: boolean;
-  overview?: boolean;
+  overviewViewer?: number;
 }) {
   const placing = game.phase === 'place' && game.turn === 0;
+  const overviewView = overviewViewer === undefined ? null : publicState(game, overviewViewer);
+  const privateSpots = overviewView?.players[overviewView.me].hand;
+  const canPlace = overviewView ? game.turn === overviewView.me && game.phase === 'place' : placing;
   const columns = full ? Array.from({length:12}, (_, index) => index + 1) : boardColumns;
   const rows = full ? Array.from({length:9}, (_, index) => String.fromCharCode(65 + index)) : boardRows;
   return <div className={full ? 'board-frame' : 'board-frame tutorial-board'} role="group" aria-label="練習棋盤 · Practice board">
@@ -42,9 +45,9 @@ function LessonBoard({game, target, selected, onSelect, full = false, overview =
       <div className="grid-label">{row}</div>
       {columns.map(column => {
         const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
-        const plan = placing && (overview ? game.players[0].hand.includes(tile) : tile === target) ? placement(game, tile) : null;
+        const plan = (privateSpots ? privateSpots.includes(tile) : placing && tile === target) ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
-          playable={!!plan?.legal} selected={!!plan && selected}
+          playable={canPlace && !!plan?.legal} selected={!!plan && selected}
           latest={game.lastTile === tile} onSelect={onSelect}/>;
       })}
     </div>)}
@@ -127,19 +130,19 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <figure className="tutorial-practice-opening">
             <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
             <div className="board-scroll" tabIndex={0} role="region" aria-label="你見到嘅棋盤 · Your view of the board">
-              <LessonBoard game={practiceOpening} target={-1} selected={false} full overview/>
+              <LessonBoard game={practiceOpening} target={-1} selected={false} full overviewViewer={0}/>
             </div>
           </figure>
           <Explanation zh="你會見到 6 個提示。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。"
             en="You can see six markers. White 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel."/>
           <figure className="tutorial-practice-opening">
-            <figcaption>同一刻，其他玩家見到嘅棋盤 · What other players see at the same moment</figcaption>
+            <figcaption>同一刻，等緊輪到自己嘅玩家見到嘅棋盤 · What a waiting player sees</figcaption>
             <div className="board-scroll" tabIndex={0} role="region" aria-label="其他玩家見到嘅棋盤 · Other players’ view of the board">
-              <LessonBoard game={practiceOpening} target={-1} selected={false} full/>
+              <LessonBoard game={practiceOpening} target={-1} selected={false} full overviewViewer={1}/>
             </div>
           </figure>
-          <Explanation zh="其他玩家見到同一批建築。你嗰 6 個提示喺佢哋嘅畫面只係普通空格，所以叫做你嘅專屬地塊。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。"
-            en="Other players see the same buildings. Your six marked spots appear as empty squares to them. Use one of your private building spots, keep the other five, and get one new spot at the end of your turn."/>
+          <Explanation zh="兩個玩家見到同一批建築，各自只會見到自己嘅 6 個專屬地塊。等緊輪到自己嗰位玩家會見到自己嘅地塊座標。輪到佢先可以揀位置，棋盤亦會顯示「可放置」、「擴展」或「成立」等提示。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。"
+            en="Both players see the same buildings, and each sees their own six private spots. The waiting player can see their spot coordinates. When their turn comes, they can select a spot and see markers such as ‘Place here’, ‘Expansion’ or ‘Founding’. Use one spot, keep the other five, and get a new one at the end of your turn."/>
           <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
             en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}

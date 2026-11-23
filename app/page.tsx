@@ -11,6 +11,7 @@ import {SoundControls} from '../components/sound-controls';
 import {TurnGuide} from '../components/turn-guide';
 import {HotelPoster} from '../components/hotel-poster';
 import {createPracticeGame} from '../lib/game/practice';
+import {RulebookPreview} from '../components/rulebook-preview';
 import {BeginnerTutorial} from '../components/beginner-tutorial';
 import {FinalScorecard} from '../components/final-scorecard';
 import {BoardTile, boardHotelLogo} from '../components/board-tile';
@@ -55,6 +56,7 @@ function ScorecardPreview({view,close}:{view:View;close:()=>void}){
 }
 
 function Rulebook({close, settings}: {close: () => void; settings: GameSettings}) {
+  const [preview, setPreview] = useState(false);
   const major = settings.majorityMultiplier;
   const minor = major / 2;
   const steps = [
@@ -87,10 +89,15 @@ function Rulebook({close, settings}: {close: () => void; settings: GameSettings}
     <section className="dialog rules" role="dialog" aria-modal="true" aria-label="完整規則 · Full rules" onClick={e => e.stopPropagation()}>
       <button className="icon close" onClick={close} aria-label="關閉 · Close"><X size={20}/></button>
       <h2>完整規則 <em>Full rules</em></h2>
+      <button className="secondary compact" type="button" onClick={() => setPreview(!preview)}>
+        {preview ? '返回現版 · Current rulebook' : '試閱新版 · Preview new rulebook'}
+      </button>
+      {preview ? <RulebookPreview/> : <>
       <p>每回合先放一格，再處理酒店變化，最後買股或交棒。<br/><span lang="en">On your turn, place one tile, resolve what happens to the hotels, then buy shares or finish.</span></p>
       {steps.map(([title, zh, en], index) => <div className="rule-step" key={title}>
         <b>{index + 1}</b><div><h3>{title}</h3><p>{zh}</p><p lang="en">{en}</p></div>
       </div>)}
+      </>}
     </section>
   </div>;
 }

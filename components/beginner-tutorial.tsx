@@ -5,9 +5,9 @@ import {X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
-import {BoardTile} from './board-tile';
+import {BoardTile, boardHotelLogo} from './board-tile';
 import {PriceReference} from './price-reference';
-import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
+import {applyAction, HOTELS, label, placement, size, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
 import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const buildLessons = [
@@ -190,13 +190,29 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'place' && !placing && game.lastTile !== null && <>
-        {game.phase === 'found' ? <Explanation zh="你揀嘅地塊連住獨立建築，可以成立一間酒店。下一節試吓揀品牌同買股。"
-          en="Your tile connects to an independent building, so you can found a hotel. Try choosing a brand in the next exercise."/>
+        {game.phase === 'found' ? <>
+          <Explanation zh="你揀嘅地塊連住獨立建築。揀一間未成立嘅酒店，遊戲會喺棋盤上成立嗰間酒店，仲會送你一股。"
+            en="Your tile connects to an independent building. Choose an inactive hotel to found it on the board and receive one free share."/>
+          <div className="chain-choices" role="group" aria-label="選擇酒店 · Choose a hotel">
+            {HOTELS.filter(hotel => size(game, hotel.id) === 0).map(hotel => {
+              const maskImage = `url("${boardHotelLogo(hotel)}")`;
+              return <button type="button" className="chain-choice" key={hotel.id}
+                onClick={() => advance({type: 'found', chain: hotel.id})}>
+                <span className="emblem brand-emblem small" aria-hidden="true" style={{'--hotel': hotel.colour} as React.CSSProperties}>
+                  <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
+                </span>
+                <span>{hotelText(hotel.zh)}<small lang="en">{hotelText(hotel.name)}</small></span>
+              </button>;
+            })}
+          </div>
+        </> : game.lastTileEvent === 'found' ? <Explanation
+          zh={`${HOTELS[game.board[game.lastTile]].zh}成立咗，你攞到一股創辦人股票。`}
+          en={`${HOTELS[game.board[game.lastTile]].name} is open, and you received one founder’s share.`}/>
         : game.board[game.lastTile] === 7 ? <Explanation zh="放置成功。呢格冇接到其他建築，所以成為一幢獨立建築。"
           en="Tile placed. It touches no other buildings, so it stays independent."/>
         : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
           en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
-        <button type="button" className="primary" onClick={() => openLesson('found')}>繼續起樓練習 · Continue building</button>
+        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>繼續起樓練習 · Continue building</button>}
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>

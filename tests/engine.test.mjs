@@ -126,15 +126,17 @@ test('beginner tutorial exercises use valid placements, purchases, merger decisi
   assertShares(merger);
 
   const settlement=createTutorialGame('settle');
+  assert.deepEqual([0,1,2,3].map(id=>size(settlement,id)),[15,14,12,10]);
   assert.equal(canEnd(settlement),false);
   applyAction(settlement,0,{type:'place',tile:FINAL_TILE});
+  assert.deepEqual([0,1,2,3].map(id=>size(settlement,id)),[15,14,12,11]);
   assert.equal(canEnd(settlement),true);
   applyAction(settlement,0,{type:'declare'});
   applyAction(settlement,0,{type:'finish'});
   assert.equal(settlement.phase,'end');
   assert.deepEqual(settlement.finalScores[0].hotels[MANDARIN],{
-    id:MANDARIN,shares:7,sharePrice:1200,sale:8400,bonus:12000,
+    id:MANDARIN,shares:7,sharePrice:900,sale:6300,bonus:9000,
   });
-  assert.equal(settlement.players[0].cash,22200);
+  assert.equal(settlement.players[0].cash,22700);
   assertShares(settlement);
 });

@@ -6,7 +6,7 @@ import {FinalScorecard} from './final-scorecard';
 import {BoardTile} from './board-tile';
 import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
-import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const lessons = [
   ['place', '放置地塊', 'Placing a tile'],
@@ -100,7 +100,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const award = game.merger?.awards?.[0]?.amount ?? 0;
   const retained = player.shares[HOSHINO] - sell - trade * 2;
   const score = game.finalScores?.[0];
-  const mandarin = score?.hotels.find(hotel => hotel.id === MANDARIN);
+  const proceeds = score?.hotels.reduce((sum, hotel) => sum + hotel.sale, 0) ?? 0;
+  const bonuses = score?.hotels.reduce((sum, hotel) => sum + hotel.bonus, 0) ?? 0;
 
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
@@ -234,9 +235,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'settle' && <>
+        <Explanation
+          zh="輪到你時，符合以下任何一個條件，就可以選擇喺今個回合完結後結算。"
+          en="On your turn, you may choose to end the game after your turn if either condition is met."/>
+        <ol>
+          <li>至少一間酒店有 41 格或以上。<br/><small lang="en">At least one hotel has 41 or more tiles.</small></li>
+          <li>棋盤上所有已成立嘅酒店都安全，即係每間都有至少 11 格。<br/><small lang="en">Every active hotel on the board is safe, meaning each has at least 11 tiles.</small></li>
+        </ol>
         {placing && <Explanation
-          zh="睇下面完整棋盤。文華東方有 40 格，半島有 6 格，呢局仍然進行中。有一間酒店達 41 格，或者所有已成立嘅酒店都有至少 11 格，當前玩家就可以選擇今個回合完結後結算。撳棋盤上嘅 5D，再撳「確認放置」，將文華東方擴展到 41 格。"
-          en="On the full board below, Mandarin Oriental has 40 tiles and the Peninsula has six. The game is still in progress. When a hotel reaches 41 tiles, or every active hotel has at least 11, the current player can choose to end the game after their turn. Select 5D and confirm to grow Mandarin Oriental to 41 tiles."/>}
+          zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、星野 12 格，全部安全。瑰麗得 10 格。撳棋盤嘅 10H，再撳「確認放置」，睇吓瑰麗擴展到 11 格之後會點。"
+          en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Hoshino (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
         {!placing && <h4>終局棋盤 · Endgame board</h4>}
         <div className="board-scroll">
           <LessonBoard full game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
@@ -245,8 +253,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           確認放置 · Build tile
         </button>}
         {game.phase === 'buy' && <>
-          <Explanation zh="文華東方而家有 41 格。呢個例子入面，你選擇完結遊戲，今個回合唔再買股。"
-            en="Mandarin Oriental now has 41 tiles. In this example, you choose to end the game and skip buying more shares."/>
+          <Explanation zh="瑰麗而家有 11 格，四間酒店都安全，可以選擇結束遊戲。呢個例子入面，你選擇完結遊戲，今個回合唔再買股。"
+            en="Rosewood now has 11 tiles, so all four hotels are safe and you may end the game. In this example, you choose to end the game and skip buying more shares."/>
           <button type="button" className="primary" onClick={() => {
             const finalGame = structuredClone(game);
             applyAction(finalGame, 0, {type: 'declare'});
@@ -256,10 +264,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         </>}
       </>}
 
-      {lesson === 'settle' && score && mandarin && <>
+      {lesson === 'settle' && score && <>
         <Explanation
-          zh={`你有 ${money(score.cashBeforeSettlement)} 現金。文華東方 7 股，每股 ${money(mandarin.sharePrice)}，套現 ${money(mandarin.sale)}，再加 ${money(mandarin.bonus)} 大股東獎金。加埋係 ${money(player.cash)}。結算表由最高總額排起，第一位就係贏家。`}
-          en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Your seven Mandarin Oriental shares sell for ${money(mandarin.sale)}, plus a ${money(mandarin.bonus)} majority bonus. Your final total is ${money(player.cash)}. The scorecard ranks players by final cash, with the winner at the top.`}/>
+          zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。將表內各間酒店嘅賣股收入加埋，係 ${money(proceeds)}，再加 ${money(bonuses)} 股東獎金。你嘅最終總額係 ${money(player.cash)}。最終總額最高嘅玩家排第一。`}
+          en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
         {startPractice && <button type="button" className="primary" onClick={startPractice}>試玩一局 · Play a practice game</button>}
         {!startPractice && <button type="button" className="primary" onClick={close}>返回遊戲 · Return to game</button>}

@@ -2,13 +2,13 @@ import {parseSettings,gameSettings,bonusAmounts,type GameSettings} from './setti
 import {recentPurchases, PURCHASE_DISPLAY_MS, type PurchaseAnnouncement, type DeliveredPurchaseAnnouncement} from './purchase-announcements.ts';
 // Acquire: Classic rules, Renegade 2023. Original interface and illustration.
 export const HOTELS = [
-  {id:0,name:'Mandarin Oriental',zh:'香港文華東方',short:'文華',colour:'#edb94b',tier:0,mark:'MO',original:'Tower',logo:'/hotels/mandarin.svg',region:'香港 · HK'},
-  {id:1,name:'The Peninsula',zh:'香港半島酒店',short:'半島',colour:'#ec786d',tier:0,mark:'P',original:'Luxor',logo:'/hotels/peninsula.svg',region:'香港 · HK'},
+  {id:0,name:'Mandarin Oriental',zh:'香港文華東方',short:'文華',colour:'#edb94b',tier:2,mark:'MO',original:'Tower',logo:'/hotels/mandarin.svg',region:'香港 · HK'},
+  {id:1,name:'The Peninsula',zh:'香港半島酒店',short:'半島',colour:'#ec786d',tier:1,mark:'P',original:'Luxor',logo:'/hotels/peninsula.svg',region:'香港 · HK'},
   {id:2,name:'The Okura',zh:'ホテルオークラ',short:'オークラ',colour:'#65a9e5',tier:1,mark:'O',original:'American',logo:'/hotels/okura.svg',region:'日本 · JP'},
-  {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:1,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
-  {id:4,name:'Hotel Nikko',zh:'ホテル日航',short:'日航',colour:'#83bd85',tier:1,mark:'N',original:'Festival',logo:'/hotels/nikko.svg',region:'日本 · JP'},
-  {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:2,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},
-  {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:2,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
+  {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:2,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
+  {id:4,name:'APA Hotel',zh:'アパホテル',short:'APA',colour:'#83bd85',tier:0,mark:'APA',original:'Festival',logo:'/hotels/apa.png',region:'日本 · JP'},
+  {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:1,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},
+  {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:0,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};
 export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[]};
@@ -112,7 +112,7 @@ export function publicState(g:Game,viewer:number,delivered?:DeliveredPurchaseAnn
 export function botAction(g:Game):Action {const p=g.players[actor(g)];if(g.phase==='place'){const legal=p.hand.filter(t=>placement(g,t).legal);if(!legal.length)return {type:'pass'};legal.sort((a,b)=>{const score=(t:number)=>{const plan=placement(g,t);return plan.chains.reduce((n,c)=>n+p.shares[c],0)+plan.group.length*2;};return score(b)-score(a);});return {type:'place',tile:legal[0]};}if(g.phase==='found')return {type:'found',chain:HOTELS.find(h=>!size(g,h.id))!.id};if(g.phase==='survivor')return {type:'survivor',chain:[...g.pending].sort((a,b)=>p.shares[b]-p.shares[a])[0]};if(g.phase==='order')return {type:'order',chain:g.pending[0]};if(g.phase==='dispose'){const m=g.merger!;const trade=Math.min(Math.floor(p.shares[m.loser]/2),g.bank[m.survivor]);return {type:'dispose',trade,sell:p.shares[m.loser]-trade*2};}if(g.phase==='buy'){if(canEnd(g)&&!g.endDeclared)return {type:'declare'};if(g.bought)return {type:'finish'};const q=Array(7).fill(0);let cash=p.cash;for(let i=0;i<3;i++){const options=HOTELS.filter(h=>price(g,h.id)>0&&g.bank[h.id]>q[h.id]&&price(g,h.id)<=cash).sort((a,b)=>(p.shares[b.id]+q[b.id])-(p.shares[a.id]+q[a.id]));if(!options.length)break;const c=options[i%options.length].id;q[c]++;cash-=price(g,c);}if(!q.some(Boolean))return {type:'finish'};return {type:'buy',quantities:q};}throw Error('No bot action');}
 
 // The printed Classic Stockholder Info Card, expressed using the same price rules.
-export const HOTEL_PRICE_GROUPS = [[0, 1], [2, 3, 4], [5, 6]];
+export const HOTEL_PRICE_GROUPS = [0, 1, 2].map(tier => HOTELS.filter(hotel => hotel.tier === tier).map(hotel => hotel.id));
 export const CHAIN_SIZE_BANDS = [
   {from:2,to:2,label:'2'}, {from:3,to:3,label:'3'},
   {from:4,to:4,label:'4'}, {from:5,to:5,label:'5'},

@@ -14,8 +14,8 @@ test('one purchase announcement contains every hotel, quantities, prices and tot
   const g=buyingGame();applyAction(g,0,{type:'buyAndFinish',quantities:[2,1,0,0,0,0,0]});
   const v=publicState(g,1);assert.equal(v.purchaseAnnouncements.length,1);
   const notice=v.purchaseAnnouncements[0];
-  assert.equal(notice.playerName,'Alice');assert.equal(notice.total,700);
-  assert.deepEqual(notice.items,[{chain:0,quantity:2,unitPrice:200},{chain:1,quantity:1,unitPrice:300}]);
+  assert.equal(notice.playerName,'Alice');assert.equal(notice.total,1200);
+  assert.deepEqual(notice.items,[{chain:0,quantity:2,unitPrice:400},{chain:1,quantity:1,unitPrice:400}]);
   assert.equal(g.turn,1);assert.equal(v.players[0].cash,undefined);assert.deepEqual(v.players[0].shares,[]);
   assert.ok(!('purchaseNotices' in v));
   assert.ok(!v.log.some(line=>/bought \d|@ \$|700/.test(line)));
@@ -27,7 +27,7 @@ test('zero-share completion is announced and later turns cannot overwrite previo
   g.phase='buy';applyAction(g,2,{type:'finish'});
   const notices=publicState(g,0).purchaseAnnouncements;
   assert.deepEqual(notices.map(n=>n.playerName),['Alice','Bob','Carol']);
-  assert.deepEqual(notices.map(n=>n.total),[200,0,0]);assert.deepEqual(notices[1].items,[]);
+  assert.deepEqual(notices.map(n=>n.total),[400,0,0]);assert.deepEqual(notices[1].items,[]);
 });
 test('invalid purchases produce no announcement or state mutation',()=>{
   const g=buyingGame();g.players[0].cash=100;

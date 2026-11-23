@@ -150,8 +150,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {chapter === 'place' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="放置地塊之後，可能會起一幢獨立建築、成立酒店、擴展酒店，或者觸發合併同換股。下面會逐步練習。"
-            en="Placing a tile can add an independent building, found or expand a hotel, or trigger a merger and share exchanges. Try these in the exercises below."/>
+          <p className="tutorial-explanation">
+            放置地塊之後，可能會起一幢<span style={{color: '#b9ccd8'}}>獨立建築</span>、<span style={{color: '#f5ca80'}}>成立酒店</span>、<span style={{color: '#8cddcc'}}>擴展酒店</span>，或者<span style={{color: '#ffa696'}}>觸發合併</span>同換股。下面會逐步練習。
+            <small lang="en">Placing a tile can add an <span style={{color: '#b9ccd8'}}>independent building</span>, <span style={{color: '#f5ca80'}}>found a hotel</span>, <span style={{color: '#8cddcc'}}>expand a hotel</span>, or <span style={{color: '#ffa696'}}>trigger a merger</span> and share exchanges. Try these in the exercises below.</small>
+          </p>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <Explanation zh="用呢個盤面做例子。呢位玩家嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到佢時，就可以喺棋盤撳呢啲格起樓。"

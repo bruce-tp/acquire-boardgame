@@ -677,3 +677,7 @@
 }
 .tile .latest-tile-badge > small { font-size: 6px; }
 .tile.independent svg { height: 40%; }
+
+.tutorial-practice-opening { margin: 12px 0; }
+.tutorial-practice-opening figcaption { margin-bottom: 8px; color: var(--goldlight); }
+.tutorial-practice-opening .board-frame { min-width: 640px; }

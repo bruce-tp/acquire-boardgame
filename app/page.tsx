@@ -9,6 +9,7 @@ import {createTurnReminder} from '../lib/turn-reminder';
 import {SoundControls} from '../components/sound-controls';
 import {TurnGuide} from '../components/turn-guide';
 import {HotelPoster} from '../components/hotel-poster';
+import {createPracticeGame} from '../lib/game/practice';
 import {BeginnerTutorial} from '../components/beginner-tutorial';
 import {FinalScorecard} from '../components/final-scorecard';
 import {BoardTile} from '../components/board-tile';
@@ -16,7 +17,7 @@ import {MergerResults} from '../components/merger-results';
 import {PurchaseAnnouncements} from '../components/purchase-announcements';
 import {acceptRoomView} from '../lib/purchase-notice-queue';
 import {Building2,Copy,Check,Users,Plus,Minus,DoorOpen,BookOpen,Landmark,ShieldCheck,Coins,Volume2,VolumeX,X,Globe2,ChevronRight,RotateCcw,Play,Share2,Wifi,WifiOff,Crown} from 'lucide-react';
-import {HOTELS,HOTEL_PRICE_GROUPS,createGame,makePlayer,publicState,applyAction,startGame,actor,placement,size,price,priceFor,canEnd,label,botAction,type Game,type Action} from '../lib/game/engine';
+import {HOTELS,HOTEL_PRICE_GROUPS,createGame,makePlayer,publicState,applyAction,actor,placement,size,price,priceFor,canEnd,label,botAction,type Game,type Action} from '../lib/game/engine';
 type View=ReturnType<typeof publicState>;
 const money=(n:number|undefined)=>n===undefined?'隱藏 · Hidden':'$'+n.toLocaleString('en-GB');
 const hotelNames = new Map(HOTELS.flatMap(hotel =>
@@ -96,7 +97,7 @@ useEffect(()=>{
 },[buyReminderKey,busy,playDing,cancelPendingDing]);
 async function enter(){setError('');if(!name.trim()){setError('請輸入名字 · Please enter your name');return;}if(mode==='join'&&!/^[A-Z2-9]{6}$/.test(code)){setError('請輸入六位房號 · Enter a six-character room code');return;}setBusy(true);try{const stored=localStorage.getItem('acquire:room:'+code);const r=await fetch('/api/room',{method:'POST',headers:{'Content-Type':'application/json',...(stored?{Authorization:'Bearer '+stored}:{})},body:JSON.stringify({type:mode==='create'?'create':'join',name,code,...(mode==='create'?{settings:selectedSettings}:{})})});const data=await r.json() as any;if(!r.ok)throw Error(data.error);const s={code:data.state.code,token:data.token||stored};if(!s.token)throw Error('Missing session');session.current=s;demo.current=null;localStorage.setItem('acquire:room:'+s.code,s.token);localStorage.setItem('acquire:last',s.code);localStorage.setItem('acquire:name',name);history.replaceState(null,'','?room='+s.code);setView(data.state);setConnected(true);}catch(e){setError(e instanceof Error?e.message:'連線失敗 · Connection failed');}finally{setBusy(false);}}
 async function act(action:Action){if(busy)return;setError('');setBusy(true);try{if(demo.current){applyAction(demo.current,0,action);demo.current.version++;setView(publicState(demo.current,0));}else{const s=session.current!;const r=await fetch('/api/room',{method:'POST',headers:{'Content-Type':'application/json',Authorization:'Bearer '+s.token},body:JSON.stringify({type:'action',code:s.code,version:view!.version,action})});const data=await r.json() as any;if(!r.ok){await load(s);throw Error(data.error);}setView(data.state);setConnected(true);}}catch(e){setError(e instanceof Error?e.message:'操作失敗 · Action failed');}finally{setBusy(false);}}
-function practice(){const g=createGame('DEMO','you',name.trim()||'You · 你',selectedSettings);g.players.push(makePlayer('bot1','Evelyn'),makePlayer('bot2','Oliver'));startGame(g);g.board=Array(108).fill(-1);const groups=[[26,27,38],[66,67,78],[44,45]];groups.forEach((ts,c)=>ts.forEach(t=>g.board[t]=c));[5,31,72].forEach(t=>g.board[t]=7);const used=new Set(g.board.map((v,i)=>v>=0?i:-1).filter(i=>i>=0));g.deck=Array.from({length:108},(_,i)=>i).filter(i=>!used.has(i));for(const p of g.players)p.hand=[];g.players[0].hand=[28,54,56,79,19,91];g.deck=g.deck.filter(t=>!g.players[0].hand.includes(t));for(let i=1;i<3;i++)g.players[i].hand=g.deck.splice(-6);for(let i=0;i<3;i++){g.players[i].shares[i]=2;g.bank[i]=23;g.players[i].cash=6000-price(g,i)*2;}g.turn=0;g.phase='place';g.log=['Practice table · 練習桌：兩位電腦對手會自動操作。','Build your empire · 選一塊地塊，開始建立酒店帝國。'];demo.current=g;session.current=null;setError('');setView(publicState(g,0));}
+function practice(){const g=createPracticeGame(name.trim()||'You · 你',selectedSettings);demo.current=g;session.current=null;setError('');setView(publicState(g,0));}
 async function copy(){try{await navigator.clipboard.writeText(location.origin+'/?room='+view!.code);setCopied(true);setTimeout(()=>setCopied(false),2200);}catch{setError('邀請連結 · Invite link: '+location.origin+'/?room='+view!.code);}}
 function leave(){demo.current=null;session.current=null;localStorage.removeItem('acquire:last');history.replaceState(null,'',location.pathname);setView(null);setError('');setConfirmLeave(false);}
 const playing=view&&view.phase!=='lobby',me=view?.players[view.me] as (View['players'][number]&{cash:number})|undefined,myTurn=playing&&view.phase!=='end'&&actor(view as any)===view.me,activePlayer=view&&view.phase!=='lobby'?view.players[actor(view as any)]:null;

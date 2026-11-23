@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
+import {createPracticeGame} from '../lib/game/practice.ts';
 import {BoardTile} from './board-tile';
 import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
@@ -23,12 +24,13 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{zh}<small lang="en">{en}</small></p>;
 }
 
-function LessonBoard({game, target, selected, onSelect, full = false}: {
+function LessonBoard({game, target, selected, onSelect, full = false, overview = false}: {
   game: Game;
   target: number;
   selected: boolean;
-  onSelect: () => void;
+  onSelect?: () => void;
   full?: boolean;
+  overview?: boolean;
 }) {
   const placing = game.phase === 'place' && game.turn === 0;
   const columns = full ? Array.from({length:12}, (_, index) => index + 1) : boardColumns;
@@ -40,7 +42,7 @@ function LessonBoard({game, target, selected, onSelect, full = false}: {
       <div className="grid-label">{row}</div>
       {columns.map(column => {
         const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
-        const plan = placing && tile === target ? placement(game, tile) : null;
+        const plan = placing && (overview ? game.players[0].hand.includes(tile) : tile === target) ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
           playable={!!plan?.legal} selected={!!plan && selected}
           latest={game.lastTile === tile} onSelect={onSelect}/>;
@@ -57,6 +59,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const dialog = useRef<HTMLDialogElement>(null);
   const [lesson, setLesson] = useState<TutorialExercise>('place');
   const [game, setGame] = useState(() => createTutorialGame('place'));
+  const [practiceOpening] = useState(createPracticeGame);
   const [selected, setSelected] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);
@@ -119,8 +122,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="開局時，你會有 6 個專屬地塊。棋盤上嘅提示只有你自己睇到。輪到你時，喺棋盤揀一格可以落嘅位置。用咗一格，其餘 5 格會留低，回合結束時遊戲會自動補一個新位置。"
-            en="You start with six private building spots. Only you can see their markers on the board. On your turn, choose one available spot. You keep the other five, and the game gives you one new spot at the end of your turn."/>
+          <figure className="tutorial-practice-opening">
+            <figcaption>「試玩一局」開局 · Practice game opening</figcaption>
+            <div className="board-scroll" tabIndex={0} role="region" aria-label="試玩一局開局棋盤 · Opening practice board">
+              <LessonBoard game={practiceOpening} target={-1} selected={false} full overview/>
+            </div>
+          </figure>
+          <Explanation zh="睇上面個棋盤。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。呢三種提示都只得你自己睇到。"
+            en="On the board above, white 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel. Only you can see these markers."/>
+          <Explanation zh="數吓上面有 6 個提示。呢啲就係你嘅專屬地塊。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。跟住用下面嘅互動棋盤試吓。"
+            en="The six marked squares are your private building spots. Use one, keep the other five, and get one new spot at the end of your turn. Now try the interactive board below."/>
           <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
             en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}

@@ -15,7 +15,7 @@ type BoardTileProps = {
   playable: boolean;
   selected: boolean;
   latest: boolean;
-  onSelect: () => void;
+  onSelect?: () => void;
 };
 
 export function BoardTile({tile, value, plan, playable, selected, latest, onSelect}: BoardTileProps) {
@@ -27,7 +27,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     : null;
   const eventLabel = event ? eventLabels[event].join(' · ') : '';
   const placementStatus = selected ? ['已選取', 'Selected'] : ['可放置', 'Place here'];
-  const description = hotel ? hotel.name : independent ? '獨立建築 · Independent building' : plan ? '你的地塊 · Your tile' : '空地 · Empty lot';
+  const description = hotel ? hotel.name : independent ? '獨立建築 · Independent building' : plan ? '你的專屬地塊 · Your private building spot' : '空地 · Empty lot';
   const classes = [
     'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
     plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
@@ -38,7 +38,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     title={coordinate + ' · ' + (plan?.reason || description)}
     aria-label={[coordinate, description, playable && placementStatus.join(' · '), eventLabel, latest && '最新落牌 · Latest placement'].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
-    disabled={!playable} onClick={onSelect}
+    disabled={!playable || !onSelect} onClick={onSelect}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}<small lang="en">{eventLabels[event][1]}</small></span>}
     {hotel ? <>

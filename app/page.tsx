@@ -55,49 +55,12 @@ function ScorecardPreview({view,close}:{view:View;close:()=>void}){
   </dialog>;
 }
 
-function Rulebook({close, settings}: {close: () => void; settings: GameSettings}) {
-  const [preview, setPreview] = useState(false);
-  const major = settings.majorityMultiplier;
-  const minor = major / 2;
-  const steps = [
-    ['開局同勝出條件 · Set-up and objective',
-      '房主開局後，每人有 $6,000、零持股同六個專屬地塊。系統先為每人放一幢獨立建築，按棋盤次序（1A 至 12A，再到 B 行）最先出現嘅起始地塊決定先手，之後按座位順序輪流。結算後現金最多嘅玩家勝出。',
-      'When the host starts the game, each player gets $6,000, no shares and six private building spots. The game places one independent building per player. The player whose starting square comes first in board order (1A to 12A, then row B and so on) goes first. Turns follow seat order. The most cash after settlement wins.'],
-    ['揀一格起樓 · Place one tile',
-      '輪到你時，喺棋盤揀一個可用嘅專屬地塊，再撳「確認放置」。只計上下左右。新地塊會連同接通嘅獨立建築一齊處理。冇接到其他建築就保持獨立；只接到獨立建築就揀一個未成立嘅品牌開酒店；接到一間酒店就擴展；接到兩間或以上就合併。創辦人獲一股，冇庫存就按新酒店股價收現金。',
-      'Choose one available private spot and select Build tile. Connections count across shared edges. Resolve the new tile together with the independent buildings it connects. An isolated tile stays independent. Connecting only to independent buildings lets you found an inactive brand. Connecting to one hotel expands it. Connecting to two or more triggers a merger. Founders get one share, or its cash value if none is left.'],
-    ['安全酒店同無法放置 · Safe hotels and blocked spots',
-      '酒店達 11 格就安全，可以收購較細酒店。連接兩間安全酒店嘅位置永久不能使用，系統會喺回合尾換走，有地塊剩餘先補。七間酒店都已成立時，會成立新酒店嘅位置暫時不能使用。完全冇位置可用時，可以跳過放置，繼續買股。',
-      'A hotel with 11 or more tiles is safe and can acquire smaller hotels. Spots that would join two safe hotels are permanently blocked and are replaced at turn end if tiles remain. Founding spots are temporarily blocked when all seven hotels are active. If you have no legal placement, skip placement and continue to share buying.'],
-    ['合併時點做 · Resolve a merger',
-      '比較合併前嘅酒店大小，最大一間收購其餘酒店。最大同格數時，由落地塊嘅玩家揀存續酒店。被收購酒店由大至小逐間處理，同格數由落地塊嘅玩家揀次序。每間先派股東獎金，再由落地塊嘅玩家開始，按座位順序畀有持股嘅人決定點處理。',
-      'Compare hotel sizes before the merger. The largest hotel acquires the others. The tile placer breaks ties for the surviving hotel and for the order of equally sized acquired hotels. Process acquired hotels largest first. For each one, award bonuses first, then let shareholders decide what to do in seat order starting with the tile placer.'],
-    ['賣出、換股、保留 · Sell, exchange or keep',
-      '你可以混合三種做法。賣出按被收購酒店合併前嘅股價計。每兩股可換一股存續酒店嘅股票，視乎庫存。保留嘅股票可以等原品牌重新成立。例：你有六股，可以賣兩股、用兩股換一股、保留兩股。',
-      'You can combine all three options. Sell at the acquired hotel’s pre-merger share price. Exchange two acquired shares for one surviving share, subject to supply. Kept shares can regain value if the brand is founded again. With six shares, you could sell two, exchange two for one, and keep two.'],
-    ['股東獎金 · Shareholder bonuses',
-      `本局大股東獎金係每股股價 ×${major}，第二大股東係 ×${minor}。只有一位持股者就攞晒兩份。並列第一就平分兩份獎金；並列第二就平分第二份。平分所得向上取整至最接近嘅 $100。兩人局喺合併同結算計獎金時，如果地塊池仲有地塊，市場會用隨機地塊嘅欄號作為虛擬持股數。`,
-      `This table pays ${major}× the share price to the largest shareholder and ${minor}× to the second largest. A sole shareholder gets both. Tied leaders split both bonuses. Tied runners-up split the second bonus. Round each split award up to the next $100 increment. In two-player games, if tiles remain, a random tile’s column number is the market’s virtual shareholding when bonuses are calculated for a merger or settlement.`],
-    ['買股同完成回合 · Buy shares and finish the turn',
-      '處理完放置同合併，可以用現金買已成立酒店嘅股票。每回合合共最多三股，可以分開買幾間。用股價表按品牌同酒店格數查價。確認買入會完成回合，唔買就撳「完成回合」。用咗一個專屬地塊，其餘會留低，有地塊剩餘就自動補上。其他玩家睇到你買咗乜嘢，但各人只見到自己嘅現金、總持股同專屬地塊；合併時會公開被收購酒店嘅持股供處理。',
-      'After resolving placement and any merger, use cash to buy up to three shares in total across active hotels, subject to supply. Use the price guide to find the price for each brand and size. Confirming a purchase finishes your turn. To skip buying, select Finish turn. Unused private spots carry over and the game replenishes them while tiles remain. Purchases are announced. Cash, total holdings and private spots are personal, with acquired hotel holdings revealed during a merger.'],
-    ['幾時結算 · End the game',
-      '如果有酒店達 41 格，或者場上至少有一間酒店而每間都達 11 格，輪到你時可以喺放置或買股階段宣告最後回合。完成你嘅回合後就結算。如果全場連續一輪都冇人可以放置，遊戲亦會自動結算。每間仍然成立嘅酒店先派獎金，再按最終股價兌現股份。未成立品牌嘅股票值 $0。結算表嘅總數係結算前現金加獎金同賣股所得。最高總數勝出，同分並列。',
-      'On your turn, you may declare the final turn during placement or buying if any hotel reaches 41 tiles, or if at least one hotel is active and every active hotel has 11 or more tiles. Finish your turn, then settle. The game also settles if everyone goes a full round without a legal placement. Active hotels pay bonuses and their shares are sold at final prices. Inactive shares are worth $0. The final total is cash before settlement plus bonuses and share proceeds. The highest total wins, with joint winners on a tie.'],
-  ];
+function Rulebook({close}: {close: () => void}) {
   return <div className="overlay" onClick={close}>
-    <section className="dialog rules" role="dialog" aria-modal="true" aria-label="完整規則 · Full rules" onClick={e => e.stopPropagation()}>
+    <section className="dialog rules" role="dialog" aria-modal="true" aria-label="完整規則 · Full rules" onClick={event => event.stopPropagation()}>
       <button className="icon close" onClick={close} aria-label="關閉 · Close"><X size={20}/></button>
       <h2>完整規則 <em>Full rules</em></h2>
-      <button className="secondary compact" type="button" onClick={() => setPreview(!preview)}>
-        {preview ? '返回現版 · Current rulebook' : '試閱新版 · Preview new rulebook'}
-      </button>
-      {preview ? <RulebookPreview/> : <>
-      <p>每回合先放一格，再處理酒店變化，最後買股或交棒。<br/><span lang="en">On your turn, place one tile, resolve what happens to the hotels, then buy shares or finish.</span></p>
-      {steps.map(([title, zh, en], index) => <div className="rule-step" key={title}>
-        <b>{index + 1}</b><div><h3>{title}</h3><p>{zh}</p><p lang="en">{en}</p></div>
-      </div>)}
-      </>}
+      <RulebookPreview/>
     </section>
   </div>;
 }
@@ -184,5 +147,5 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
 {priceGuide&&<PriceReferenceDialog settings={activeSettings} sizes={view?HOTELS.map(h=>size(view as any,h.id)):Array(7).fill(0)} close={()=>setPriceGuide(false)}/>} {tutorial&&<BeginnerTutorial close={()=>setTutorial(false)}
   showRules={()=>{setTutorial(false);setRules(true);}}
   startPractice={view?undefined:()=>{setTutorial(false);practice();}}/>}
-{rules&&<Rulebook settings={activeSettings} close={()=>setRules(false)}/>} {confirmLeave&&<div className="overlay"><section className="dialog leave-dialog" role="dialog" aria-modal="true"><DoorOpen size={30} className="gold"/><h2>返回大堂？<em>Leave this table?</em></h2><p>{demo.current?'練習局進度將會清除。 · Practice progress will be cleared.':'房間會保留。使用同一瀏覽器及房號可重新加入；離開不會移除座位。 · Your seat remains reserved. Rejoin using this browser and room code.'}</p><button className="primary" onClick={leave}>返回大堂 · Leave table</button><button className="secondary" onClick={()=>setConfirmLeave(false)}>繼續遊戲 · Stay</button></section></div>}</main>
+{rules&&<Rulebook close={()=>setRules(false)}/>} {confirmLeave&&<div className="overlay"><section className="dialog leave-dialog" role="dialog" aria-modal="true"><DoorOpen size={30} className="gold"/><h2>返回大堂？<em>Leave this table?</em></h2><p>{demo.current?'練習局進度將會清除。 · Practice progress will be cleared.':'房間會保留。使用同一瀏覽器及房號可重新加入；離開不會移除座位。 · Your seat remains reserved. Rejoin using this browser and room code.'}</p><button className="primary" onClick={leave}>返回大堂 · Leave table</button><button className="secondary" onClick={()=>setConfirmLeave(false)}>繼續遊戲 · Stay</button></section></div>}</main>
 }

@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
+import {hotelText} from './hotel-text';
 import {BoardTile} from './board-tile';
 import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
@@ -21,7 +22,7 @@ const boardColumns = [3, 4, 5, 6, 7];
 const boardRows = ['C', 'D', 'E'];
 
 function Explanation({zh, en}: {zh: string; en: string}) {
-  return <p className="tutorial-explanation">{zh}<small lang="en">{en}</small></p>;
+  return <p className="tutorial-explanation">{hotelText(zh, true)}<small lang="en">{hotelText(en, true)}</small></p>;
 }
 
 function LessonBoard({game, target, selected, onSelect, full = false, overviewViewer}: {
@@ -183,7 +184,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <Explanation zh="6C 同 5C 已經連埋，而且冇接到已成立嘅酒店。正式對局可以揀任何未成立酒店。呢度揀星野，創辦人會免費獲得一股。"
           en="6C and 5C now form a group that touches no existing hotels. In a full game, pick any inactive chain. Found Hoshino here and receive one free share."/>
         <button type="button" className="primary" onClick={() => advance({type: 'found', chain: HOSHINO})}>
-          成立星野 · Found Hoshino
+          {hotelText('成立星野 · Found Hoshino', true)}
         </button>
       </>}
 
@@ -191,7 +192,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <Explanation zh="而家去「酒店交易所」揀股。每回合最多買 3 股，只可買已成立嘅酒店，亦可以一股都唔買。試撳 + 加股，再買入並完成回合。"
           en="Use the Stock Exchange to buy up to three shares per turn across active hotels. Buying is optional. Try adding a share, then buy and finish your turn."/>
         <div className="tutorial-controls">
-          <span>星野 · Hoshino <strong>{money(price(game, HOSHINO))} / 股</strong></span>
+          <span>{hotelText('星野 · Hoshino', true)} <strong>{money(price(game, HOSHINO))} / 股</strong></span>
           <div className="stepper">
             <button type="button" disabled={quantity === 0} onClick={() => setQuantity(quantity - 1)} aria-label="減一股 · Remove one share">−</button>
             <output aria-live="polite">{quantity}</output>
@@ -234,7 +235,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
-          <label>換入半島股數 · Receive
+          <label><span>{hotelText('換入半島股數 · Receive', true)}</span>
             <select value={trade} onChange={event => setTrade(Number(event.target.value))}>
               {Array.from({length: Math.floor((player.shares[HOSHINO] - sell) / 2) + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}

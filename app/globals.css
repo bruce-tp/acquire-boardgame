@@ -117,8 +117,8 @@
 .stock-card-top>span:last-child{font-variant-numeric:tabular-nums;opacity:.9}
 .stock-card-caption{display:block;font-size:8px;line-height:1.2;font-family:'DM Sans',sans-serif;letter-spacing:1.1px;color:#9badb5;margin-top:9px}
 .stock-card-logo{display:block;width:106px;height:42px;flex-shrink:0;background:var(--hotel);mask-size:contain;mask-position:center;mask-repeat:no-repeat;-webkit-mask-size:contain;-webkit-mask-position:center;-webkit-mask-repeat:no-repeat;margin:10px 0 9px}
-.stock-card-hotel{font-size:16px;font-weight:600;line-height:1.3;letter-spacing:.7px;text-align:center;white-space:nowrap;color:color-mix(in srgb,var(--hotel) 55%,#f2e9d6)}
-.stock-card-english{font-family:var(--serif);font-size:11px;line-height:1.3;color:#b4bfc3;text-align:center;margin-top:4px;letter-spacing:.15px}
+.stock-card-hotel{font-size:16px;font-weight:600;line-height:1.3;letter-spacing:.7px;text-align:center;white-space:nowrap;color:var(--hotel)}
+.stock-card-english{font-family:var(--serif);font-size:11px;line-height:1.3;color:var(--hotel);text-align:center;margin-top:4px;letter-spacing:.15px}
 .stock-card-bottom{display:flex;width:100%;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:8px;border-top:1px solid color-mix(in srgb,var(--hotel) 20%,transparent)}
 .stock-card-bottom>span:last-child{text-align:right}.stock-card-bottom b{display:block;font-size:15px;font-weight:600;line-height:1.2;color:var(--hotel)}
 .stock-card-bottom small{display:block;font-size:8px;letter-spacing:1px;font-family:'DM Sans',sans-serif;margin-top:3px;color:#96a8b2}
@@ -154,7 +154,7 @@
 .reference-table th{position:sticky;top:0;z-index:1;background:#1c3445;color:#e1dacb;font-size:14px;line-height:1.5;font-weight:500;padding:12px 9px;border-bottom:1px solid #d9bb7e35;vertical-align:bottom}
 .reference-table th>small{display:block;font-size:10px;letter-spacing:.6px;font-family:'DM Sans',sans-serif;color:#8ba4b7;font-weight:400;margin-top:4px}
 .reference-table .reference-chain-column{min-width:112px;width:18%}.reference-column-label{display:block;font-size:14px;color:#b5c5ce;margin-bottom:9px}.reference-column-label small{font-size:9px;font-family:'DM Sans',sans-serif;color:#7f9aaf;margin-left:3px}
-.reference-brand-names{display:flex;flex-direction:column;gap:5px;text-align:left;align-items:flex-start;padding-left:4px}.reference-brand-names>span{font-size:13px;line-height:1.4;color:#c3d1d6;display:flex;align-items:center;gap:6px;white-space:nowrap}.reference-brand-names i{width:7px;height:7px;flex-shrink:0;border-radius:2px;background:var(--hotel)}
+.reference-brand-names{display:flex;flex-direction:column;gap:5px;text-align:left;align-items:flex-start;padding-left:4px}.reference-brand-names>span{font-size:13px;line-height:1.4;color:var(--hotel);display:flex;align-items:center;gap:6px;white-space:nowrap}.reference-brand-names i{width:7px;height:7px;flex-shrink:0;border-radius:2px;background:var(--hotel)}
 .reference-table td{padding:12px 9px;border-bottom:1px solid #ffffff0c;border-right:1px solid #ffffff09;color:#bdcdd3;font-size:16px;line-height:1.35;white-space:nowrap}.reference-table tbody tr:nth-child(even)>td{background:#ffffff03}.reference-table tbody tr:last-child td{border-bottom:0}.reference-table .reference-share-price{color:#efcf96;font-size:18px;font-weight:600;background:#dfbc8005}
 .reference-size{font-size:17px;font-weight:500;color:#d6e1e1}.reference-table td.reference-current{background:#d2b57910;border-left:1px solid #d9bb7e35;border-right:1px solid #d9bb7e35}.reference-current-chains{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;margin-top:7px}.reference-current-chains>span{font-size:12px;line-height:1.3;padding:3px 5px;border:1px solid color-mix(in srgb,var(--hotel) 40%,transparent);color:var(--hotel);background:color-mix(in srgb,var(--hotel) 8%,transparent);border-radius:3px}
 .reference-notes{margin-top:18px;display:grid;gap:10px}.reference-notes p{font-size:13px;line-height:1.8;margin:0;color:#9fb4c2}.reference-notes strong{font-weight:500;color:#d8c19b}.reference-notes svg{vertical-align:middle;color:#b4bc9a;margin-right:4px}
@@ -680,3 +680,5 @@
 .tutorial-practice-opening { margin: 12px 0; }
 .tutorial-practice-opening figcaption { margin-bottom: 8px; color: var(--goldlight); }
 .tutorial-practice-opening .board-frame { min-width: 640px; }
+
+.primary .hotel-coloured-name { background: #102637; border-radius: 3px; padding: 1px 4px; }

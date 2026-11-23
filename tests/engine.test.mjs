@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGame,makePlayer,startGame,applyAction,actor,publicState,placement,size,priceFor,canEnd,botAction} from '../lib/game/engine.ts';
-import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE} from '../lib/game/tutorial.ts';
 function setup(n=3){const g=createGame('TEST','a','Alice');for(let i=1;i<n;i++)g.players.push(makePlayer(String(i),'Player '+i));g.phase='place';g.turn=0;g.deck=Array.from({length:108},(_,i)=>i);return g;}
 function put(g,c,ts){for(const t of ts)g.board[t]=c;g.deck=g.deck.filter(t=>!ts.includes(t));}
 function hand(g,who,ts){g.players[who].hand=ts;g.deck=g.deck.filter(t=>!ts.includes(t));}
@@ -91,6 +91,13 @@ test('settings reject unsupported editions, modes and unsafe multipliers',()=>{
 });
 
 test('beginner tutorial exercises use valid placements, purchases, merger decisions and final payouts',()=>{
+  const placement=createTutorialGame('place');
+  assert.equal(placement.players[0].hand.length,6);
+  applyAction(placement,0,{type:'place',tile:PLACEMENT_TILE});
+  assert.equal(placement.board[PLACEMENT_TILE],7);
+  assert.equal(placement.phase,'buy');
+  assert.equal(placement.lastTileEvent,null);
+
   const founding=createTutorialGame('found');
   applyAction(founding,0,{type:'place',tile:FOUNDING_TILE});
   assert.equal(founding.phase,'found');

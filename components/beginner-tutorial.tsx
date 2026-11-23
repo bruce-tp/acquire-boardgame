@@ -3,10 +3,11 @@
 import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
 import {applyAction, HOTELS, label, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
-import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, type TutorialExercise} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const lessons = [
-  ['found', '第一個回合', 'Your first turn'],
+  ['place', '放置地塊', 'Placing a tile'],
+  ['found', '成立酒店', 'Founding a hotel'],
   ['merge', '合併與換股', 'Mergers and shares'],
   ['settle', '終局結算', 'Final scoring'],
 ] as const;
@@ -49,8 +50,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   startPractice?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
-  const [lesson, setLesson] = useState<TutorialExercise>('found');
-  const [game, setGame] = useState(() => createTutorialGame('found'));
+  const [lesson, setLesson] = useState<TutorialExercise>('place');
+  const [game, setGame] = useState(() => createTutorialGame('place'));
   const [selected, setSelected] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);
@@ -58,7 +59,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const [error, setError] = useState('');
   const player = game.players[0];
   const lessonIndex = lessons.findIndex(([id]) => id === lesson);
-  const target = lesson === 'found' ? FOUNDING_TILE : MERGER_TILE;
+  const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, settle: -1}[lesson];
 
   useEffect(() => {dialog.current?.showModal();}, []);
 
@@ -99,8 +100,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <Explanation zh="目標係終局現金最多。每回合先落地塊，再決定買唔買股票，最後補牌交棒。酒店愈大，股價通常愈高。下面三節可以即場試。"
-      en="Finish with the most cash. On your turn, place a tile, decide whether to buy shares, then draw a replacement tile and pass play. Larger hotels generally command higher share prices. Try the three exercises below."/>
+    <Explanation zh="目標係終局現金最多。每回合先落一塊地，如果觸發成立、擴張或者合併，就即時處理。之後可以買股，最後補牌交棒。"
+      en="Finish with the most cash. Place one tile, resolve any hotel founding, expansion or merger it triggers, then decide whether to buy shares. Draw a replacement tile to finish your turn."/>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}
         aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>
@@ -111,15 +112,31 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <h3 id="tutorial-exercise-title">{lessons[lessonIndex][1]} · {lessons[lessonIndex][2]}</h3>
 
       {lesson !== 'settle' && <>
-        {placing && (lesson === 'found'
-          ? <Explanation zh="地塊上嘅座標就係佢嘅位置。你手上有 6C，旁邊 5C 已有一幢獨立建築。撳 6C，再確認放置。上下左右相連先計，斜角唔計。"
-              en="A tile can only go on its matching square. Your 6C tile sits beside the independent building on 5C. Select 6C and confirm. Only side-by-side contact counts, including vertically."/>
-          : <Explanation zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
-              en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>)}
+        {placing && lesson === 'place' && <>
+          <Explanation zh="開局時遊戲會自動放好起始地塊，再派每人 6 塊手牌。輪到你，就揀其中一塊放到同座標嘅空格。5C 即係第 5 欄、C 行。試揀手牌或者棋盤上嘅 5C，再撳「確認放置」。"
+            en="The game places the starting tiles and deals six tiles to each player. On your turn, choose one tile and place it on its matching empty square. 5C means column 5, row C. Select 5C in your hand or on the board, then confirm."/>
+          <div className="tutorial-controls tutorial-placement-hand">
+            <span>練習用手牌 · Tile to practise with</span>
+            <button type="button" className="secondary compact" aria-pressed={selected}
+              onClick={() => setSelected(!selected)}>5C</button>
+          </div>
+        </>}
+        {placing && lesson === 'found' && <Explanation
+          zh="今次 5C 已經有一幢獨立建築。揀 6C 同佢接埋，就可以成立一間酒店。上下左右相連先計，斜角唔計。"
+          en="This time 5C already has an independent building. Place 6C beside it to found a hotel. Tiles connect along their edges. Diagonals do not count."/>}
+        {placing && lesson === 'merge' && <Explanation
+          zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
+          en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>}
         <LessonBoard game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
         {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
           確認放置 · Build tile
         </button>}
+      </>}
+
+      {lesson === 'place' && game.phase === 'buy' && <>
+        <Explanation zh="放置成功。5C 嘅上下左右都冇建築，所以佢暫時係一幢獨立建築。正式對局會去到買股階段。下一節試吓喺獨立建築旁邊放地塊。"
+          en="Tile placed. None of the four squares next to 5C contains a building, so it stays independent. In a full game, you now move to the buying phase. In the next lesson, try placing beside an independent building."/>
+        <button type="button" className="primary" onClick={() => openLesson('found')}>下一節：成立酒店 · Next: Found a hotel</button>
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>

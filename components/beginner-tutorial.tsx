@@ -62,14 +62,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const dialog = useRef<HTMLDialogElement>(null);
   const [lesson, setLesson] = useState<TutorialExercise>('place');
   const [game, setGame] = useState(() => createTutorialGame('place'));
-  const [practiceOpening] = useState(() => {
-    const opening = createPracticeGame();
-    // Spread the waiting player's spots across the example board.
-    const waitingSpots = [1, 22, 41, 61, 82, 87]; // 2A, 11B, 6D, 2F, 11G, 4H
-    opening.deck = opening.deck.filter(tile => !waitingSpots.includes(tile)).concat(opening.players[1].hand);
-    opening.players[1].hand = waitingSpots;
-    return opening;
-  });
+  const [practiceOpening] = useState(createPracticeGame);
   const [selected, setSelected] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);
@@ -139,8 +132,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
-          <Explanation zh="用呢個盤面做例子。兩張圖係同一個棋盤，分別顯示輪到你時，你同其他玩家見到嘅畫面。"
-            en="Here’s an example. Both images show the same board on your turn, first as you see it, then as the other players see it."/>
+          <Explanation zh="用呢個盤面做例子。輪到你時，可以喺棋盤揀一個有提示嘅位置起樓。"
+            en="On your turn, choose a marked square on the board to build on."/>
           <figure className="tutorial-practice-opening">
             <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
             <div className="board-scroll" tabIndex={0} role="region" aria-label="你見到嘅棋盤 · Your view of the board">
@@ -149,14 +142,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           </figure>
           <Explanation zh="你會見到 6 個提示。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。"
             en="You can see six markers. White 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel."/>
-          <figure className="tutorial-practice-opening">
-            <figcaption>同一刻，等緊輪到自己嘅玩家見到嘅棋盤 · What a waiting player sees</figcaption>
-            <div className="board-scroll" tabIndex={0} role="region" aria-label="其他玩家見到嘅棋盤 · Other players’ view of the board">
-              <LessonBoard game={practiceOpening} target={-1} selected={false} full overviewViewer={1}/>
-            </div>
-          </figure>
-          <Explanation zh="兩個玩家見到同一批建築，各自只會見到自己嘅 6 個專屬地塊。等緊輪到自己嗰位玩家會見到自己嘅地塊座標。輪到佢先可以揀位置，棋盤亦會顯示「可放置」、「擴展」或「成立」等提示。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。"
-            en="Both players see the same buildings, and each sees their own six private spots. The waiting player can see their spot coordinates. When their turn comes, they can select a spot and see markers such as ‘Place here’, ‘Expansion’ or ‘Founding’. Use one spot, keep the other five, and get a new one at the end of your turn."/>
+          <Explanation zh="呢六格係你嘅專屬地塊。用咗一格，其餘五格會留低。有地塊剩嘅話，回合尾會補一個新位置畀你。"
+            en="These six squares are your private building spots. After you use one, the other five stay. If tiles remain, you get a new spot at the end of your turn."/>
           <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
             en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}

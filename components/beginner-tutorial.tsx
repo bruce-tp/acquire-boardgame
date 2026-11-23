@@ -61,6 +61,21 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
   </div>;
 }
 
+function FoundingChoices({game, onChoose}: {game: Game; onChoose: (chain: number) => void}) {
+  return <div className="chain-choices" role="group" aria-label="選擇酒店 · Choose a hotel">
+    {HOTELS.filter(hotel => size(game, hotel.id) === 0).map(hotel => {
+      const maskImage = `url("${boardHotelLogo(hotel)}")`;
+      return <button type="button" className="chain-choice" key={hotel.id}
+        onClick={() => onChoose(hotel.id)}>
+        <span className="emblem brand-emblem small" aria-hidden="true" style={{'--hotel': hotel.colour} as React.CSSProperties}>
+          <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
+        </span>
+        <span>{hotelText(hotel.zh)}<small lang="en">{hotelText(hotel.name)}</small></span>
+      </button>;
+    })}
+  </div>;
+}
+
 export function BeginnerTutorial({close, showRules, startPractice}: {
   close: () => void;
   showRules: () => void;
@@ -193,18 +208,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         {game.phase === 'found' ? <>
           <Explanation zh="你揀嘅地塊連住獨立建築。揀一間未成立嘅酒店，遊戲會喺棋盤上成立嗰間酒店，仲會送你一股。"
             en="Your tile connects to an independent building. Choose an inactive hotel to found it on the board and receive one free share."/>
-          <div className="chain-choices" role="group" aria-label="選擇酒店 · Choose a hotel">
-            {HOTELS.filter(hotel => size(game, hotel.id) === 0).map(hotel => {
-              const maskImage = `url("${boardHotelLogo(hotel)}")`;
-              return <button type="button" className="chain-choice" key={hotel.id}
-                onClick={() => advance({type: 'found', chain: hotel.id})}>
-                <span className="emblem brand-emblem small" aria-hidden="true" style={{'--hotel': hotel.colour} as React.CSSProperties}>
-                  <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
-                </span>
-                <span>{hotelText(hotel.zh)}<small lang="en">{hotelText(hotel.name)}</small></span>
-              </button>;
-            })}
-          </div>
+          <FoundingChoices game={game} onChoose={chain => advance({type: 'found', chain})}/>
         </> : game.lastTileEvent === 'found' ? <Explanation
           zh={`${HOTELS[game.board[game.lastTile]].zh}成立咗，你攞到一股創辦人股票。`}
           en={`${HOTELS[game.board[game.lastTile]].name} is open, and you received one founder’s share.`}/>
@@ -216,11 +220,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
-        <Explanation zh="6C 同 5C 已經連埋，而且冇接到已成立嘅酒店。正式對局可以揀任何未成立酒店。呢度揀星野，創辦人會免費獲得一股。"
-          en="6C and 5C now form a group that touches no existing hotels. In a full game, pick any inactive chain. Found Hoshino here and receive one free share."/>
-        <button type="button" className="primary" onClick={() => advance({type: 'found', chain: HOSHINO})}>
-          {hotelText('成立星野 · Found Hoshino', true)}
-        </button>
+        <Explanation zh="6C 同 5C 已經連埋，而且冇接到已成立嘅酒店。揀一間酒店成立喺呢兩格，你就會免費攞到一股。"
+          en="6C and 5C are connected and touch no existing hotels. Choose a hotel to found on these two squares and receive one free share."/>
+        <FoundingChoices game={game} onChoose={chain => advance({type: 'found', chain})}/>
       </>}
 
       {lesson === 'found' && game.phase === 'buy' && <>

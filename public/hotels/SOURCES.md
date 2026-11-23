@@ -17,3 +17,4 @@ Brand names and logos belong to their respective owners. This fan game is not af
 - new-otani.svg: https://www.newotani.co.jp/fileadmin/sites/_assets/logo/logo-tokyo.svg (official Hotel New Otani Tokyo logo).
 
 - nikko.svg: https://d3g2yh83to8qa2.cloudfront.net/wp-content/uploads/1/2016/04/11081857/logo-nikko.svg (Nikko Hotels International logo linked from the official https://okura.com/nikko/ page).
+- `apa-crest.svg`: https://www3.apahotel.com/c/brand/common/images/logo.svg (APA Hotels & Resorts crest from the official brand concept page).

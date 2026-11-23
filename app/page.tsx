@@ -49,7 +49,7 @@ function FinalScorecard({view}:{view:View}){
               <th>套現 · Proceeds</th><th>獎金 · Bonus</th>
             </tr></thead>
             <tbody>{score.hotels.map(hotel=><tr key={hotel.id}>
-              <th scope="row">{HOTELS[hotel.id].zh} · {HOTELS[hotel.id].name}</th>
+              <th scope="row" style={{color:HOTELS[hotel.id].colour}}>{HOTELS[hotel.id].zh} · {HOTELS[hotel.id].name}</th>
               <td>{hotel.shares}</td><td>{money(hotel.sharePrice)}</td>
               <td>{money(hotel.sale)}</td><td>{money(hotel.bonus)}</td>
             </tr>)}</tbody>

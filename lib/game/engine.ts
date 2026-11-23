@@ -6,7 +6,7 @@ export const HOTELS = [
   {id:1,name:'The Peninsula',zh:'香港半島酒店',short:'半島',colour:'#ec786d',tier:1,mark:'P',original:'Luxor',logo:'/hotels/peninsula.svg',region:'香港 · HK'},
   {id:2,name:'The Okura',zh:'ホテルオークラ',short:'オークラ',colour:'#65a9e5',tier:1,mark:'O',original:'American',logo:'/hotels/okura.svg',region:'日本 · JP'},
   {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:2,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
-  {id:4,name:'APA Hotel',zh:'アパホテル',short:'APA',colour:'#83bd85',tier:0,mark:'APA',original:'Festival',logo:'/hotels/apa.png',region:'日本 · JP'},
+  {id:4,name:'APA Hotel',zh:'APAホテル',short:'APA',colour:'#83bd85',tier:0,mark:'APA',original:'Festival',logo:'/hotels/apa.png',region:'日本 · JP'},
   {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:1,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},
   {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:0,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];

@@ -119,8 +119,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <Explanation zh="遊戲結束後，計埋賣股票攞返嘅錢同股東獎金，邊個手上最多錢就贏。輪到你，就先喺棋盤揀一格起樓。如果嗰格令酒店開張、擴大或者合併，遊戲會即時話你知下一步點做。之後你可以買股票，亦可以唔買。回合完結時，如果仲有地塊剩，遊戲會自動補一個新位置畀你。"
-      en="The player with the most cash after share sales and shareholder bonuses wins. On your turn, choose a square on the board to build on. If that starts, expands or merges a hotel, the game will show you what to do next. Then you can buy shares or skip buying. At the end of your turn, the game gives you a new building spot if any tiles remain."/>
+    <ul>
+      <li><Explanation zh="完場計埋賣股同獎金，最多錢嗰個贏。"
+        en="Most cash after share sales and bonuses wins."/></li>
+      <li><Explanation zh="輪到你，喺棋盤揀一格起樓。酒店有變動，跟畫面提示做。"
+        en="Choose a square to build on. Follow the prompts if a hotel changes."/></li>
+      <li><Explanation zh="之後可以買股票，唔買都得。"
+        en="Buy shares or skip buying."/></li>
+      <li><Explanation zh="回合完咗，有地塊剩就自動補一個新位置畀你。"
+        en="At turn end, you get a new spot if any tiles remain."/></li>
+    </ul>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}
         aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>

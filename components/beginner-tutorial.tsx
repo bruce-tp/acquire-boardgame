@@ -62,7 +62,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const dialog = useRef<HTMLDialogElement>(null);
   const [lesson, setLesson] = useState<TutorialExercise>('place');
   const [game, setGame] = useState(() => createTutorialGame('place'));
-  const [practiceOpening] = useState(createPracticeGame);
+  const [practiceOpening] = useState(() => {
+    const opening = createPracticeGame();
+    // Spread the waiting player's spots across the example board.
+    const waitingSpots = [1, 22, 41, 61, 82, 87]; // 2A, 11B, 6D, 2F, 11G, 4H
+    opening.deck = opening.deck.filter(tile => !waitingSpots.includes(tile)).concat(opening.players[1].hand);
+    opening.players[1].hand = waitingSpots;
+    return opening;
+  });
   const [selected, setSelected] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);

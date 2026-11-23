@@ -3,6 +3,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
 import {BoardTile} from './board-tile';
+import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, placement, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
 import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
@@ -189,6 +190,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
+        <Explanation
+          zh={`查股價表：喺星野嗰欄搵收購前嘅 4 格，再橫向讀取每股賣價 ${money(mergerPrice)}。同一行亦列出第一同第二大股東嘅獎金。`}
+          en={`In the share price guide, find Hoshino’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
+        <details className="tutorial-price-guide">
+          <summary>查看股價及股東獎金表 · View share price and bonus guide</summary>
+          <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
+        </details>
+
         <Explanation zh={`星野每股 ${money(mergerPrice)}。你持有 4 股，係第一大股東，已收 ${money(award)} 獎金。第二大股東收一股股價嘅 5 倍。獎金同股票分開計。試吓賣 1 股、用 2 股換 1 股半島，餘下 1 股會自動保留。`}
           en={`Hoshino trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">

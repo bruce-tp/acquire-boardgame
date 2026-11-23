@@ -687,3 +687,5 @@
 .tutorial-practice-opening .board-frame { min-width: 640px; }
 
 .primary .hotel-coloured-name { background: #102637; border-radius: 3px; padding: 1px 4px; }
+
+.beginner-tutorial .tutorial-lessons > button > span { color: var(--lesson-colour); }

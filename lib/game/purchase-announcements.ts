@@ -1,5 +1,7 @@
 export const PURCHASE_DISPLAY_MS = 15_000;
-export const MERGER_DISPLAY_MS = 10_000;
+export const MERGER_DISPLAY_MS = 25_000;
+
+export type ShareholderAward = {amount: number; rank: 'majority' | 'minority' | 'both' | 'tied-majority' | 'tied-minority'};
 
 export type MergerDecision = {
   playerName: string;
@@ -7,6 +9,7 @@ export type MergerDecision = {
   sold: number | null;
   received: number | null;
   kept: number;
+  award?: ShareholderAward | null;
 };
 
 export const PURCHASE_BUFFER_MS = 5 * 60_000;

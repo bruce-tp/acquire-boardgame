@@ -28,8 +28,8 @@ function Explanation({zh, en}: {zh: string; en: string}) {
 function LessonBoard({game, target, selected, onSelect, full = false, overviewViewer}: {
   game: Game;
   target: number;
-  selected: boolean;
-  onSelect?: () => void;
+  selected: number | null;
+  onSelect?: (tile: number) => void;
   full?: boolean;
   overviewViewer?: number;
 }) {
@@ -48,8 +48,8 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
         const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
         const plan = (privateSpots ? privateSpots.includes(tile) : placing && tile === target) ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
-          playable={canPlace && !!plan?.legal} selected={!!plan && selected}
-          latest={game.lastTile === tile} onSelect={onSelect}/>;
+          playable={canPlace && !!plan?.legal} selected={!!plan && canPlace && selected === tile}
+          latest={game.lastTile === tile} onSelect={onSelect && (() => onSelect(tile))}/>;
       })}
     </div>)}
   </div>;
@@ -62,9 +62,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
   const [lesson, setLesson] = useState<TutorialExercise>('place');
-  const [game, setGame] = useState(() => createTutorialGame('place'));
-  const [practiceOpening] = useState(createPracticeGame);
-  const [selected, setSelected] = useState(false);
+  const [game, setGame] = useState(createPracticeGame);
+  const [selected, setSelected] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(0);
   const [sell, setSell] = useState(0);
   const [trade, setTrade] = useState(0);
@@ -77,12 +76,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
   function openLesson(id: TutorialExercise) {
     setLesson(id);
-    setGame(createTutorialGame(id));
-    setSelected(false);
+    setGame(id === 'place' ? createPracticeGame() : createTutorialGame(id));
+    setSelected(null);
     setQuantity(0);
     setSell(0);
     setTrade(0);
     setError('');
+  }
+
+  function selectTile(tile: number) {
+    setSelected(previous => previous === tile ? null : tile);
   }
 
   function advance(action: Action) {
@@ -137,18 +140,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <Explanation zh="用呢個盤面做例子。呢位玩家嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到佢時，就可以喺棋盤撳呢啲格起樓。"
             en="In this example, the player’s six private building spots are 5C, 7E, 8B, 8G, 8H and 9E. On their turn, they can click any of these squares to build."/>
-          <figure className="tutorial-practice-opening">
-            <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
-            <div className="board-scroll" tabIndex={0} role="region" aria-label="你見到嘅棋盤 · Your view of the board">
-              <LessonBoard game={practiceOpening} target={-1} selected={false} full overviewViewer={0}/>
-            </div>
-          </figure>
           <Explanation zh="你會見到 6 個提示。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。"
             en="You can see six markers. White 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel."/>
           <Explanation zh="呢六格係你嘅專屬地塊。用咗一格，其餘五格會留低。有地塊剩嘅話，回合尾會補一個新位置畀你。"
             en="These six squares are your private building spots. After you use one, the other five stay. If tiles remain, you get a new spot at the end of your turn."/>
-          <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
-            en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}
         {placing && lesson === 'found' && <>
           <Explanation
@@ -167,18 +162,27 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
-          <strong>{selected ? '而家撳棋盤下方嘅「確認放置」。' : `試吓撳下面棋盤嘅 ${label(target)} 格。`}</strong>
-          <small lang="en">{selected ? 'Now click “Build tile” below the board.' : `Try clicking the ${label(target)} square on the board below.`}</small>
+          <strong>{selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`}</strong>
+          <small lang="en">{selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`}</small>
         </p>}
-        <LessonBoard game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
-        {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
+        {lesson === 'place' ? <figure className="tutorial-practice-opening">
+          <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
+          <div className="board-scroll" tabIndex={0} role="region" aria-label="練習棋盤 · Practice board">
+            <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
+          </div>
+        </figure> : <LessonBoard game={game} target={target} selected={selected} onSelect={selectTile}/>}
+        {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
           確認放置 · Build tile
         </button>}
       </>}
 
-      {lesson === 'place' && game.phase === 'buy' && <>
-        <Explanation zh="放置成功。5C 嘅上下左右都冇建築，所以佢暫時係一幢獨立建築。正式對局會去到買股階段。下一節試吓喺獨立建築旁邊放地塊。"
-          en="Tile placed. None of the four squares next to 5C contains a building, so it stays independent. In a full game, you now move to the buying phase. In the next lesson, try placing beside an independent building."/>
+      {lesson === 'place' && !placing && game.lastTile !== null && <>
+        {game.phase === 'found' ? <Explanation zh="你揀嘅地塊連住獨立建築，可以成立一間酒店。下一節試吓揀品牌同買股。"
+          en="Your tile connects to an independent building, so you can found a hotel. Try choosing a brand and buying shares in the next lesson."/>
+        : game.board[game.lastTile] === 7 ? <Explanation zh="放置成功。呢格冇接到其他建築，所以成為一幢獨立建築。"
+          en="Tile placed. It touches no other buildings, so it stays independent."/>
+        : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
+          en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
         <button type="button" className="primary" onClick={() => openLesson('found')}>下一節：成立酒店 · Next: Found a hotel</button>
       </>}
 
@@ -268,9 +272,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Hoshino (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
         {!placing && <h4>終局棋盤 · Endgame board</h4>}
         <div className="board-scroll">
-          <LessonBoard full game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
+          <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile}/>
         </div>
-        {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
+        {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: target})}>
           確認放置 · Build tile
         </button>}
         {game.phase === 'buy' && <>

@@ -497,3 +497,6 @@
 }
 
 .holdings-panel .scorecard-hotel-row > :is(th, td) { color: var(--hotel); }
+
+.holdings-panel td.scorecard-rank { font-size: 14px; white-space: nowrap; }
+.scorecard-rank small { display: block; font-size: 11px; }

@@ -5,18 +5,17 @@
   outline-offset: -2px;
   z-index: 1;
 }
-.latest-tile-badge {
+.tile.last > .latest-tile-badge {
   position: absolute;
-  top: 2px;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 2px auto auto 2px;
+  z-index: 2;
   border-radius: 3px;
   padding: 1px 3px;
-  background: #a1efff;
-  color: #132335;
+  background: #0b2535;
+  color: #d9f9ff;
   font-size: 9px;
   font-weight: 800;
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
   pointer-events: none;
 }

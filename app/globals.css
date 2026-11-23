@@ -535,6 +535,11 @@
     gap: 24px;
     padding: 20px 4px 0;
   }
+  .landing-showcase .hotel-rail .emblem.brand-emblem {
+    width: 100%;
+    height: 66px;
+    padding: 5px 5px 11px;
+  }
   .hotel-rail:first-child { grid-area: 1 / 1; }
   .hotel-rail:last-child { grid-area: 1 / 3; }
 }

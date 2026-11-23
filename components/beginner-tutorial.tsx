@@ -156,12 +156,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           </p>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
-          <Explanation zh="用呢個盤面做例子。呢位玩家嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到佢時，就可以喺棋盤撳呢啲格起樓。"
+          <Explanation zh="用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 5C、7E、8B、8G、8H 同 9E。輪到你時，就可以喺棋盤撳呢啲格起樓。"
             en="In this example, the player’s six private building spots are 5C, 7E, 8B, 8G, 8H and 9E. On their turn, they can click any of these squares to build."/>
-          <Explanation zh="你會見到 6 個提示。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。"
-            en="You can see six markers. White 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel."/>
-          <Explanation zh="呢六格係你嘅專屬地塊。用咗一格，其餘五格會留低。有地塊剩嘅話，回合尾會補一個新位置畀你。"
-            en="These six squares are your private building spots. After you use one, the other five stay. If tiles remain, you get a new spot at the end of your turn."/>
         </>}
         {placing && lesson === 'found' && <>
           <Explanation
@@ -180,11 +176,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
-          <strong>{selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`}</strong>
+          <strong>{selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '依家試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`}</strong>
           <small lang="en">{selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`}</small>
         </p>}
         {lesson === 'place' ? <figure className="tutorial-practice-opening">
-          <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
           <div className="board-scroll" tabIndex={0} role="region" aria-label="練習棋盤 · Practice board">
             <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
           </div>

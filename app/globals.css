@@ -465,3 +465,26 @@
 .merger-results :is(td, th) { padding: 5px 6px; border-bottom: 1px solid var(--line); }
 .merger-results th:first-child { text-align: left; overflow-wrap: anywhere; }
 .merger-results td { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+.landing-immersive > .hotel-strip {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 14px 0;
+}
+@media (max-width: 900px) {
+  .landing-immersive > .hotel-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .landing-immersive .hotel-collection {
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+  .landing-immersive .hotel-mini {
+    flex: 0 0 108px;
+  }
+}

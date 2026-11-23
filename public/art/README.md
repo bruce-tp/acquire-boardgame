@@ -11,3 +11,9 @@
 The landing page now shares `peninsula-okura-night-v3.png` and the same illuminated sign lettering via `HotelPoster`. The landing variant shows the complete panorama below its introduction; the game keeps its shallow banner.
 
 - gatsby-toast-v1.webp: user-approved generated painterly toast illustration, used only as the decorative homepage sky layer. The shared Peninsula/Okura artwork remains separate and unchanged.
+
+The homepage uses `hotel-dusk-oil.webp` by default. Open `/?cover=hoshinoya` to preview
+`hotel-dusk-hoshinoya-preview.webp` on the right. The browser blends the preview over
+the approved image, leaving the left half intact. The preview is inspired by
+[HOSHINOYA Tokyo’s Edo-komon façade](https://www.mjd.co.jp/en/projects/27832/).
+The normal homepage URL restores the approved artwork.

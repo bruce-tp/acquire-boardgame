@@ -575,3 +575,16 @@
   .tutorial-lessons small, .tutorial-tile small { font-size: 10px; }
   .tutorial-actions .primary, .tutorial-actions .secondary { white-space: normal; }
 }
+
+/* Keep the approved left-hand scene and blend the preview through the central trees. */
+.hotel-poster-stage > .hoshinoya-cover-layer {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  mask-image: linear-gradient(to right, transparent 50%, #000 57%);
+}
+.hoshino-sign.hoshinoya-preview-sign {
+  top: 59.3%;
+  height: 6.2%;
+  text-shadow: 0 0 4px #ffcc8d, 0 0 8px #d89649;
+}

@@ -112,7 +112,11 @@ export function publicState(g:Game,viewer:number,delivered?:DeliveredPurchaseAnn
 export function botAction(g:Game):Action {const p=g.players[actor(g)];if(g.phase==='place'){const legal=p.hand.filter(t=>placement(g,t).legal);if(!legal.length)return {type:'pass'};legal.sort((a,b)=>{const score=(t:number)=>{const plan=placement(g,t);return plan.chains.reduce((n,c)=>n+p.shares[c],0)+plan.group.length*2;};return score(b)-score(a);});return {type:'place',tile:legal[0]};}if(g.phase==='found')return {type:'found',chain:HOTELS.find(h=>!size(g,h.id))!.id};if(g.phase==='survivor')return {type:'survivor',chain:[...g.pending].sort((a,b)=>p.shares[b]-p.shares[a])[0]};if(g.phase==='order')return {type:'order',chain:g.pending[0]};if(g.phase==='dispose'){const m=g.merger!;const trade=Math.min(Math.floor(p.shares[m.loser]/2),g.bank[m.survivor]);return {type:'dispose',trade,sell:p.shares[m.loser]-trade*2};}if(g.phase==='buy'){if(canEnd(g)&&!g.endDeclared)return {type:'declare'};if(g.bought)return {type:'finish'};const q=Array(7).fill(0);let cash=p.cash;for(let i=0;i<3;i++){const options=HOTELS.filter(h=>price(g,h.id)>0&&g.bank[h.id]>q[h.id]&&price(g,h.id)<=cash).sort((a,b)=>(p.shares[b.id]+q[b.id])-(p.shares[a.id]+q[a.id]));if(!options.length)break;const c=options[i%options.length].id;q[c]++;cash-=price(g,c);}if(!q.some(Boolean))return {type:'finish'};return {type:'buy',quantities:q};}throw Error('No bot action');}
 
 // The printed Classic Stockholder Info Card, expressed using the same price rules.
-export const HOTEL_PRICE_GROUPS = [0, 1, 2].map(tier => HOTELS.filter(hotel => hotel.tier === tier).map(hotel => hotel.id));
+// Presentation order within each tier. Hotel IDs also index saved game state.
+const HOTEL_DISPLAY_ORDER = [4, 6, 5, 2, 1, 0, 3];
+export const HOTEL_PRICE_GROUPS = [0, 1, 2].map(tier =>
+  HOTEL_DISPLAY_ORDER.filter(id => HOTELS[id].tier === tier),
+);
 export const CHAIN_SIZE_BANDS = [
   {from:2,to:2,label:'2'}, {from:3,to:3,label:'3'},
   {from:4,to:4,label:'4'}, {from:5,to:5,label:'5'},

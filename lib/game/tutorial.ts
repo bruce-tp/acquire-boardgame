@@ -38,7 +38,7 @@ export function createTutorialGame(exercise: TutorialExercise): Game {
       shares.forEach((count, index) => { game.players[index].shares[id] = count; });
       game.bank[id] -= shares.reduce((total, count) => total + count, 0);
     }
-    for (const tile of [5, 56, 103]) game.board[tile] = 7;
+    for (const tile of [5, 54, 102]) game.board[tile] = 7;
     game.players[0].cash = 1800;
     game.players[0].hand = [FINAL_TILE];
   }

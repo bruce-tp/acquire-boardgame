@@ -122,16 +122,24 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson !== 'settle' && <>
         {placing && lesson === 'place' && <>
+          <Explanation zh="用呢個盤面做例子。兩張圖係同一個棋盤，分別顯示輪到你時，你同其他玩家見到嘅畫面。"
+            en="Here’s an example. Both images show the same board on your turn, first as you see it, then as the other players see it."/>
           <figure className="tutorial-practice-opening">
-            <figcaption>「試玩一局」開局 · Practice game opening</figcaption>
-            <div className="board-scroll" tabIndex={0} role="region" aria-label="試玩一局開局棋盤 · Opening practice board">
+            <figcaption>輪到你時，你見到嘅棋盤 · What you see on your turn</figcaption>
+            <div className="board-scroll" tabIndex={0} role="region" aria-label="你見到嘅棋盤 · Your view of the board">
               <LessonBoard game={practiceOpening} target={-1} selected={false} full overview/>
             </div>
           </figure>
-          <Explanation zh="睇上面個棋盤。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。呢三種提示都只得你自己睇到。"
-            en="On the board above, white 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel. Only you can see these markers."/>
-          <Explanation zh="數吓上面有 6 個提示。呢啲就係你嘅專屬地塊。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。跟住用下面嘅互動棋盤試吓。"
-            en="The six marked squares are your private building spots. Use one, keep the other five, and get one new spot at the end of your turn. Now try the interactive board below."/>
+          <Explanation zh="你會見到 6 個提示。白色 8H「可放置」會起一幢獨立建築，青色 5C「擴展」會擴大文華，金色 8B「成立」會開一間新酒店。"
+            en="You can see six markers. White 8H (‘Place here’) adds an independent building, teal 5C (‘Expansion’) grows Mandarin Oriental, and gold 8B (‘Founding’) starts a new hotel."/>
+          <figure className="tutorial-practice-opening">
+            <figcaption>同一刻，其他玩家見到嘅棋盤 · What other players see at the same moment</figcaption>
+            <div className="board-scroll" tabIndex={0} role="region" aria-label="其他玩家見到嘅棋盤 · Other players’ view of the board">
+              <LessonBoard game={practiceOpening} target={-1} selected={false} full/>
+            </div>
+          </figure>
+          <Explanation zh="其他玩家見到同一批建築。你嗰 6 個提示喺佢哋嘅畫面只係普通空格，所以叫做你嘅專屬地塊。用咗一格，其餘 5 格會留低，回合結束時自動補一個新位置。"
+            en="Other players see the same buildings. Your six marked spots appear as empty squares to them. Use one of your private building spots, keep the other five, and get one new spot at the end of your turn."/>
           <Explanation zh="5C 即係第 5 欄、C 行。試吓撳棋盤上標住「可放置」嘅 5C，再撳「確認放置」。落咗地之後，其他玩家就會見到新建築。"
             en="5C means column 5, row C. Click the square marked ‘Place here’ at 5C, then confirm. Everyone can see the new building once you place it."/>
         </>}

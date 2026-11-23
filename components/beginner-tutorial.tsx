@@ -115,18 +115,30 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         {placing && lesson === 'place' && <>
           <Explanation zh="開局時遊戲會自動放好起始地塊，再派每人 6 塊手牌。輪到你，就揀其中一塊放到同座標嘅空格。5C 即係第 5 欄、C 行。試揀手牌或者棋盤上嘅 5C，再撳「確認放置」。"
             en="The game places the starting tiles and deals six tiles to each player. On your turn, choose one tile and place it on its matching empty square. 5C means column 5, row C. Select 5C in your hand or on the board, then confirm."/>
+          <Explanation zh="棋盤上亮起嘅空格，係你手牌地塊嘅位置提示，只有你自己見到。輪到你時，撳可放置嘅亮格，就等於揀咗手上同座標嘅地塊。撳「確認放置」之後，其他玩家先會見到落咗嘅地塊。"
+            en="Highlighted empty squares show where the tiles in your hand go. Only you can see those hints. On your turn, clicking a playable highlighted square selects the matching tile from your hand. Everyone can see the tile once you confirm the placement."/>
           <div className="tutorial-controls tutorial-placement-hand">
             <span>練習用手牌 · Tile to practise with</span>
             <button type="button" className="secondary compact" aria-pressed={selected}
               onClick={() => setSelected(!selected)}>5C</button>
           </div>
         </>}
-        {placing && lesson === 'found' && <Explanation
-          zh="今次 5C 已經有一幢獨立建築。揀 6C 同佢接埋，就可以成立一間酒店。上下左右相連先計，斜角唔計。"
-          en="This time 5C already has an independent building. Place 6C beside it to found a hotel. Tiles connect along their edges. Diagonals do not count."/>}
-        {placing && lesson === 'merge' && <Explanation
-          zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
-          en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>}
+        {placing && lesson === 'found' && <>
+          <Explanation
+            zh="成立新酒店：新地塊接住至少一幢獨立建築，而且連成一組之後冇接到任何已成立嘅酒店。只計上下左右，唔計斜角。今次放 6C 連住 5C，就會觸發成立酒店。"
+            en="You found a hotel when the new tile joins at least one independent building and the connected group touches no existing hotels. Only shared edges count. Try placing 6C beside the independent building on 5C."/>
+          <Explanation
+            zh="擴張已有酒店：如果放完地塊之後，連成嘅一組接到一間已成立嘅酒店，新地塊同連住嘅獨立建築都會併入嗰間酒店。接到兩間或以上，就會觸發合併。"
+            en="If the connected group touches exactly one existing hotel, the new tile and any connected independent buildings become part of that hotel. Connecting two or more hotels triggers a merger."/>
+        </>}
+        {placing && lesson === 'merge' && <>
+          <Explanation
+            zh="合併（收購）係遊戲嘅核心玩法，會大大影響你手頭有幾多現金可以再投資。被收購酒店會派股東獎金，持有嗰間酒店股票嘅玩家亦可以選擇賣股套現。"
+            en="Mergers are central to the game and can make a big difference to how much cash you have to reinvest. The acquired hotel pays shareholder bonuses, and its shareholders can choose to sell shares for cash."/>
+          <Explanation
+            zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
+            en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
+        </>}
         <LessonBoard game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
         {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
           確認放置 · Build tile
@@ -140,8 +152,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
-        <Explanation zh="兩塊相連嘅獨立建築可以成立酒店。正式對局可以揀任何未成立酒店。呢度揀星野，創辦人會免費獲得一股。"
-          en="Two connected independent buildings can form a hotel. In a full game, pick any inactive chain. Found Hoshino here and receive one free share."/>
+        <Explanation zh="6C 同 5C 已經連埋，而且冇接到已成立嘅酒店。正式對局可以揀任何未成立酒店。呢度揀星野，創辦人會免費獲得一股。"
+          en="6C and 5C now form a group that touches no existing hotels. In a full game, pick any inactive chain. Found Hoshino here and receive one free share."/>
         <button type="button" className="primary" onClick={() => advance({type: 'found', chain: HOSHINO})}>
           成立星野 · Found Hoshino
         </button>

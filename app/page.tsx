@@ -67,7 +67,46 @@ function ScorecardPreview({view,close}:{view:View;close:()=>void}){
   </dialog>;
 }
 
-function Rulebook({close,settings}:{close:()=>void;settings:GameSettings}){const major=settings.majorityMultiplier,minor=major/2;return <div className="overlay" onClick={close}><section className="dialog rules" role="dialog" aria-modal="true" aria-label="遊戲規則 Game rules" onClick={e=>e.stopPropagation()}><button className="icon close" onClick={close} aria-label="關閉 Close"><X size={20}/></button><span className="eyebrow">THE INVESTOR’S HANDBOOK</span><h2>遊戲指南 <em>How to play</em></h2><p>Classic 模式 · 2–6 位玩家 · 每人 $6,000，六塊私人地塊。現金與持股隱藏，只有自己可見。<br/>Classic mode · 2–6 players · $6,000 and six private tiles each. Cash and shareholdings are hidden from opponents.</p><div className="rule-step"><b>01</b><div><h3>放置地塊 · Build</h3><p>每回合放一塊到對應座標；只計上下左右相鄰。兩塊以上可成立酒店，創辦人獲一股。<br/>Place one tile on its matching space. Orthogonal connections form or expand hotels; founding earns one share.</p></div></div><div className="rule-step"><b>02</b><div><h3>處理合併 · Merge</h3><p>較大酒店保留，同規模由落地塊者選擇。被收購酒店先派股東獎金，然後各人可賣股、以 2 換 1 或留股。多間合併由大至小處理，同規模次序由落地塊者選。<br/>The largest chain survives; the tile placer breaks ties. Pay bonuses for acquired chains, then sell, trade two shares for one, or retain shares. Resolve acquired chains largest first.</p></div></div><div className="rule-step"><b>03</b><div><h3>買股及補牌 · Invest & draw</h3><p>合共最多買三股，可分不同酒店。按「完成回合」補回六塊。11 塊或以上酒店不能被收購。永久不能落的地塊會在回合結束自動換走一次。<br/>Buy up to three shares in active chains, then finish your turn to replenish your hand. Chains of 11+ tiles are safe. Permanently blocked tiles are replaced once at turn end.</p></div></div><div className="rule-step"><b>04</b><div><h3>結算 · Cash out</h3><p>任何酒店達 41 塊，或所有已成立酒店均安全，可自願宣告本回合結束後結算。派獎金及售出活躍酒店股份，現金最多者勝出。<br/>When a chain reaches 41 tiles, or all active chains are safe, the current player may declare the final turn. Pay bonuses, liquidate active shares, and compare cash.</p></div></div><div className="rule-note">隱藏資訊玩法：每次買股明細及總花費會向各人公布 15 秒；冇買股亦會公布，歷史紀錄不保存財務數字。合併時只公開被收購酒店的合併前持股。 · Hidden information: each purchase and its total cost (or no purchase) is announced for 15 seconds per viewer; historical financial quantities are omitted. Only the acquired chain’s pre-merger holdings are revealed. 本房間獎金：第一大股東獲股價 ×{major}；第二大獲 ×{minor}。一人持股則全取；並列第一合併獎金平分，並列第二平分第二獎金，向上取整至 $100。兩人局加入隨機市場股東。防停局補充：所有人連續無法落牌時自動結算。<br/>This table’s bonuses: {major}× share price for majority, {minor}× for minority. A sole holder receives both. Ties split the applicable pool, rounded up to $100. Two-player games include a random market shareholder. Stalemate house rule: settle if every player consecutively has no legal placement.</div><section className="hotel-key"><h3>香港 × 日本 · Hotel colour guide</h3><p>版圖以品牌標誌及地塊顏色區分酒店。 · Brand logos and tile colours identify each hotel chain.</p><div>{HOTELS.map(h=><div className="hotel-key-item" key={h.id} style={{'--hotel':h.colour} as React.CSSProperties}><Emblem c={h.id}/><span><strong>{h.zh}</strong><small>{h.name}</small></span><b>{h.short}</b></div>)}</div></section></section></div>}
+function Rulebook({close, settings}: {close: () => void; settings: GameSettings}) {
+  const major = settings.majorityMultiplier;
+  const minor = major / 2;
+  const steps = [
+    ['開局同勝出條件 · Set-up and objective',
+      '房主開局後，每人有 $6,000、零持股同六個專屬地塊。系統先為每人放一幢獨立建築，按棋盤次序（1A 至 12A，再到 B 行）最先出現嘅起始地塊決定先手，之後按座位順序輪流。結算後現金最多嘅玩家勝出。',
+      'When the host starts the game, each player gets $6,000, no shares and six private building spots. The game places one independent building per player. The player whose starting square comes first in board order (1A to 12A, then row B and so on) goes first. Turns follow seat order. The most cash after settlement wins.'],
+    ['揀一格起樓 · Place one tile',
+      '輪到你時，喺棋盤揀一個可用嘅專屬地塊，再撳「確認放置」。只計上下左右。新地塊會連同接通嘅獨立建築一齊處理。冇接到其他建築就保持獨立；只接到獨立建築就揀一個未成立嘅品牌開酒店；接到一間酒店就擴展；接到兩間或以上就合併。創辦人獲一股，冇庫存就按新酒店股價收現金。',
+      'Choose one available private spot and select Build tile. Connections count across shared edges. Resolve the new tile together with the independent buildings it connects. An isolated tile stays independent. Connecting only to independent buildings lets you found an inactive brand. Connecting to one hotel expands it. Connecting to two or more triggers a merger. Founders get one share, or its cash value if none is left.'],
+    ['安全酒店同無法放置 · Safe hotels and blocked spots',
+      '酒店達 11 格就安全，可以收購較細酒店。連接兩間安全酒店嘅位置永久不能使用，系統會喺回合尾換走，有地塊剩餘先補。七間酒店都已成立時，會成立新酒店嘅位置暫時不能使用。完全冇位置可用時，可以跳過放置，繼續買股。',
+      'A hotel with 11 or more tiles is safe and can acquire smaller hotels. Spots that would join two safe hotels are permanently blocked and are replaced at turn end if tiles remain. Founding spots are temporarily blocked when all seven hotels are active. If you have no legal placement, skip placement and continue to share buying.'],
+    ['合併時點做 · Resolve a merger',
+      '比較合併前嘅酒店大小，最大一間收購其餘酒店。最大同格數時，由落地塊嘅玩家揀存續酒店。被收購酒店由大至小逐間處理，同格數由落地塊嘅玩家揀次序。每間先派股東獎金，再由落地塊嘅玩家開始，按座位順序畀有持股嘅人決定點處理。',
+      'Compare hotel sizes before the merger. The largest hotel acquires the others. The tile placer breaks ties for the surviving hotel and for the order of equally sized acquired hotels. Process acquired hotels largest first. For each one, award bonuses first, then let shareholders decide what to do in seat order starting with the tile placer.'],
+    ['賣出、換股、保留 · Sell, exchange or keep',
+      '你可以混合三種做法。賣出按被收購酒店合併前嘅股價計。每兩股可換一股存續酒店嘅股票，視乎庫存。保留嘅股票可以等原品牌重新成立。例：你有六股，可以賣兩股、用兩股換一股、保留兩股。',
+      'You can combine all three options. Sell at the acquired hotel’s pre-merger share price. Exchange two acquired shares for one surviving share, subject to supply. Kept shares can regain value if the brand is founded again. With six shares, you could sell two, exchange two for one, and keep two.'],
+    ['股東獎金 · Shareholder bonuses',
+      `本局大股東獎金係每股股價 ×${major}，第二大股東係 ×${minor}。只有一位持股者就攞晒兩份。並列第一就平分兩份獎金；並列第二就平分第二份。平分所得向上取整至最接近嘅 $100。兩人局喺合併同結算計獎金時，如果地塊池仲有地塊，市場會用隨機地塊嘅欄號作為虛擬持股數。`,
+      `This table pays ${major}× the share price to the largest shareholder and ${minor}× to the second largest. A sole shareholder gets both. Tied leaders split both bonuses. Tied runners-up split the second bonus. Round each split award up to the next $100 increment. In two-player games, if tiles remain, a random tile’s column number is the market’s virtual shareholding when bonuses are calculated for a merger or settlement.`],
+    ['買股同完成回合 · Buy shares and finish the turn',
+      '處理完放置同合併，可以用現金買已成立酒店嘅股票。每回合合共最多三股，可以分開買幾間。用股價表按品牌同酒店格數查價。確認買入會完成回合，唔買就撳「完成回合」。用咗一個專屬地塊，其餘會留低，有地塊剩餘就自動補上。其他玩家睇到你買咗乜嘢，但各人只見到自己嘅現金、總持股同專屬地塊；合併時會公開被收購酒店嘅持股供處理。',
+      'After resolving placement and any merger, use cash to buy up to three shares in total across active hotels, subject to supply. Use the price guide to find the price for each brand and size. Confirming a purchase finishes your turn. To skip buying, select Finish turn. Unused private spots carry over and the game replenishes them while tiles remain. Purchases are announced. Cash, total holdings and private spots are personal, with acquired hotel holdings revealed during a merger.'],
+    ['幾時結算 · End the game',
+      '如果有酒店達 41 格，或者場上至少有一間酒店而每間都達 11 格，輪到你時可以喺放置或買股階段宣告最後回合。完成你嘅回合後就結算。如果全場連續一輪都冇人可以放置，遊戲亦會自動結算。每間仍然成立嘅酒店先派獎金，再按最終股價兌現股份。未成立品牌嘅股票值 $0。結算表嘅總數係結算前現金加獎金同賣股所得。最高總數勝出，同分並列。',
+      'On your turn, you may declare the final turn during placement or buying if any hotel reaches 41 tiles, or if at least one hotel is active and every active hotel has 11 or more tiles. Finish your turn, then settle. The game also settles if everyone goes a full round without a legal placement. Active hotels pay bonuses and their shares are sold at final prices. Inactive shares are worth $0. The final total is cash before settlement plus bonuses and share proceeds. The highest total wins, with joint winners on a tie.'],
+  ];
+  return <div className="overlay" onClick={close}>
+    <section className="dialog rules" role="dialog" aria-modal="true" aria-label="完整規則 · Full rules" onClick={e => e.stopPropagation()}>
+      <button className="icon close" onClick={close} aria-label="關閉 · Close"><X size={20}/></button>
+      <h2>完整規則 <em>Full rules</em></h2>
+      <p>每回合先放一格，再處理酒店變化，最後買股或交棒。<br/><span lang="en">On your turn, place one tile, resolve what happens to the hotels, then buy shares or finish.</span></p>
+      {steps.map(([title, zh, en], index) => <div className="rule-step" key={title}>
+        <b>{index + 1}</b><div><h3>{title}</h3><p>{zh}</p><p lang="en">{en}</p></div>
+      </div>)}
+    </section>
+  </div>;
+}
 export default function Home(){
 const [selectedSettings,setSelectedSettings]=useState<GameSettings>({...STANDARD_SETTINGS});
 const [showSkyline,setShowSkyline]=useState(true);

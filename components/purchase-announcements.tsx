@@ -16,7 +16,7 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
     queue.current = current;
     return () => { current.stop(); queue.current = null; };
   }, [roomCode]);
-  useEffect(() => { queue.current?.receive(incoming); }, [roomCode, incoming]);
+  useEffect(() => { queue.current?.receive(incoming.filter(notice=>!notice.mergerResult)); }, [roomCode, incoming]);
   if (!visible.length) return null;
   return <section className="purchase-notice-tray" aria-label="交易公告 · Table notifications"
     aria-live="polite" aria-relevant="additions" aria-atomic="false">

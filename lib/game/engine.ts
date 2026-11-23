@@ -1,5 +1,5 @@
 import {parseSettings,gameSettings,bonusAmounts,type GameSettings} from './settings.ts';
-import {recentPurchases, PURCHASE_DISPLAY_MS, type PurchaseAnnouncement, type DeliveredPurchaseAnnouncement} from './purchase-announcements.ts';
+import {recentPurchases, announcementDisplayMs, type MergerDecision, type PurchaseAnnouncement, type DeliveredPurchaseAnnouncement} from './purchase-announcements.ts';
 // Acquire: Classic rules, Renegade 2023. Original interface and illustration.
 export const HOTELS = [
   {id:0,name:'Mandarin Oriental',zh:'香港文華東方',short:'文華',colour:'#edb94b',tier:2,mark:'MO',original:'Tower',logo:'/hotels/mandarin.svg',region:'香港 · HK'},
@@ -11,7 +11,7 @@ export const HOTELS = [
   {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:0,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};
-export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[]};
+export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[];decisions?:Record<number, MergerDecision>};
 export type FinalScore = {
   cashBeforeSettlement: number;
   hotels: {id:number; shares:number; sharePrice:number; sale:number; bonus:number}[];
@@ -70,7 +70,22 @@ function settle(g:Game){
 }
 function completeMerger(g:Game){const m=g.merger!;for(let i=0;i<108;i++)if(m.chains.includes(g.board[i]))g.board[i]=m.survivor;for(const t of independentGroup(g,m.tile))g.board[t]=m.survivor;note(g,`${HOTELS[m.survivor].name} survives · 合併完成`);g.merger=null;g.phase='buy';}
 function nextLoser(g:Game){const m=g.merger!;if(!m.remaining.length){completeMerger(g);return;}const max=Math.max(...m.remaining.map(c=>m.sizes[c]));g.pending=m.remaining.filter(c=>m.sizes[c]===max);if(g.pending.length>1){g.phase='order';return;}beginDisposal(g,g.pending[0]);}
-function beginDisposal(g:Game,c:number){const m=g.merger!;m.loser=c;m.revealed=g.players.map(p=>p.shares[c]);m.remaining=m.remaining.filter(x=>x!==c);bonus(g,c,m.sizes[c],true);m.order=Array.from({length:g.players.length},(_,i)=>(g.turn+i)%g.players.length).filter(i=>g.players[i].shares[c]>0);m.cursor=0;if(!m.order.length){nextLoser(g);return;}g.phase='dispose';}
+function beginDisposal(g:Game,c:number){const m=g.merger!;m.loser=c;m.revealed=g.players.map(p=>p.shares[c]);m.remaining=m.remaining.filter(x=>x!==c);bonus(g,c,m.sizes[c],true);m.order=Array.from({length:g.players.length},(_,i)=>(g.turn+i)%g.players.length).filter(i=>g.players[i].shares[c]>0);m.cursor=0;m.decisions={};if(!m.order.length){finishAcquisition(g);return;}g.phase='dispose';}
+function finishAcquisition(g:Game){
+  const merger=g.merger!;
+  const decisions=merger.order.map(index=>merger.decisions?.[index]??{
+    playerName:g.players[index].name,
+    starting:merger.revealed?.[index]??g.players[index].shares[merger.loser],
+    sold:null,
+    received:null,
+    kept:g.players[index].shares[merger.loser],
+  });
+  enqueueAnnouncement(g,{
+    playerName:'',items:[],total:0,
+    mergerResult:{acquirer:merger.survivor,acquired:merger.loser,decisions},
+  });
+  nextLoser(g);
+}
 function chooseSurvivor(g:Game,c:number){const m=g.merger!;m.survivor=c;m.remaining=m.chains.filter(x=>x!==c);nextLoser(g);}
 function announcePurchase(g:Game,p:Player,items:PurchaseAnnouncement['items'],total:number){
   enqueueAnnouncement(g,{playerName:p.name,items,total});
@@ -86,8 +101,12 @@ if(a.type==='found'&&g.phase==='found'){const c=a.chain!;if(!Number.isInteger(c)
 if(a.type==='survivor'&&g.phase==='survivor'){if(!g.pending.includes(a.chain!))throw Error('Choose a tied largest chain · 請選同規模最大酒店');chooseSurvivor(g,a.chain!);return;}
 if(a.type==='order'&&g.phase==='order'){if(!g.pending.includes(a.chain!))throw Error('Choose an eligible chain · 請選可處理酒店');beginDisposal(g,a.chain!);return;}
 if(a.type==='dispose'&&g.phase==='dispose'){const m=g.merger!;const sell=a.sell??0,trade=a.trade??0;if(!Number.isInteger(sell)||!Number.isInteger(trade)||sell<0||trade<0||sell+trade*2>p.shares[m.loser]||trade>g.bank[m.survivor])throw Error('Invalid share allocation · 股票分配不正確');p.shares[m.loser]-=sell+trade*2;g.bank[m.loser]+=sell+trade*2;p.cash+=sell*priceFor(m.loser,m.sizes[m.loser]);p.shares[m.survivor]+=trade;g.bank[m.survivor]-=trade;const decision=`${p.name} · ${HOTELS[m.loser].name} · 賣出 Sold ${sell} · 換股 Exchanged ${trade*2} → ${trade} ${HOTELS[m.survivor].name} · 保留 Kept ${p.shares[m.loser]}`;
+(m.decisions??={})[actor(g)]={
+  playerName:p.name,starting:p.shares[m.loser]+sell+2*trade,
+  sold:sell,received:trade,kept:p.shares[m.loser],
+};
 m.cursor++;
-if(m.cursor>=m.order.length)nextLoser(g);
+if(m.cursor>=m.order.length)finishAcquisition(g);
 note(g,decision);
 return;}
 if((a.type==='buy'||a.type==='buyAndFinish')&&g.phase==='buy'){const q=a.quantities;if(!Array.isArray(q)||q.length!==7||q.some(x=>!Number.isInteger(x)||x<0)||q.reduce((x,y)=>x+y,0)+g.bought>3)throw Error('Buy up to 3 shares per turn · 每回合最多買三股');let total=0;const items:PurchaseAnnouncement['items']=[];for(let c=0;c<7;c++){if(q[c]&&(!size(g,c)||q[c]>g.bank[c]))throw Error('Shares unavailable · 股票不足或酒店尚未成立');total+=q[c]*price(g,c);if(q[c])items.push({chain:c,quantity:q[c],unitPrice:price(g,c)});}if(total>p.cash)throw Error('Insufficient cash · 現金不足');p.cash-=total;for(let c=0;c<7;c++){p.shares[c]+=q[c];g.bank[c]-=q[c];if(q[c])note(g,`${p.name}: purchased ${HOTELS[c].name} · 買入酒店股票`);}if(items.length)announcePurchase(g,p,items,total);g.bought+=q.reduce((x,y)=>x+y,0);if(a.type==='buyAndFinish')finishTurn(g);return;}
@@ -101,9 +120,9 @@ function hiddenHistory(line:string){return line
 export function publicState(g:Game,viewer:number,delivered?:DeliveredPurchaseAnnouncement[]){
   const {purchaseNotices,...safeGame}=g;
   const now=Date.now();
-  const purchaseAnnouncements=delivered??recentPurchases(purchaseNotices,now).flatMap(event=>{const remainingMs=PURCHASE_DISPLAY_MS-(now-event.createdAt);return remainingMs>0?[{...event,remainingMs}]:[];});
+  const purchaseAnnouncements=delivered??recentPurchases(purchaseNotices,now).flatMap(event=>{const remainingMs=announcementDisplayMs(event)-(now-event.createdAt);return remainingMs>0?[{...event,remainingMs}]:[];});
   const finished=g.phase==='end';
-  const merger=g.merger?{...g.merger,revealed:g.phase==='dispose'?(g.merger.revealed??g.players.map(p=>p.shares[g.merger!.loser])):undefined}:null;
+  const merger=g.merger?{...g.merger,decisions:undefined,revealed:g.phase==='dispose'?(g.merger.revealed??g.players.map(p=>p.shares[g.merger!.loser])):undefined}:null;
   return {...safeGame,finalScores:finished?g.finalScores:undefined,settings:gameSettings(g.settings),purchaseAnnouncements,merger,deck:[],deckCount:g.deck.length,
     players:g.players.map((p,i)=>({...p,id:undefined,cash:i===viewer||finished?p.cash:undefined,shares:i===viewer||finished?p.shares:[],hand:i===viewer?p.hand:[],handCount:p.hand.length})),
     log:g.log.map(hiddenHistory),announcement:finished?null:hiddenHistory(g.log.at(-1)??''),me:viewer};

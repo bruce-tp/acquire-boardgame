@@ -1,4 +1,14 @@
 export const PURCHASE_DISPLAY_MS = 15_000;
+export const MERGER_DISPLAY_MS = 10_000;
+
+export type MergerDecision = {
+  playerName: string;
+  starting: number;
+  sold: number | null;
+  received: number | null;
+  kept: number;
+};
+
 export const PURCHASE_BUFFER_MS = 5 * 60_000;
 
 export type PurchaseAnnouncement = {
@@ -7,9 +17,14 @@ export type PurchaseAnnouncement = {
   items: {chain: number; quantity: number; unitPrice: number}[];
   total: number;
   createdAt: number;
+  mergerResult?: {acquirer: number; acquired: number; decisions: MergerDecision[]};
   bonus?: {chain: number; payouts: {playerName: string; amount: number}[]};
 };
 export type DeliveredPurchaseAnnouncement = PurchaseAnnouncement & {remainingMs: number};
+
+export function announcementDisplayMs(event: PurchaseAnnouncement) {
+  return event.mergerResult ? MERGER_DISPLAY_MS : PURCHASE_DISPLAY_MS;
+}
 
 export function recentPurchases(events: PurchaseAnnouncement[] = [], now = Date.now()) {
   return events.filter(event => now - event.createdAt < PURCHASE_BUFFER_MS).slice(-256);
@@ -41,7 +56,7 @@ export async function deliverPurchases(db: D1Database, code: string, viewer: num
       if (!result.meta.changes) continue;
     }
     return recent.flatMap(event => {
-      const remainingMs = PURCHASE_DISPLAY_MS - (now - updated[event.id]);
+      const remainingMs = announcementDisplayMs(event) - (now - updated[event.id]);
       return remainingMs > 0 ? [{...event, remainingMs}] : [];
     });
   }

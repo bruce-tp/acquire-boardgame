@@ -432,3 +432,37 @@
   .table-heading { flex-wrap: wrap; }
   .header-holdings { order: 1; flex-basis: 100%; }
 }
+
+.board-with-results { position: relative; }
+.merger-results {
+  position: absolute;
+  inset: 6% 6%;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  background: #142638;
+  border: 1px solid #c8a572;
+  border-radius: 10px;
+  box-shadow: 0 10px 32px #0009;
+  overflow: hidden;
+}
+.merger-results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+}
+.merger-results-header h3, .merger-results h4 { margin: 0; }
+.merger-results-header h3 { font-size: 16px; }
+.merger-results-header small { color: #b1c4d2; font-size: 11px; }
+.merger-results-body { min-height: 0; overflow: auto; padding: 10px 12px; }
+.merger-results-body section + section { margin-top: 14px; }
+.merger-results h4 { margin-bottom: 7px; font-size: 14px; }
+.merger-results-table { overflow-x: auto; }
+.merger-results table { border-collapse: collapse; width: 100%; text-align: right; font-size: 12px; }
+.merger-results :is(td, th) { padding: 5px 6px; border-bottom: 1px solid var(--line); }
+.merger-results th:first-child { text-align: left; overflow-wrap: anywhere; }
+.merger-results td { font-variant-numeric: tabular-nums; white-space: nowrap; }

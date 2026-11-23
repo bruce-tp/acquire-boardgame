@@ -1,5 +1,5 @@
 import type {DeliveredPurchaseAnnouncement} from './game/purchase-announcements.ts';
-import {PURCHASE_DISPLAY_MS} from './game/purchase-announcements.ts';
+import {announcementDisplayMs} from './game/purchase-announcements.ts';
 
 export type VisiblePurchase = DeliveredPurchaseAnnouncement & {expiresAt: number};
 
@@ -41,12 +41,16 @@ export function createPurchaseNoticeQueue(onChange: (visible: VisiblePurchase[])
       for (const notice of incoming) {
         if (seen.has(notice.id)) continue;
         seen.add(notice.id);
-        const duration = Math.min(PURCHASE_DISPLAY_MS, notice.remainingMs);
+        const duration = Math.min(announcementDisplayMs(notice), notice.remainingMs);
         if (!(duration > 0)) continue;
         active.set(notice.id, {...notice, expiresAt: now + duration});
         added = true;
       }
       if (added) refresh();
+    },
+    dismiss(ids: string[]) {
+      for (const id of ids) active.delete(id);
+      refresh();
     },
     stop() {
       stopped = true;

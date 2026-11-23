@@ -119,14 +119,15 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <ul>
-      <li><Explanation zh="完場計埋賣股同獎金，最多錢嗰個贏。"
-        en="Most cash after share sales and bonuses wins."/></li>
-      <li><Explanation zh="輪到你，喺棋盤揀一格起樓。起樓有可能會觸發變動，如果有變動，跟畫面提示做。"
-        en="Choose a square to build on. Follow the prompts if a hotel changes."/></li>
-      <li><Explanation zh="之後可以買股票，唔買都得。"
-        en="Buy shares or skip buying."/></li>
-    </ul>
+    <Explanation zh="勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。"
+      en="To win, finish with the most cash after share sales and bonuses."/>
+    <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
+    <ol>
+      <li><Explanation zh="起樓" en="Build"/></li>
+      <li><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
+    </ol>
+    <Explanation zh="買完或者揀唔買，就到下一位玩家做同樣嘅嘢。"
+      en="Once you buy or skip buying, the next player takes their turn."/>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {lessons.map(([id, zh, en], index) => <button type="button" className="secondary compact" key={id}
         aria-current={id === lesson ? 'step' : undefined} onClick={() => {if (id !== lesson) openLesson(id);}}>

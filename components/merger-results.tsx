@@ -73,16 +73,7 @@ export function MergerResults({incoming}: {incoming: DeliveredPurchaseAnnounceme
                   {' → '}<span style={{color: HOTELS[acquirer].colour}}>{decision.received}</span></>}</td>
                 <td>{decision.kept}</td>
                 <td>{decision.award ? <>
-                  <strong>{'
-              </tr>)}</tbody>
-            </table>
-          </div> : <p>冇玩家持有被收購酒店股份 · No players held shares in the acquired hotel.</p>}
-        </section>;
-      })}
-    </div>
-  </section>;
-}
- + decision.award.amount.toLocaleString('en-GB')}</strong>
+                  <strong>{'$' + decision.award.amount.toLocaleString('en-GB')}</strong>
                   <small className="merger-award-rank">{awardLabels[decision.award.rank]}</small>
                 </> : decision.award === null ? '$0' : '—'}</td>
               </tr>)}</tbody>

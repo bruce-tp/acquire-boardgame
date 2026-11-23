@@ -365,7 +365,7 @@
   }
 }
 
-.board-frame .tile { min-height: 36px; }
+.board-frame .tile { min-height: 51px; }
 .tile.playable {
   flex-direction: column;
   gap: 1px;
@@ -645,3 +645,14 @@
 .hoshinoya-moon::after { top: 12%; left: 15%; width: 25%; height: 25%; background: #ffe4a9; }
 .hoshinoya-sign-wordmark { display: grid; justify-items: center; gap: 0.04em; line-height: 1; }
 .hoshinoya-sign-wordmark small { font-size: 0.43em; letter-spacing: 0.09em; }
+
+/* Compact translations beneath the existing board badges. */
+.tile :is(.tile-placement-label, .tile-event-badge, .independent-tile-label, .latest-tile-badge) > small {
+  display: block;
+  font-size: clamp(6px, 0.64vw, 9px);
+  line-height: 1;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+.tile .latest-tile-badge > small { font-size: 6px; }
+.tile.independent svg { height: 40%; }

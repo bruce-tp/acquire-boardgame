@@ -26,7 +26,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     ? plan.chains.length > 1 ? 'merge' : plan.chains.length === 1 ? 'expand' : plan.group.length > 1 ? 'found' : null
     : null;
   const eventLabel = event ? eventLabels[event].join(' · ') : '';
-  const placementStatus = selected ? '已選取 · Selected' : '可放置 · Place here';
+  const placementStatus = selected ? ['已選取', 'Selected'] : ['可放置', 'Place here'];
   const description = hotel ? hotel.name : independent ? '獨立建築 · Independent building' : plan ? '你的地塊 · Your tile' : '空地 · Empty lot';
   const classes = [
     'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
@@ -36,22 +36,22 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
 
   return <button type="button" className={classes}
     title={coordinate + ' · ' + (plan?.reason || description)}
-    aria-label={[coordinate, description, playable && placementStatus, eventLabel, latest && '最新落牌 · Latest placement'].filter(Boolean).join(' · ')}
+    aria-label={[coordinate, description, playable && placementStatus.join(' · '), eventLabel, latest && '最新落牌 · Latest placement'].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
     disabled={!playable} onClick={onSelect}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
-    {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}</span>}
+    {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabels[event][0]}<small lang="en">{eventLabels[event][1]}</small></span>}
     {hotel ? <>
       <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>
       <span className="tile-coordinate">{coordinate}</span>
     </> : independent ? <>
       <Building2 size={20} aria-hidden="true"/>
       <span className="tile-coordinate">{coordinate}</span>
-      <span className="independent-tile-label" aria-hidden="true">獨立建築</span>
+      <span className="independent-tile-label" aria-hidden="true">獨立建築<small lang="en">Independent</small></span>
     </> : plan ? <span>{coordinate}</span> : <span className="tile-dot" aria-hidden="true">·</span>}
     {playable && (!event || selected) && <span className="tile-placement-label" aria-hidden="true">
-      {selected ? '已選取' : '可放置'}
+      {placementStatus[0]}<small lang="en">{placementStatus[1]}</small>
     </span>}
-    {latest && <span className="latest-tile-badge" aria-hidden="true">最新</span>}
+    {latest && <span className="latest-tile-badge" aria-hidden="true">最新<small lang="en">Latest</small></span>}
   </button>;
 }

@@ -680,3 +680,19 @@
 .tutorial-practice-opening { margin: 12px 0; }
 .tutorial-practice-opening figcaption { margin-bottom: 8px; color: var(--goldlight); }
 .tutorial-practice-opening .board-frame { min-width: 640px; }
+
+/* Reflow the longest hotel wordmarks at board-tile scale. */
+.tile.hotel-tile-wordmark { container-type: inline-size; }
+.tile.hotel-tile > .board-hotel-wordmark {
+  position: absolute;
+  inset: 12% 1px 22%;
+  display: grid;
+  place-items: center;
+  color: #102637;
+  font-size: min(17cqi, 15px);
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.tile.hotel-tile > .board-hotel-wordmark:lang(ja) { font-size: min(26cqi, 19px); }

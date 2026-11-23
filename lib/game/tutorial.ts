@@ -6,6 +6,7 @@ export const MANDARIN = 0;
 export const PLACEMENT_TILE = 28;
 export const FOUNDING_TILE = 29;
 export const MERGER_TILE = 28;
+export const FINAL_TILE = 40;
 
 export type TutorialExercise = 'place' | 'found' | 'merge' | 'settle';
 
@@ -25,14 +26,16 @@ export function createTutorialGame(exercise: TutorialExercise): Game {
     game.players[1].shares[HOSHINO] = 2;
     game.bank[HOSHINO] -= 6;
   } else {
-    game.board.fill(MANDARIN, 0, 41);
+    game.board.fill(MANDARIN, 0, FINAL_TILE);
+    for (const tile of [80, 81, 82, 92, 93, 94]) game.board[tile] = PENINSULA;
+    game.players[0].hand = [FINAL_TILE];
     game.players[0].cash = 1800;
     game.players[0].shares[MANDARIN] = 7;
     game.players[1].shares[MANDARIN] = 4;
     game.bank[MANDARIN] -= 11;
   }
 
-  game.phase = exercise === 'settle' ? 'buy' : 'place';
+  game.phase = 'place';
   game.deck = Array.from({length: game.board.length}, (_, tile) => tile)
     .filter(tile => game.board[tile] === -1 && !game.players[0].hand.includes(tile));
   if (exercise === 'place' || exercise === 'found') {

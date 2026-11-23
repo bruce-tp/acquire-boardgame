@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGame,makePlayer,startGame,applyAction,actor,publicState,placement,size,priceFor,canEnd,botAction} from '../lib/game/engine.ts';
-import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE} from '../lib/game/tutorial.ts';
 function setup(n=3){const g=createGame('TEST','a','Alice');for(let i=1;i<n;i++)g.players.push(makePlayer(String(i),'Player '+i));g.phase='place';g.turn=0;g.deck=Array.from({length:108},(_,i)=>i);return g;}
 function put(g,c,ts){for(const t of ts)g.board[t]=c;g.deck=g.deck.filter(t=>!ts.includes(t));}
 function hand(g,who,ts){g.players[who].hand=ts;g.deck=g.deck.filter(t=>!ts.includes(t));}
@@ -126,6 +126,9 @@ test('beginner tutorial exercises use valid placements, purchases, merger decisi
   assertShares(merger);
 
   const settlement=createTutorialGame('settle');
+  assert.equal(canEnd(settlement),false);
+  applyAction(settlement,0,{type:'place',tile:FINAL_TILE});
+  assert.equal(canEnd(settlement),true);
   applyAction(settlement,0,{type:'declare'});
   applyAction(settlement,0,{type:'finish'});
   assert.equal(settlement.phase,'end');

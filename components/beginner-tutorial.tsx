@@ -2,10 +2,11 @@
 
 import {useEffect, useRef, useState} from 'react';
 import {X} from 'lucide-react';
+import {FinalScorecard} from './final-scorecard';
 import {BoardTile} from './board-tile';
 import {PriceReference} from './price-reference';
-import {applyAction, HOTELS, label, placement, price, priceFor, size, type Action, type Game} from '../lib/game/engine.ts';
-import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
+import {applyAction, HOTELS, label, placement, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
+import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const lessons = [
   ['place', '放置地塊', 'Placing a tile'],
@@ -22,19 +23,22 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{zh}<small lang="en">{en}</small></p>;
 }
 
-function LessonBoard({game, target, selected, onSelect}: {
+function LessonBoard({game, target, selected, onSelect, full = false}: {
   game: Game;
   target: number;
   selected: boolean;
   onSelect: () => void;
+  full?: boolean;
 }) {
   const placing = game.phase === 'place' && game.turn === 0;
-  return <div className="board-frame tutorial-board" role="group" aria-label="練習棋盤 · Practice board">
+  const columns = full ? Array.from({length:12}, (_, index) => index + 1) : boardColumns;
+  const rows = full ? Array.from({length:9}, (_, index) => String.fromCharCode(65 + index)) : boardRows;
+  return <div className={full ? 'board-frame' : 'board-frame tutorial-board'} role="group" aria-label="練習棋盤 · Practice board">
     <div className="grid-label corner" aria-hidden="true">A</div>
-    {boardColumns.map(column => <div className="grid-label" key={column}>{column}</div>)}
-    {boardRows.map(row => <div className="board-row" key={row}>
+    {columns.map(column => <div className="grid-label" key={column}>{column}</div>)}
+    {rows.map(row => <div className="board-row" key={row}>
       <div className="grid-label">{row}</div>
-      {boardColumns.map(column => {
+      {columns.map(column => {
         const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
         const plan = placing && tile === target ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
@@ -60,7 +64,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const [error, setError] = useState('');
   const player = game.players[0];
   const lessonIndex = lessons.findIndex(([id]) => id === lesson);
-  const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, settle: -1}[lesson];
+  const target = {place: PLACEMENT_TILE, found: FOUNDING_TILE, merge: MERGER_TILE, settle: FINAL_TILE}[lesson];
 
   useEffect(() => {dialog.current?.showModal();}, []);
 
@@ -229,23 +233,34 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節 · Next lesson</button>
       </>}
 
-      {lesson === 'settle' && game.phase !== 'end' && <>
-        <Explanation zh={`任何酒店有 41 格，或者所有已成立酒店都有至少 11 格，就可以宣告今個回合完結後結算。呢局文華有 ${size(game, MANDARIN)} 格，你揸住 7 股，手頭有 ${money(player.cash)}。先宣告，然後完成回合。`}
-          en={`You may declare the final turn when any chain reaches 41 tiles or all active chains have at least 11. Here Mandarin has ${size(game, MANDARIN)} tiles. You hold seven shares and ${money(player.cash)} cash. Declare, then finish your turn.`}/>
-        <button type="button" className="primary" onClick={() => advance({type: game.endDeclared ? 'finish' : 'declare'})}>
-          {game.endDeclared ? '完成回合 · Finish turn' : '宣告最後回合 · Declare final turn'}
-        </button>
+      {lesson === 'settle' && <>
+        {placing && <Explanation
+          zh="睇下面完整棋盤。文華東方有 40 格，半島有 6 格，呢局仍然進行中。有一間酒店達 41 格，或者所有已成立嘅酒店都有至少 11 格，當前玩家就可以選擇今個回合完結後結算。撳棋盤上嘅 5D，再撳「確認放置」，將文華東方擴展到 41 格。"
+          en="On the full board below, Mandarin Oriental has 40 tiles and the Peninsula has six. The game is still in progress. When a hotel reaches 41 tiles, or every active hotel has at least 11, the current player can choose to end the game after their turn. Select 5D and confirm to grow Mandarin Oriental to 41 tiles."/>}
+        {!placing && <h4>終局棋盤 · Endgame board</h4>}
+        <div className="board-scroll">
+          <LessonBoard full game={game} target={target} selected={selected} onSelect={() => setSelected(!selected)}/>
+        </div>
+        {placing && <button type="button" className="primary" disabled={!selected} onClick={() => advance({type: 'place', tile: target})}>
+          確認放置 · Build tile
+        </button>}
+        {game.phase === 'buy' && <>
+          <Explanation zh="文華東方而家有 41 格。呢個例子入面，你選擇完結遊戲，今個回合唔再買股。"
+            en="Mandarin Oriental now has 41 tiles. In this example, you choose to end the game and skip buying more shares."/>
+          <button type="button" className="primary" onClick={() => {
+            const finalGame = structuredClone(game);
+            applyAction(finalGame, 0, {type: 'declare'});
+            applyAction(finalGame, 0, {type: 'finish'});
+            setGame(finalGame);
+          }}>結束遊戲及查看結算表 · End game and see scores</button>
+        </>}
       </>}
 
       {lesson === 'settle' && score && mandarin && <>
-        <Explanation zh="結算表逐項列出你帶入終局嘅現金、仍然營業嘅酒店股票套現同股東獎金。未重開嘅酒店股票值 $0。現金總額最高嘅玩家贏。"
-          en="The final scorecard lists your starting cash at settlement, proceeds from active hotels and shareholder bonuses. Shares in closed hotels are worth $0. The player with the most cash wins."/>
-        <dl className="tutorial-score">
-          <div><dt>結算前現金 · Cash before settlement</dt><dd>{money(score.cashBeforeSettlement)}</dd></div>
-          <div><dt>股票套現 · Proceeds ({mandarin.shares} × {money(mandarin.sharePrice)})</dt><dd>{money(mandarin.sale)}</dd></div>
-          <div><dt>第一股東獎金 · Majority bonus (10 × {money(mandarin.sharePrice)})</dt><dd>{money(mandarin.bonus)}</dd></div>
-          <div><dt>最終總額 · Final total</dt><dd>{money(player.cash)}</dd></div>
-        </dl>
+        <Explanation
+          zh={`你有 ${money(score.cashBeforeSettlement)} 現金。文華東方 7 股，每股 ${money(mandarin.sharePrice)}，套現 ${money(mandarin.sale)}，再加 ${money(mandarin.bonus)} 大股東獎金。加埋係 ${money(player.cash)}。結算表由最高總額排起，第一位就係贏家。`}
+          en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Your seven Mandarin Oriental shares sell for ${money(mandarin.sale)}, plus a ${money(mandarin.bonus)} majority bonus. Your final total is ${money(player.cash)}. The scorecard ranks players by final cash, with the winner at the top.`}/>
+        <FinalScorecard view={publicState(game, 0)}/>
         {startPractice && <button type="button" className="primary" onClick={startPractice}>試玩一局 · Play a practice game</button>}
         {!startPractice && <button type="button" className="primary" onClick={close}>返回遊戲 · Return to game</button>}
       </>}

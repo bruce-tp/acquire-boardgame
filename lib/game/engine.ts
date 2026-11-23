@@ -4,7 +4,7 @@ import {recentPurchases, announcementDisplayMs, type MergerDecision, type Shareh
 export const HOTELS = [
   {id:0,name:'Mandarin Oriental',zh:'香港文華東方',short:'文華',colour:'#edb94b',tier:2,mark:'MO',original:'Tower',logo:'/hotels/mandarin.svg',region:'香港 · HK'},
   {id:1,name:'The Peninsula',zh:'香港半島酒店',short:'半島',colour:'#ec786d',tier:1,mark:'P',original:'Luxor',logo:'/hotels/peninsula.svg',region:'香港 · HK'},
-  {id:2,name:'The Okura',zh:'ホテルオークラ',short:'オークラ',colour:'#65a9e5',tier:1,mark:'O',original:'American',logo:'/hotels/okura.svg',region:'日本 · JP'},
+  {id:2,name:'Hoshino Resorts',zh:'星野集團',short:'星野',colour:'#65a9e5',tier:1,mark:'HR',original:'American',logo:'/hotels/hoshino.png',region:'日本 · JP'},
   {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:2,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
   {id:4,name:'APA Hotel',zh:'APAホテル',short:'APA',colour:'#83bd85',tier:0,mark:'APA',original:'Festival',logo:'/hotels/apa-crest.svg',region:'日本 · JP'},
   {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:1,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},

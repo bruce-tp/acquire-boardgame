@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGame,makePlayer,startGame,applyAction,actor,publicState,placement,size,priceFor,canEnd,botAction} from '../lib/game/engine.ts';
+import {createTutorialGame, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA} from '../lib/game/tutorial.ts';
 function setup(n=3){const g=createGame('TEST','a','Alice');for(let i=1;i<n;i++)g.players.push(makePlayer(String(i),'Player '+i));g.phase='place';g.turn=0;g.deck=Array.from({length:108},(_,i)=>i);return g;}
 function put(g,c,ts){for(const t of ts)g.board[t]=c;g.deck=g.deck.filter(t=>!ts.includes(t));}
 function hand(g,who,ts){g.players[who].hand=ts;g.deck=g.deck.filter(t=>!ts.includes(t));}
@@ -87,4 +88,43 @@ test('legacy rooms without settings retain Standard awards and explicit Standard
 test('settings reject unsupported editions, modes and unsafe multipliers',()=>{
  for(const s of [null,[],{}, {edition:'tycoon',bonusMode:'standard',majorityMultiplier:10},{edition:'classic',bonusMode:'standard',majorityMultiplier:7},...[-1,0,3.5,6,NaN,Infinity,'7'].map(m=>({edition:'classic',bonusMode:'custom',majorityMultiplier:m}))])assert.throws(()=>parseSettings(s));
  assert.deepEqual(bonusAmounts(500,parseSettings({edition:'classic',bonusMode:'custom',majorityMultiplier:7})),{majority:3500,minority:1750});
+});
+
+test('beginner tutorial exercises use valid placements, purchases, merger decisions and final payouts',()=>{
+  const founding=createTutorialGame('found');
+  applyAction(founding,0,{type:'place',tile:FOUNDING_TILE});
+  assert.equal(founding.phase,'found');
+  applyAction(founding,0,{type:'found',chain:HOSHINO});
+  assert.equal(founding.players[0].shares[HOSHINO],1);
+  const quantities=founding.bank.map((_,id)=>id===HOSHINO?2:0);
+  applyAction(founding,0,{type:'buyAndFinish',quantities});
+  assert.equal(founding.players[0].shares[HOSHINO],3);
+  assert.equal(founding.players[0].cash,5400);
+  assert.equal(founding.players[0].hand.length,6);
+  assert.equal(founding.turn,1);
+  assertShares(founding);
+
+  const merger=createTutorialGame('merge');
+  applyAction(merger,0,{type:'place',tile:MERGER_TILE});
+  assert.equal(merger.merger.survivor,PENINSULA);
+  assert.equal(merger.merger.loser,HOSHINO);
+  assert.equal(merger.merger.awards[0].amount,5000);
+  assert.equal(merger.merger.awards[1].amount,2500);
+  applyAction(merger,0,{type:'dispose',sell:1,trade:1});
+  applyAction(merger,1,{type:'dispose',sell:0,trade:0});
+  assert.equal(merger.phase,'buy');
+  assert.equal(merger.players[0].shares[PENINSULA],1);
+  assert.equal(merger.players[0].shares[HOSHINO],1);
+  assert.equal(merger.players[0].cash,11500);
+  assertShares(merger);
+
+  const settlement=createTutorialGame('settle');
+  applyAction(settlement,0,{type:'declare'});
+  applyAction(settlement,0,{type:'finish'});
+  assert.equal(settlement.phase,'end');
+  assert.deepEqual(settlement.finalScores[0].hotels[MANDARIN],{
+    id:MANDARIN,shares:7,sharePrice:1200,sale:8400,bonus:12000,
+  });
+  assert.equal(settlement.players[0].cash,22200);
+  assertShares(settlement);
 });

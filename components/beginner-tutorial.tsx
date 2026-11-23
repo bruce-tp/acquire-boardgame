@@ -135,8 +135,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
       <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
     </ol>
-    <Explanation zh="買完或者揀唔買，就到下一位玩家做同樣嘅嘢。"
-      en="Once you buy or skip buying, the next player takes their turn."/>
+    <p className="tutorial-explanation">
+      買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
+      <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>
+    </p>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {chapters.map(([id, zh, en, colour]) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
         aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>

@@ -236,9 +236,28 @@
 .hotel-poster-stage{position:absolute;width:100%;aspect-ratio:3;left:0;top:70%;transform:translateY(-70%);pointer-events:none}
 .hotel-poster-stage>img{display:block;width:100%;height:100%;user-select:none}
 .hotel-poster-sign{position:absolute;display:flex;align-items:center;justify-content:center;font-family:Georgia,serif;font-weight:600;font-size:clamp(6px,1vw,13px);line-height:1;letter-spacing:.08em;color:#fff1de;white-space:nowrap}
-.peninsula-sign{left:18.15%;top:59.1%;width:14.5%;height:6.2%;text-shadow:0 0 4px #ffb4ad,0 0 8px #ec786d}
-.four-seasons-sign{left:71%;top:59.5%;width:13.8%;height:5.8%}
-.four-seasons-sign>span{width:100%;height:94%;background:#e2f3ff;mask-position:center;mask-size:contain;mask-repeat:no-repeat}
+.hotel-poster-sign {
+  border: 1px solid var(--neon);
+  border-radius: 3px;
+  background: #101321ed;
+  box-shadow: 0 0 .6em var(--neon), inset 0 0 .24em var(--neon);
+  text-shadow: 0 0 .35em var(--neon);
+}
+.peninsula-sign {
+  --neon: #ff6d66;
+  left: 10.9%;
+  top: 66%;
+  width: 15.2%;
+  height: 4.7%;
+}
+.four-seasons-sign {
+  --neon: #70c5ff;
+  left: 78%;
+  top: 60.5%;
+  width: 16%;
+  height: 4.7%;
+  color: #e6f5ff;
+}
 .branded-hotel-panorama:after{background:linear-gradient(0deg,#061420b8,transparent 47%);z-index:1}
 
 /* Landing artwork uses the same illustrated hotels, with the full scene visible. */

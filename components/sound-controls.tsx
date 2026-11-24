@@ -24,7 +24,7 @@ export function SoundControls({sound,volume,error,toggle,setVolume,preview}:{
       <label htmlFor="turn-alert-volume">{t("提示音量", "Volume")} <strong>{volume}%</strong></label>
       <input id="turn-alert-volume" type="range" min="10" max="100" step="5" value={volume} onChange={event=>setVolume(Number(event.target.value))}/>
       <button type="button" className="primary sound-preview" onClick={preview}><Play size={16}/>{t("試聽提示音", "Preview alert")}</button>
-      <p>{t("較清楚嘅雙聲提示，音量會自動記住。", "A sustained double bell. Your volume setting is saved.")}</p>
+      <p>{t("使用清晰的雙聲提示，系統會儲存音量設定。", "A sustained double bell. Your volume setting is saved.")}</p>
       {error&&<p className="sound-error" role="alert">{localiseMessage(error)}</p>}
     </div>
   </details>;

@@ -83,7 +83,7 @@ export function MergerResults({incoming}: {incoming: DeliveredPurchaseAnnounceme
                 </> : decision.award === null ? '$0' : '—'}</td>
               </tr>)}</tbody>
             </table>
-          </div> : <p>{t("冇玩家持有被收購酒店股份", "No players held shares in the acquired hotel.")}</p>}
+          </div> : <p>{t("沒有玩家持有被收購酒店的股份", "No players held shares in the acquired hotel.")}</p>}
         </section>;
       })}
     </div>

@@ -43,7 +43,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
 
   return <button type="button" className={classes}
     title={coordinate + ' · ' + (plan?.reason ? localiseMessage(plan.reason) : description)}
-    aria-label={[coordinate, description, playable && placementStatus, eventLabel, latest && t("最新落牌", "Latest placement")].filter(Boolean).join(' · ')}
+    aria-label={[coordinate, description, playable && placementStatus, eventLabel, latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
     disabled={!playable || !onSelect} onClick={onSelect}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>

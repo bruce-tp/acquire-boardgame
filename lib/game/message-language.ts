@@ -7,14 +7,14 @@ const translations: [RegExp, string][] = [
   [/^(.+) starts$/, '$1 首先行動'],
   [/^Market holds (\d+) (.+)$/, '市場持有 $1 股$2'],
   [/^(.+): (.+) bonus$/, '$1：$2 股東獎金'],
-  [/^(.+) survives$/, '$1 喺合併中保留'],
-  [/^(.+): no shares bought$/, '$1 本回合冇買股'],
-  [/^(.+): replaced (\d+) blocked tile\(s\)$/, '$1：更換咗 $2 個永久不可用地塊'],
+  [/^(.+) survives$/, '$1 在合併中保留'],
+  [/^(.+): no shares bought$/, '$1 本回合未購買股票'],
+  [/^(.+): replaced (\d+) blocked tile\(s\)$/, '$1：已更換 $2 個永久不可用地塊'],
   [/^(.+) announces the final turn$/, '$1 宣告本回合後結束'],
   [/^(.+): (\d+[A-I])$/, '$1：放置 $2'],
   [/^(.+) founded (.+)$/, '$1 成立$2，獲創辦獎勵'],
   [/^(.+): purchased (.+)$/, '$1：買入$2股票'],
-  [/^(.+) has no playable tile$/, '$1 冇地塊可以放置'],
+  [/^(.+) has no playable tile$/, '$1 沒有可放置的地塊'],
   [/^(.+) win$/, '$1 勝出'],
 ];
 

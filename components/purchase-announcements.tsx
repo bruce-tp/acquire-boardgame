@@ -38,7 +38,7 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
         <span style={{color: HOTELS[item.chain].colour}} title={HOTELS[item.chain].name}>{t(HOTELS[item.chain].zh, HOTELS[item.chain].name)}</span>
         <b aria-label={`${item.quantity} shares`}>{item.quantity} {t("股", "shares")}</b>
         <span className="purchase-line-cost">${(item.quantity * item.unitPrice).toLocaleString('en-GB')}</span>
-      </li>)}</ul> : <p>{t("本回合冇買股", "No shares bought this turn")}</p>}
+      </li>)}</ul> : <p>{t("本回合未購買股票", "No shares bought this turn")}</p>}
       <footer><span>{t("總花費", "Total spent")}</span><strong>${notice.total.toLocaleString('en-GB')}</strong></footer>
       </>}
       <div className="purchase-notice-lifetime" aria-hidden="true"

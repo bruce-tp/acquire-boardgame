@@ -17,7 +17,7 @@ export function PriceReference({ sizes = Array(7).fill(0),settings }: { sizes?: 
       <span className="eyebrow">{t("經典版股價表", "CLASSIC STOCKHOLDER INFO CARD")}</span>
       <h3>{t("股價及股東獎金參考卡", "Share prices & bonuses")}</h3>
     </div></div>
-    <p className="reference-intro">{t("先喺酒店所屬欄搵格數，再向右睇每股價格及股東獎金。", "Find the chain’s size in its hotel column, then read across for the price per share and bonuses.")}</p>
+    <p className="reference-intro">{t("先在酒店所屬欄位找到格數，再向右查看每股價格及股東獎金。", "Find the chain’s size in its hotel column, then read across for the price per share and bonuses.")}</p>
     <div className="reference-table-scroll" tabIndex={0} role="region" aria-label={t("可橫向捲動的股價表", "Scrollable share price table")}>
       <table className="reference-table">
         <caption>{t("經典版 · 格數 → 每股買賣價 → 股東獎金", "Classic mode · Chain size → Share price → Shareholder bonuses")}<br/>{config.bonusMode==='standard'?t("標準", "Standard"):t("自訂", "Custom")} · {major}× / {minor}×</caption>
@@ -44,7 +44,7 @@ export function PriceReference({ sizes = Array(7).fill(0),settings }: { sizes?: 
       </table>
     </div>
     <div className="reference-notes">
-      <p><strong>{t("獎金", "Bonuses")}</strong> {t(`第一大股東獲股價 ×${major}；第二大獲 ×${minor}。只有一人持股，兩份獎金都歸佢。`, `Majority: ${major}× the share price. Minority: ${minor}×. A sole shareholder receives both.`)}</p>
+      <p><strong>{t("獎金", "Bonuses")}</strong> {t(`第一大股東獲股價 ×${major}；第二大獲 ×${minor}。若只有一人持股，該股東可獲得兩份獎金。`, `Majority: ${major}× the share price. Minority: ${minor}×. A sole shareholder receives both.`)}</p>
       <p>{t("並列第一：合併兩份獎金平分。並列第二：平分第二獎金。並列分獎時，各人向上取整至 $100；沒有並列則按倍數派發。", "Tied majority splits both bonuses; tied minority splits the minority bonus. Round split awards up to $100; unsplit awards use the exact multiplier.")}</p>
       <p><ShieldCheck size={15}/> <strong>{t("11+ 格安全", "Safe at 11+")}</strong>　{t("41+ 格，或所有活躍酒店均安全，可於自己回合宣告最後回合。", "At 41+ tiles, or when every active chain is safe, the current player may declare the final turn.")}</p>
       <p>{t("表中賣價用於合併或結算，普通回合不能自由賣股。", "Selling prices apply during mergers and final settlement; shares cannot be sold during an ordinary turn.")}</p>

@@ -18,7 +18,7 @@ const buildLessons = [
 ] as const;
 
 const chapters = [
-  ['place', '起樓（放置地塊）', 'Build (place a tile)', 'build'],
+  ['place', '建造（放置地塊）', 'Build (place a tile)', 'build'],
   ['buy', '買股票', 'Buy shares', 'buy'],
   ['settle', '終局', 'Game end', 'end'],
 ] as const;
@@ -40,7 +40,7 @@ function PrivateSpotCoordinates() {
 
   const spots = ['5C', '7E', '8B', '8G', '8H', '9E'];
   return spots.map((spot, index) => <span key={spot} style={{whiteSpace: 'nowrap'}}>
-    {index === 0 ? '' : index === spots.length - 1 ? (english ? ' and ' : ' 同 ') : (english ? ', ' : '、')}
+    {index === 0 ? '' : index === spots.length - 1 ? (english ? ' and ' : ' 及 ') : (english ? ', ' : '、')}
     <span style={{display: 'inline-block', paddingInline: 5, border: '1px solid #dfbc8080', borderRadius: 4, color: 'var(--goldlight)', fontWeight: 700}}>{spot}</span>
   </span>);
 }
@@ -188,7 +188,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label={t("關閉", "Close")}><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">{t("新手教學", "Learn to play")}</h2>
-    <p className="tutorial-explanation">{t("編寫中 · 呢份新手教學仲寫緊，內容會繼續更新。", "This tutorial is a work in progress.")}</p>
+    <p className="tutorial-explanation">{t("新手教學仍在編寫，內容將持續更新。", "This tutorial is a work in progress.")}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
       borderRadius: 8,
@@ -198,10 +198,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <div className="tutorial-flow-layout">
         <div>
           <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>{t("遊戲流程", "Game flow")}</h3>
-          <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
+          <Explanation zh="每個回合分為兩個步驟：" en="Each turn has two steps:"/>
           <ol>
-            <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
-            <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
+            <li className="tutorial-build"><Explanation zh="建造（放置地塊）" en="Build (place a tile)"/></li>
+            <li className="tutorial-buy"><Explanation zh="購買股票（可略過）" en="Buy shares (optional)"/></li>
           </ol>
         </div>
         <div className="tutorial-turn-art" aria-hidden="true">
@@ -223,7 +223,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         </div>
       </div>
       <p className="tutorial-explanation">
-        {t("買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到", "Once you buy or skip buying, the next player takes their turn. This repeats until ")}<span className="tutorial-end">{t("終局", "the game ends")}</span>{t("。", ".")}
+        {t("購買股票或略過後，由下一位玩家進行回合，直到", "Once you buy or skip buying, the next player takes their turn. This repeats until ")}<span className="tutorial-end">{t("終局", "the game ends")}</span>{t("。", ".")}
       </p>
           <div className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, color: '#ffd98a'}}>
             <span aria-hidden="true" style={{
@@ -231,7 +231,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           border: '2px solid currentColor', borderRadius: 4, fontWeight: 800, lineHeight: 1,
         }}>$</span>
             <div>
-              <strong>{t("勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。", "To win, finish with the most cash after share sales and bonuses.")}</strong>
+              <strong>{t("勝利條件：遊戲結束後，計入股票出售收入及股東獎金，現金最多的玩家獲勝。", "To win, finish with the most cash after share sales and bonuses.")}</strong>
             </div>
           </div>
     </section>
@@ -248,32 +248,32 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {chapter === 'place' && <>
         {placing && lesson === 'place' && <>
           <p className="tutorial-explanation">
-            {t(<> 放置地塊之後，可能會起一幢<span style={{color: '#b9ccd8'}}>獨立建築</span>、<span style={{color: '#f5ca80'}}>成立酒店</span>、<span style={{color: '#8cddcc'}}>擴展酒店</span>，或者<span style={{color: '#ffa696'}}>觸發合併</span>同換股。下面會逐步練習。</>, <> Placing a tile can add an <span style={{color: '#b9ccd8'}}>independent building</span>, <span style={{color: '#f5ca80'}}>found a hotel</span>, <span style={{color: '#8cddcc'}}>expand a hotel</span>, or <span style={{color: '#ffa696'}}>trigger a merger</span> and share exchanges. Try these in the exercises below.</>)}
+            {t(<> 放置地塊之後，可能會起一幢<span style={{color: '#b9ccd8'}}>獨立建築</span>、<span style={{color: '#f5ca80'}}>成立酒店</span>、<span style={{color: '#8cddcc'}}>擴展酒店</span>，或者<span style={{color: '#ffa696'}}>觸發合併</span>及換股。以下將逐步練習。</>, <> Placing a tile can add an <span style={{color: '#b9ccd8'}}>independent building</span>, <span style={{color: '#f5ca80'}}>found a hotel</span>, <span style={{color: '#8cddcc'}}>expand a hotel</span>, or <span style={{color: '#ffa696'}}>trigger a merger</span> and share exchanges. Try these in the exercises below.</>)}
           </p>
-          <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
+          <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，只有獲分配該地塊的玩家可以在該處建造。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <p className="tutorial-explanation">
-            {t(<> 用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 <PrivateSpotCoordinates/>。輪到你時，就可以喺棋盤撳呢啲格起樓。</>, <> In this example, the player’s six private building spots are <PrivateSpotCoordinates/>. On their turn, they can click any of these squares to build.</>)}
+            {t(<> 以這個棋盤為例，假設你是這位玩家，你的六個專屬地塊是 <PrivateSpotCoordinates/>。輪到你時，可在棋盤上選擇其中一格建造。</>, <> In this example, the player’s six private building spots are <PrivateSpotCoordinates/>. On their turn, they can click any of these squares to build.</>)}
           </p>
         </>}
         {placing && lesson === 'found' && <>
           <Explanation
-            zh="成立新酒店：新地塊接住至少一幢獨立建築，而且連成一組之後冇接到任何已成立嘅酒店。只計上下左右，唔計斜角。今次放 6C 連住 5C，就會觸發成立酒店。"
+            zh="成立新酒店：新地塊連接至少一幢獨立建築，且連成的區域未與任何已成立的酒店相連。只計算上下左右相鄰的地塊，斜角不算。本例中，放置 6C 會連接 5C，觸發酒店成立。"
             en="You found a hotel when the new tile joins at least one independent building and the connected group touches no existing hotels. Only shared edges count. Try placing 6C beside the independent building on 5C."/>
           <Explanation
-            zh="擴張已有酒店：如果放完地塊之後，連成嘅一組接到一間已成立嘅酒店，新地塊同連住嘅獨立建築都會併入嗰間酒店。接到兩間或以上，就會觸發合併。"
+            zh="擴展現有酒店：放置後，若連成的區域只與一間已成立的酒店相連，新地塊及相連的獨立建築都會併入該酒店。若連接兩間或以上的酒店，則觸發合併。"
             en="If the connected group touches exactly one existing hotel, the new tile and any connected independent buildings become part of that hotel. Connecting two or more hotels triggers a merger."/>
         </>}
         {placing && lesson === 'merge' && <>
           <Explanation
-            zh="合併（收購）係遊戲嘅核心玩法，會大大影響你手頭有幾多現金可以再投資。被收購酒店會派股東獎金，持有嗰間酒店股票嘅玩家亦可以選擇賣股套現。"
+            zh="合併（收購）會影響你可用於再投資的現金。被收購的酒店會發放股東獎金，持有該酒店股票的玩家也可選擇出售股票。"
             en="Mergers are central to the game and can make a big difference to how much cash you have to reinvest. The acquired hotel pays shareholder bonuses, and its shareholders can choose to sell shares for cash."/>
           <Explanation
-            zh="半島有 6 格，星野有 4 格。揀 5C 再確認，兩間酒店就會接通，由較大嘅半島收購星野。"
+            zh="半島有 6 格，星野有 4 格。選擇 5C 並確認放置後，兩間酒店便會相連，由規模較大的半島收購星野。"
             en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
-          <strong>{t(selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '依家試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`)}</strong>
+          <strong>{t(selected !== null ? `已選擇 ${label(selected)}，請按「確認放置」。` : lesson === 'place' ? '請選擇棋盤上六個有標記的地塊之一。' : `請選擇棋盤上的 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`)}</strong>
         </p>}
         {lesson === 'place' ? <figure className="tutorial-practice-opening">
           <div className="board-scroll" tabIndex={0} role="region" aria-label={t("練習棋盤", "Practice board")}>
@@ -286,35 +286,35 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'place' && !placing && game.lastTile !== null && <>
-        <SuccessFeedback zh="做得好！你成功放咗一塊地。" en="Well done! You placed a tile."/>
+        <SuccessFeedback zh="做得好！你已成功放置一個地塊。" en="Well done! You placed a tile."/>
         {game.phase === 'found' ? <>
-          <Explanation zh="你揀嘅地塊連住獨立建築。揀一間未成立嘅酒店，遊戲會喺棋盤上成立嗰間酒店，仲會送你一股。"
+          <Explanation zh="你放置的地塊與獨立建築相連。請選擇一間尚未成立的酒店。成立後，你會免費獲得該酒店的一股股票。"
             en="Your tile connects to an independent building. Choose an inactive hotel to found it on the board and receive one free share."/>
           <FoundingChoices game={game} onChoose={chain => advance({type: 'found', chain})}/>
         </> : game.lastTileEvent === 'found' ? <Explanation
-          zh={`${HOTELS[game.board[game.lastTile]].zh}成立咗，你攞到一股創辦人股票。`}
+          zh={`${HOTELS[game.board[game.lastTile]].zh}已成立，你獲得一股創辦人股票。`}
           en={`${HOTELS[game.board[game.lastTile]].name} is open, and you received one founder’s share.`}/>
-        : game.board[game.lastTile] === 7 ? <Explanation zh="放置成功。呢格冇接到其他建築，所以成為一幢獨立建築。"
+        : game.board[game.lastTile] === 7 ? <Explanation zh="放置成功。這個地塊未與其他建築相連，因此成為一幢獨立建築。"
           en="Tile placed. It touches no other buildings, so it stays independent."/>
-        : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
+        : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}已擴展一格。`}
           en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
-        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>{t("繼續起樓練習", "Continue building")}</button>}
+        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>{t("繼續建造練習", "Continue building")}</button>}
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
-        <Explanation zh="6C 同 5C 已經連埋，而且冇接到已成立嘅酒店。揀一間酒店成立喺呢兩格，你就會免費攞到一股。"
+        <Explanation zh="6C 和 5C 已相連，且未與任何已成立的酒店相連。選擇一個品牌在這兩格成立酒店，即可免費獲得一股股票。"
           en="6C and 5C are connected and touch no existing hotels. Choose a hotel to found on these two squares and receive one free share."/>
         <FoundingChoices game={game} onChoose={chain => advance({type: 'found', chain})}/>
       </>}
 
       {lesson === 'found' && game.phase === 'buy' && <>
-        <SuccessFeedback zh="恭喜！你成立咗一間酒店。" en="Congratulations! You founded a hotel."/>
-        <Explanation zh="酒店成立咗，你攞到一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
-        <button type="button" className="primary" onClick={() => openLesson('merge')}>{t("繼續起樓練習", "Continue building")}</button>
+        <SuccessFeedback zh="恭喜！你已成立一間酒店。" en="Congratulations! You founded a hotel."/>
+        <Explanation zh="酒店已成立，你獲得一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
+        <button type="button" className="primary" onClick={() => openLesson('merge')}>{t("繼續建造練習", "Continue building")}</button>
       </>}
 
       {lesson === 'buy' && game.phase === 'buy' && <>
-        <Explanation zh="而家去「酒店交易所」揀股。每回合最多買 3 股，只可買已成立嘅酒店，亦可以一股都唔買。試撳 + 加股，再買入並完成回合。"
+        <Explanation zh="請到「酒店交易所」選擇股票。每回合可購買已成立酒店的股票，合計最多 3 股，也可略過。請按「+」增加購買股數，再選擇「買入並完成回合」。"
           en="Use the Stock Exchange to buy up to three shares per turn across active hotels. Buying is optional. Try adding a share, then buy and finish your turn."/>
         {founderShares > 0 && <Explanation zh={`你已有 1 股${buyingHotel.zh}創辦人股票。`}
           en={`You already have one founder’s share in ${buyingHotel.name}.`}/>}
@@ -339,22 +339,22 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {buyingFinished && <>
-        <SuccessFeedback zh="做得好！你完成咗買股練習。" en="Well done! You completed the buying exercise."/>
-        <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}今次買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
+        <SuccessFeedback zh="做得好！你已完成購買股票練習。" en="Well done! You completed the buying exercise."/>
+        <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}本回合買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
           en={`Turn complete. ${buyingHotel.name}: ${founderShares ? '1 founder’s share + ' : ''}${player.shares[buyingHotel.id] - founderShares} bought this turn, ${player.shares[buyingHotel.id]} in total. Cash remaining: ${money(player.cash)}.`}/>
         <button type="button" className="primary" onClick={() => openLesson('settle')}>{t("下一節：終局", "Next: Game end")}</button>
       </>}
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
         <Explanation
-          zh={`查股價表：喺星野嗰欄搵收購前嘅 4 格，再橫向讀取每股賣價 ${money(mergerPrice)}。同一行亦列出第一同第二大股東嘅獎金。`}
+          zh={`查閱股價表：先在星野欄找到收購前的規模（4 格），再橫向查看每股賣價 ${money(mergerPrice)}。同一列也列出第一及第二大股東的獎金。`}
           en={`In the share price guide, find Hoshino’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
         <details className="tutorial-price-guide">
           <summary>{t("查看股價及股東獎金表", "View share price and bonus guide")}</summary>
           <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
         </details>
 
-        <Explanation zh={`星野每股 ${money(mergerPrice)}。你持有 4 股，係第一大股東，已收 ${money(award)} 獎金。第二大股東收一股股價嘅 5 倍。獎金同股票分開計。試吓賣 1 股、用 2 股換 1 股半島，餘下 1 股會自動保留。`}
+        <Explanation zh={`星野每股 ${money(mergerPrice)}。你持有 4 股，是第一大股東，已獲得 ${money(award)} 獎金。第二大股東的獎金為每股價格的 5 倍。獎金與股票分開計算。請試著賣出 1 股星野，再以 2 股星野換取 1 股半島，剩餘 1 股星野會自動保留。`}
           en={`Hoshino trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">
           <label>{t("賣出股數", "Sell")}
@@ -376,22 +376,22 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {disposed && <>
-        <SuccessFeedback zh="做得好！你處理完今次合併嘅股票。" en="Well done! You handled your shares in the merger."/>
-        <Explanation zh={`合併完成。同規模時，由落地塊嘅玩家揀邊間保留。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金有 ${money(player.cash)}。保留嘅股票可等酒店重開。11 格或以上嘅酒店屬安全酒店，唔可以用一塊地連接兩間安全酒店。`}
+        <SuccessFeedback zh="做得好！你已完成本次合併的股票分配。" en="Well done! You handled your shares in the merger."/>
+        <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。達到 11 格的酒店屬於安全酒店，不可用同一個地塊連接兩間安全酒店。`}
           en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[HOSHINO]} Hoshino shares and now have ${money(player.cash)} in cash. Kept shares matter if Hoshino reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
         <button type="button" className="primary" onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
       </>}
 
       {lesson === 'settle' && <>
         <Explanation
-          zh="輪到你時，符合以下任何一個條件，就可以選擇喺今個回合完結後結算。"
+          zh="輪到你時，若符合下列任一條件，可選擇在本回合結束後結算。"
           en="On your turn, you may choose to end the game after your turn if either condition is met."/>
         <ol>
           <li>{t("至少一間酒店有 41 格或以上。", "At least one hotel has 41 or more tiles.")}</li>
-          <li>{t("棋盤上所有已成立嘅酒店都安全，即係每間都有至少 11 格。", "Every active hotel on the board is safe, meaning each has at least 11 tiles.")}</li>
+          <li>{t("棋盤上所有已成立的酒店都已達到安全規模，即每間至少有 11 格。", "Every active hotel on the board is safe, meaning each has at least 11 tiles.")}</li>
         </ol>
         {placing && <Explanation
-          zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、星野 12 格，全部安全。瑰麗得 10 格。撳棋盤嘅 10H，再撳「確認放置」，睇吓瑰麗擴展到 11 格之後會點。"
+          zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、星野 12 格，全部安全。瑰麗只有 10 格。請在棋盤上選擇 10H，再按「確認放置」，看看瑰麗擴展至 11 格後會發生甚麼。"
           en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Hoshino (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
         {!placing && <h4>{t("終局棋盤", "Endgame board")}</h4>}
         <div className="board-scroll">
@@ -402,7 +402,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         </button>}
         {game.phase === 'buy' && <>
           <SuccessFeedback zh="做得好！你令最後一間酒店達到安全規模。" en="Well done! You brought the last hotel up to safe size."/>
-          <Explanation zh="瑰麗而家有 11 格，四間酒店都安全，可以選擇結束遊戲。呢個例子入面，你選擇完結遊戲，今個回合唔再買股。"
+          <Explanation zh="瑰麗現有 11 格，四間酒店均已達到安全規模，可以選擇結束遊戲。本例中，你將在本回合結束遊戲，並略過購買股票。"
             en="Rosewood now has 11 tiles, so all four hotels are safe and you may end the game. In this example, you choose to end the game and skip buying more shares."/>
           <button type="button" className="primary" onClick={() => {
             const finalGame = structuredClone(game);
@@ -414,9 +414,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'settle' && score && <>
-        <SuccessFeedback zh="恭喜！你完成咗終局結算練習。" en="Congratulations! You completed the final scoring exercise."/>
+        <SuccessFeedback zh="恭喜！你已完成終局結算練習。" en="Congratulations! You completed the final scoring exercise."/>
         <Explanation
-          zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。將表內各間酒店嘅賣股收入加埋，係 ${money(proceeds)}，再加 ${money(bonuses)} 股東獎金。你嘅最終總額係 ${money(player.cash)}。最終總額最高嘅玩家排第一。`}
+          zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。表內各酒店的股票出售收入合計為 ${money(proceeds)}，股東獎金合計為 ${money(bonuses)}。三項相加後，你的最終總額為 ${money(player.cash)}。總額最高的玩家獲勝。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
         {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("試玩一局", "Play a practice game")}</button>}

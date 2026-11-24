@@ -802,13 +802,13 @@
   font-family: inherit;
 }
 @font-face {
-  font-family: 'Cover Brush';
-  src: url('/fonts/cover-brush.woff') format('woff');
+  font-family: 'Cover Masa';
+  src: url('/fonts/cover-masa.woff') format('woff');
   font-weight: 400;
   font-display: swap;
 }
 :root:lang(zh) .hotel-landing-hero .hero-copy :is(h1, .eyebrow) {
-  font-family: 'Cover Brush', 'Cover GenWanMin', serif;
+  font-family: 'Cover Masa', 'Cover GenWanMin', serif;
   font-weight: 400;
 }
 :root:lang(zh) .hotel-landing-hero .hero-copy h1 {

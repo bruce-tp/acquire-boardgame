@@ -1,4 +1,7 @@
-Copyright 2021 The Yuji Project Authors (https://github.com/Kinutafontfactory/Yuji)
+KouzanAoyagi
+
+Copyright (c) 2020, Chun yu Yao (<URL|email>),
+with Reserved Font Name KouzanBrushFontGyousyo.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

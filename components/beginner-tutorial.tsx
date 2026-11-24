@@ -197,7 +197,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
     <form method="dialog"><button className="icon close" aria-label={t("關閉", "Close")}><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">{t("新手教學", "Learn to play")}</h2>
     <p className="tutorial-explanation">{t("歡迎來到酒店交易所，投資者！", "Welcome to the Hotel Exchange, investor!")}</p>
-    <p className="tutorial-explanation">{t("新手教學仍在編寫，內容將持續更新。", "This tutorial is a work in progress.")}</p>
+    <p className="tutorial-explanation">{t(
+      <>完成這份教學後，你就能掌握基本遊戲流程，從第一回合開始，獨立完成一場遊戲。你會練習<strong className="tutorial-build">放置地塊</strong>、<strong style={{color: '#f5ca80'}}>成立酒店</strong>、<strong style={{color: '#8cddcc'}}>擴展酒店</strong>、<strong style={{color: '#ffa696'}}>處理合併與換股</strong>，以及<strong className="tutorial-buy">購買股票</strong>。最後，你會學會閱讀<strong className="tutorial-end">終局結算表</strong>，看懂誰獲勝，以及勝負是如何決定的。</>,
+      <>By the end of this tutorial, you’ll know how a turn works and be ready to play a full game on your own. You’ll practise <strong className="tutorial-build">placing tiles</strong>, <strong style={{color: '#f5ca80'}}>founding hotels</strong>, <strong style={{color: '#8cddcc'}}>expanding hotels</strong>, <strong style={{color: '#ffa696'}}>handling shares in a merger</strong> and <strong className="tutorial-buy">buying shares</strong>. Finally, you’ll learn to read the <strong className="tutorial-end">final scorecard</strong> and see who won and why.</>,
+    )}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
       borderRadius: 8,

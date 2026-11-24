@@ -128,13 +128,13 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
       <circle className="hero-investment-price-dot" cx="35" cy="82" r="2"/>
       <circle className="hero-investment-price-dot" cx="64" cy="64" r="2"/>
     </svg>
-    <div className="hero-investment-shares">
+    <div className="hero-investment-shares" lang="en">
       {[HOTELS[0], HOTELS[1]].map(hotel => {
         const maskImage = `url("${hotel.logo}")`;
         return <div className="hero-investment-share" key={hotel.id} style={{'--hotel': hotel.colour} as React.CSSProperties}>
-          <span>{hotel.mark} · 股票證書</span>
+          <span>SHARE CERTIFICATE</span>
           <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
-          <span>1 股</span>
+          <span>ONE SHARE</span>
         </div>;
       })}
     </div>

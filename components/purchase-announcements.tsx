@@ -1,6 +1,6 @@
 'use client';
 import {useLanguage} from "./language";
-import {useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState, type CSSProperties} from 'react';
 import {HOTELS} from '../lib/game/engine';
 import type {DeliveredPurchaseAnnouncement} from '../lib/game/purchase-announcements';
 import {createPurchaseNoticeQueue, type VisiblePurchase} from '../lib/purchase-notice-queue';
@@ -23,10 +23,20 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
   if (!visible.length) return null;
   return <section className="purchase-notice-tray" aria-label={t("交易公告", "Table notifications")}
     aria-live="polite" aria-relevant="additions" aria-atomic="false">
-    {visible.map(notice => <article className="purchase-notice" key={notice.id}>
-      {notice.founding ? <>
+    {visible.map(notice => {
+      const hotel = notice.founding ? HOTELS[notice.founding.chain] : undefined;
+      const logoMask = hotel ? `url("${hotel.logo}")` : undefined;
+      return <article className="purchase-notice" key={notice.id}>
+      {notice.founding && hotel ? <>
         <header><strong>{notice.playerName}</strong><span>{t("成立酒店", "HOTEL FOUNDED")}</span></header>
-        <p>{t("成立了", "Founded")} <strong style={{color:HOTELS[notice.founding.chain].colour}}>{t(HOTELS[notice.founding.chain].zh, HOTELS[notice.founding.chain].name)}</strong></p>
+        <p style={{display:'flex', alignItems:'center', gap:10}}>
+          <span className="emblem small" style={{'--hotel':hotel.colour, padding:4, width:56, height:36} as CSSProperties} aria-hidden="true">
+            {hotel.mark === 'RGH'
+              ? <img className="guesthouse-emblem-art" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
+              : <span className="hotel-logo" style={{maskImage:logoMask, WebkitMaskImage:logoMask}}/>}
+          </span>
+          <span>{t("成立了", "Founded")} <strong style={{color:hotel.colour}}>{t(hotel.zh, hotel.name)}</strong></span>
+        </p>
         <footer><span>{t("創辦獎勵", "Founder’s reward")}</span>
           <strong>{notice.founding.reward.type === 'share'
             ? t("1 股創辦人股票", "1 founder’s share")
@@ -50,6 +60,6 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
       </>}
       <div className="purchase-notice-lifetime" aria-hidden="true"
         style={{animationDuration: `${notice.remainingMs}ms`}}/>
-    </article>)}
+    </article>;})}
   </section>;
 }

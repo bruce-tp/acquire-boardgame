@@ -87,6 +87,7 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
         const plan = (privateSpots ? privateSpots.includes(tile) : placing && tile === target) ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
           playable={canPlace && !!plan?.legal} selected={!!plan && canPlace && selected === tile}
+          tutorialHint={canPlace && !!plan?.legal && selected === null && !!onSelect}
           latest={game.lastTile === tile} onSelect={onSelect && (() => onSelect(tile))}/>;
       })}
     </div>)}
@@ -99,7 +100,7 @@ function FoundingChoices({game, onChoose}: {game: Game; onChoose: (chain: number
   return <div className="chain-choices" role="group" aria-label={t("選擇酒店", "Choose a hotel")}>
     {HOTELS.filter(hotel => size(game, hotel.id) === 0).map(hotel => {
       const maskImage = `url("${boardHotelLogo(hotel)}")`;
-      return <button type="button" className="chain-choice" key={hotel.id}
+      return <button type="button" className="chain-choice" data-tutorial-next key={hotel.id}
         onClick={() => onChoose(hotel.id)}>
         <span className="emblem brand-emblem small" aria-hidden="true" style={{'--hotel': hotel.colour} as React.CSSProperties}>
           <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
@@ -300,7 +301,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
           </div>
         </figure> : <LessonBoard game={game} target={target} selected={selected} onSelect={selectTile}/>}
-        {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
+        {placing && <button type="button" className="primary" data-tutorial-next={selected !== null || undefined} disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
           {t("確認放置", "Build tile")}
         </button>}
       </>}
@@ -321,7 +322,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         {game.lastTileEvent === 'found' && game.phase === 'buy' && <div className="tutorial-founder-certificate">
           <ShareCertificate hotel={HOTELS[game.board[game.lastTile]]}/>
         </div>}
-        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>{t("繼續建造練習", "Continue building")}</button>}
+        {game.phase !== 'found' && <button type="button" className="primary" data-tutorial-next onClick={() => openLesson('found')}>{t("繼續建造練習", "Continue building")}</button>}
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
@@ -334,7 +335,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <SuccessFeedback zh="恭喜！你已成立一間酒店。" en="Congratulations! You founded a hotel."/>
         <Explanation zh="酒店已成立，你獲得一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
         <div className="tutorial-founder-certificate"><ShareCertificate hotel={buyingHotel}/></div>
-        <button type="button" className="primary" onClick={() => openLesson('merge')}>{t("繼續建造練習", "Continue building")}</button>
+        <button type="button" className="primary" data-tutorial-next onClick={() => openLesson('merge')}>{t("繼續建造練習", "Continue building")}</button>
       </>}
 
       {lesson === 'buy' && game.phase === 'buy' && <>
@@ -347,16 +348,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <div className="stepper">
             <button type="button" disabled={quantity === 0} onClick={() => setQuantity(quantity - 1)} aria-label={t("減一股", "Remove one share")}>−</button>
             <output aria-live="polite">{quantity}</output>
-            <button type="button" disabled={quantity === 3} onClick={() => setQuantity(quantity + 1)} aria-label={t("加一股", "Add one share")}>+</button>
+            <button type="button" data-tutorial-next={quantity === 0 || undefined} disabled={quantity === 3} onClick={() => setQuantity(quantity + 1)} aria-label={t("加一股", "Add one share")}>+</button>
           </div>
           <span>{t("總額", "Total")} <strong>{money(quantity * price(game, buyingHotel.id))}</strong></span>
         </div>
         <div className="tutorial-actions">
-          <button type="button" className="primary" disabled={!quantity} onClick={() => {
+          <button type="button" className="primary" data-tutorial-next={quantity > 0 || undefined} disabled={!quantity} onClick={() => {
             const quantities = HOTELS.map(hotel => hotel.id === buyingHotel.id ? quantity : 0);
             advance({type: 'buyAndFinish', quantities});
           }}>{t("買入並完成回合", "Buy & finish turn")}</button>
-          <button type="button" className="secondary" onClick={() => advance({type: 'finish'})}>
+          <button type="button" className="secondary" data-tutorial-next={quantity === 0 || undefined} onClick={() => advance({type: 'finish'})}>
             {t("不買股，完成回合", "Skip buying & finish")}
           </button>
         </div>
@@ -366,7 +367,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <SuccessFeedback zh="做得好！你已完成購買股票練習。" en="Well done! You completed the buying exercise."/>
         <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}本回合買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
           en={`Turn complete. ${buyingHotel.name}: ${founderShares ? '1 founder’s share + ' : ''}${player.shares[buyingHotel.id] - founderShares} bought this turn, ${player.shares[buyingHotel.id]} in total. Cash remaining: ${money(player.cash)}.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('settle')}>{t("下一節：終局", "Next: Game end")}</button>
+        <button type="button" className="primary" data-tutorial-next onClick={() => openLesson('settle')}>{t("下一節：終局", "Next: Game end")}</button>
       </>}
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
@@ -374,7 +375,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`查閱股價表：先在四季欄找到收購前的規模（4 格），再橫向查看每股賣價 ${money(mergerPrice)}。同一列也列出第一及第二大股東的獎金。`}
           en={`In the share price guide, find Four Seasons’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
         <details className="tutorial-price-guide">
-          <summary>{t("查看股價及股東獎金表", "View share price and bonus guide")}</summary>
+          <summary data-tutorial-next={!sell && !trade || undefined}>{t("查看股價及股東獎金表", "View share price and bonus guide")}</summary>
           <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
         </details>
 
@@ -382,13 +383,13 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           en={`As shown in the table above, Four Seasons trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">
           <label>{t("賣出股數", "Sell")}
-            <select value={sell} onChange={event => setSell(Number(event.target.value))}>
+            <select data-tutorial-next={sell === 0 || undefined} value={sell} onChange={event => setSell(Number(event.target.value))}>
               {Array.from({length: player.shares[FOUR_SEASONS] - trade * 2 + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
           <label><span>{hotelText(t("換入半島股數", "Receive"), true)}</span>
-            <select value={trade} onChange={event => setTrade(Number(event.target.value))}>
+            <select data-tutorial-next={trade === 0 || undefined} value={trade} onChange={event => setTrade(Number(event.target.value))}>
               {Array.from({length: Math.floor((player.shares[FOUR_SEASONS] - sell) / 2) + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
@@ -396,14 +397,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <span>{t("保留", "Keep")} <strong>{retained}</strong></span>
           <span>{t("套現", "Proceeds")} <strong>{money(sell * mergerPrice)}</strong></span>
         </div>
-        <button type="button" className="primary" onClick={() => advance({type: 'dispose', sell, trade})}>{t("確認", "Confirm")}</button>
+        <button type="button" className="primary" data-tutorial-next={sell > 0 || trade > 0 || undefined} onClick={() => advance({type: 'dispose', sell, trade})}>{t("確認", "Confirm")}</button>
       </>}
 
       {disposed && <>
         <SuccessFeedback zh="做得好！你已完成本次合併的股票分配。" en="Well done! You handled your shares in the merger."/>
         <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[FOUR_SEASONS]} 股四季，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。達到 11 格的酒店屬於安全酒店，不可用同一個地塊連接兩間安全酒店。`}
           en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[FOUR_SEASONS]} Four Seasons shares and now have ${money(player.cash)} in cash. Kept shares matter if Four Seasons reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
+        <button type="button" className="primary" data-tutorial-next onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
       </>}
 
       {lesson === 'settle' && <>
@@ -421,14 +422,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <div className="board-scroll">
           <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile}/>
         </div>
-        {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: target})}>
+        {placing && <button type="button" className="primary" data-tutorial-next={selected !== null || undefined} disabled={selected === null} onClick={() => advance({type: 'place', tile: target})}>
           {t("確認放置", "Build tile")}
         </button>}
         {game.phase === 'buy' && <>
           <SuccessFeedback zh="做得好！你令最後一間酒店達到安全規模。" en="Well done! You brought the last hotel up to safe size."/>
           <Explanation zh="瑰麗現有 11 格，四間酒店均已達到安全規模，可以選擇結束遊戲。本例中，你將在本回合結束遊戲，並略過購買股票。"
             en="Rosewood now has 11 tiles, so all four hotels are safe and you may end the game. In this example, you choose to end the game and skip buying more shares."/>
-          <button type="button" className="primary" onClick={() => {
+          <button type="button" className="primary" data-tutorial-next onClick={() => {
             const finalGame = structuredClone(game);
             applyAction(finalGame, 0, {type: 'declare'});
             applyAction(finalGame, 0, {type: 'finish'});
@@ -451,8 +452,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <>你已經完成基本教學，並成為一個可以獨當一面的投資者。{startPractice && <>我們強烈建議您<strong>與電腦試玩一局</strong>，對我們投資者而言，實踐就是最好的老師！</>}</>,
           <>You’ve completed the basic tutorial and can now hold your own as an investor. {startPractice && <>We strongly recommend <strong>playing a practice game against the computer</strong>. For us investors, practice is the best teacher!</>}</>,
         )}</p>
-        {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("與電腦試玩一局", "Play a practice game against the computer")}</button>}
-        <button type="button" className="secondary" style={{marginTop: 8}} onClick={close}>
+        {startPractice && <button type="button" className="primary" data-tutorial-next onClick={startPractice}>{t("與電腦試玩一局", "Play a practice game against the computer")}</button>}
+        <button type="button" className="secondary" data-tutorial-next style={{marginTop: 8}} onClick={close}>
           {startPractice ? t("返回首頁", "Back to homepage") : t("完成教學", "Finish tutorial")}
         </button>
       </>}

@@ -21,9 +21,10 @@ type BoardTileProps = {
   selected: boolean;
   latest: boolean;
   onSelect?: () => void;
+  tutorialHint?: boolean;
 };
 
-export function BoardTile({tile, value, plan, playable, selected, latest, onSelect}: BoardTileProps) {
+export function BoardTile({tile, value, plan, playable, selected, latest, onSelect, tutorialHint}: BoardTileProps) {
   const {t, localiseMessage} = useLanguage();
 
   const hotel = HOTELS[value];
@@ -41,7 +42,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   ].filter(Boolean).join(' ');
   const maskImage = hotel ? 'url("' + boardHotelLogo(hotel) + '")' : undefined;
 
-  return <button type="button" className={classes}
+  return <button type="button" className={classes} data-tutorial-next={tutorialHint || undefined}
     title={coordinate + ' · ' + (plan?.reason ? localiseMessage(plan.reason) : description)}
     aria-label={[coordinate, description, playable && placementStatus, eventLabel, latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}

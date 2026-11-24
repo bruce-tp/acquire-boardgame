@@ -1039,3 +1039,17 @@
 .rules-example-board { width: min(100%, 430px); min-width: 0; }
 .rules-choice-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
 .rules-choice-buttons button[aria-pressed="true"] { border-color: currentColor; }
+
+.beginner-tutorial [data-tutorial-next="true"]:not(:disabled) {
+  outline: 2px solid var(--goldlight);
+  outline-offset: -2px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .beginner-tutorial [data-tutorial-next="true"]:not(:disabled) {
+    animation: tutorial-next-pulse 1.8s ease-in-out infinite;
+  }
+}
+@keyframes tutorial-next-pulse {
+  0%, 100% { outline-color: #f5c98175; }
+  50% { outline-color: #fff2c5; }
+}

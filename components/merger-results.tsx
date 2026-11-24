@@ -22,7 +22,11 @@ function Countdown({expiresAt}: {expiresAt: number}) {
     const timer = setInterval(() => setNow(Date.now()), 200);
     return () => clearInterval(timer);
   }, []);
-  return <span className="merger-countdown">{t("剩餘", "Closes in")} <strong>{Math.max(0, Math.ceil((expiresAt - now) / 1000))}</strong> {t("秒", "s")}</span>;
+  const seconds = Math.max(0, Math.ceil((expiresAt - now) / 1000));
+  return <span className="merger-countdown">{t(
+    <><strong>{seconds}</strong> 秒後自動關閉</>,
+    <>Auto-closes in <strong>{seconds}</strong> {seconds === 1 ? 'second' : 'seconds'}</>,
+  )}</span>;
 }
 
 export function MergerResults({incoming}: {incoming: DeliveredPurchaseAnnouncement[]}) {

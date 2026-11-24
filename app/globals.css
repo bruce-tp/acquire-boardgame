@@ -960,3 +960,13 @@
   0%, 100% { translate: 0 0; }
   50% { translate: 1px -5px; }
 }
+
+:root:lang(zh) .hero-investment-art {
+  margin-bottom: clamp(-36px, -2.5vw, -18px);
+}
+:root:lang(zh) .landing-immersive .hero-desc {
+  margin-block: 10px 12px;
+}
+:root:lang(zh) .hero-actions {
+  margin-top: 13px;
+}

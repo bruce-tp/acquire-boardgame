@@ -122,6 +122,7 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
   <div className="hero-investment-art" aria-hidden="true">
     <svg className="hero-investment-skyline" viewBox="0 0 204 118" focusable="false">
       <path className="hero-investment-hotel" d="M86 104V57h25V32h10V18h44v14h10v37h20v35ZM121 32h44m-54 8h64m-89 64h109"/>
+      <text className="hero-investment-sign" x="143" y="28" textAnchor="middle" lang="en">Hotel</text>
       <path className="hero-investment-windows" d="M96 67h6m-6 10h6m-6 10h6m17-38h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m12-11h6m-6 10h6"/>
       <path className="hero-investment-grid" d="M8 91h81M8 71h81M8 51h81M8 31h81"/>
       <path className="hero-investment-price" d="m8 88 15-13 12 7 17-24 12 6 20-29m-13 1 13-1 2 13"/>

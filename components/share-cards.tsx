@@ -63,11 +63,11 @@ export function ShareCards({ shares, active, settled = false }: {
                     aria-label={t(`${h.zh}股票，第 ${index + 1} 張，共 ${count} 張，每張一股`, `${h.name}, share ${index + 1} of ${count}`)}>
                     <div className="stock-card-frame" aria-hidden="true" />
                     <div className="stock-card-top"><span>{h.mark}</span><span>{String(index + 1).padStart(2, '0')}</span></div>
-                    <span className="stock-card-caption">{t("股票證書", "SHARE CERTIFICATE")}</span>
+                    <span className="stock-card-caption" lang="en">SHARE CERTIFICATE</span>
                     <span className="stock-card-logo" aria-hidden="true"
                       style={{ maskImage: `url("${h.logo}")`, WebkitMaskImage: `url("${h.logo}")` }} />
                     <strong className="stock-card-hotel">{t(h.zh, h.name)}</strong>
-                    <div className="stock-card-bottom"><span className="stock-card-seal" aria-hidden="true">A</span><span><b>{t("1 股", "ONE SHARE")}</b></span></div>
+                    <div className="stock-card-bottom"><span className="stock-card-seal" aria-hidden="true">A</span><span><b lang="en">ONE SHARE</b></span></div>
                   </div>
                 )}
               </div>

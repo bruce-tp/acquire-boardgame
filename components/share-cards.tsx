@@ -65,7 +65,7 @@ export function ShareCards({ shares, active, settled = false }: {
                     <div className="stock-card-top"><span>{h.mark}</span><span>{String(index + 1).padStart(2, '0')}</span></div>
                     <span className="stock-card-caption" lang="en">SHARE CERTIFICATE</span>
                     {h.mark === 'RGH'
-                      ? <img className="stock-card-logo stock-card-guesthouse" src={h.logo} alt=""/>
+                      ? <img className="stock-card-logo stock-card-guesthouse" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
                       : <span className="stock-card-logo" aria-hidden="true"
                       style={{ maskImage: `url("${h.logo}")`, WebkitMaskImage: `url("${h.logo}")` }} />}
                     <strong className="stock-card-hotel">{t(h.zh, h.name)}</strong>

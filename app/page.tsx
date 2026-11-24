@@ -27,7 +27,7 @@ function Emblem({c=0,small=false}:{c?:number;small?:boolean}){
 const h=HOTELS[c];const logo=small?boardHotelLogo(h):h.logo;return <span className={'emblem brand-emblem '+(small?'small':'')} style={{'--hotel':h.colour} as React.CSSProperties} role="img" aria-label={t(h.zh, h.name)} title={t(h.zh, h.name)}>{h.mark === 'RGH'
   ? small
     ? <GuesthouseWordmark logo={h.logo} className="guesthouse-emblem-art"/>
-    : <img className="guesthouse-emblem-art" src={h.logo} alt=""/>
+    : <img className="guesthouse-emblem-art" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
   : <span className="hotel-logo" style={{maskImage:`url("${logo}")`,WebkitMaskImage:`url("${logo}")`}}/>}<span className="brand-code" aria-hidden="true">{h.mark}</span></span>}
 
 function createScorecardPreview(settings:GameSettings){

@@ -11,9 +11,7 @@ export function HotelPoster({ landing = false, hidden = false, id }: {
   return <div id={id} className={'city-panorama branded-hotel-panorama' + (landing ? ' landing-hotel-poster' : '')}
     role="img" aria-label={t("香港半島酒店及香港四季酒店的維港夜景插畫", "Illustration of The Peninsula and Four Seasons Hong Kong at Victoria Harbour")} hidden={hidden}>
     <div className="hotel-poster-stage" aria-hidden="true">
-      <img src="/art/peninsula-four-seasons-hong-kong.webp" alt="" draggable={false} />
-      <span className="hotel-poster-sign peninsula-sign" lang="en">THE PENINSULA</span>
-      <span className="hotel-poster-sign four-seasons-sign" lang="en">FOUR SEASONS</span>
+      <img src="/art/peninsula-four-seasons-night.webp" alt="" draggable={false} />
     </div>
   </div>;
 }

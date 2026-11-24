@@ -196,6 +196,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
     <form method="dialog"><button className="icon close" aria-label={t("關閉", "Close")}><X size={20}/></button></form>
     <h2 id="beginner-tutorial-title">{t("新手教學", "Learn to play")}</h2>
+    <p className="tutorial-explanation">{t("歡迎來到酒店交易所，投資者！", "Welcome to the Hotel Exchange, investor!")}</p>
     <p className="tutorial-explanation">{t("新手教學仍在編寫，內容將持續更新。", "This tutorial is a work in progress.")}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
@@ -294,7 +295,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </>}
 
       {lesson === 'place' && !placing && game.lastTile !== null && <>
-        <SuccessFeedback zh="做得好！你已成功放置一個地塊。" en="Well done! You placed a tile."/>
+        <SuccessFeedback zh="恭喜你，投資者！你已成功放置一個地塊。" en="Congratulations, investor! You placed a tile."/>
         {game.phase === 'found' ? <>
           <Explanation zh="你放置的地塊與獨立建築相連。請選擇一間尚未成立的酒店。成立後，你會免費獲得該酒店的一股股票。"
             en="Your tile connects to an independent building. Choose an inactive hotel to found it on the board and receive one free share."/>

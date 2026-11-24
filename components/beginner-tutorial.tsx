@@ -199,7 +199,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {chapters.map(([id, zh, en, colour], index) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
         disabled={index > unlockedChapter} style={index > unlockedChapter ? {opacity: 0.4} : undefined}
         aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>
-        <span>{zh}</span><small lang="en">{en}</small>
+        <span>練習{["一", "二", "三"][index]} · {zh}</span><small lang="en">Exercise {index + 1} · {en}</small>
       </button>)}
     </nav>
     <section aria-labelledby="tutorial-exercise-title">

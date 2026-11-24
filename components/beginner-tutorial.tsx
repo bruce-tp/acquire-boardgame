@@ -443,8 +443,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。表內各酒店的股票出售收入合計為 ${money(proceeds)}，股東獎金合計為 ${money(bonuses)}。三項相加後，你的最終總額為 ${money(player.cash)}。總額最高的玩家獲勝。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
-        {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("試玩一局", "Play a practice game")}</button>}
-        {!startPractice && <button type="button" className="primary" onClick={close}>{t("返回遊戲", "Return to game")}</button>}
+        {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("與電腦試玩一局", "Play a practice game against the computer")}</button>}
+        {!startPractice && <button type="button" className="primary" onClick={close}>{t("完成教學", "Finish tutorial")}</button>}
       </>}
       {error && <p className="error" role="alert">{localiseMessage(error)}</p>}
     </section>

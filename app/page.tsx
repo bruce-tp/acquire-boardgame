@@ -65,9 +65,9 @@ function Rulebook({close}: {close: () => void}) {
   const {t} = useLanguage();
 
   return <div className="overlay" onClick={close}>
-    <section className="dialog rules" role="dialog" aria-modal="true" aria-label={t("完整規則", "Full rules")} onClick={event => event.stopPropagation()}>
+    <section className="dialog rules" role="dialog" aria-modal="true" aria-label={t("實戰規則答疑", "Gameplay FAQ")} onClick={event => event.stopPropagation()}>
       <button className="icon close" onClick={close} aria-label={t("關閉", "Close")}><X size={20}/></button>
-      <h2>{t("完整規則", "Full rules")}</h2>
+      <h2>{t("實戰規則答疑", "Gameplay FAQ")}</h2>
       <RulebookPreview/>
     </section>
   </div>;

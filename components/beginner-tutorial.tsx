@@ -456,7 +456,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
     </section>
     <footer className="tutorial-actions tutorial-footer">
       <button type="button" className="secondary compact" onClick={() => openLesson(lesson)}>{t("重試本節", "Restart lesson")}</button>
-      <button type="button" className="secondary compact" onClick={showRules}>{t("詳細規則", "Full rules")}</button>
+      <button type="button" className="secondary compact" onClick={showRules}>{t("實戰規則答疑", "Gameplay FAQ")}</button>
     </footer>
   </dialog>;
 }

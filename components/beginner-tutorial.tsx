@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
-import {X} from 'lucide-react';
+import {ArrowDown, Building2, ScrollText, X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
@@ -182,14 +182,25 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       padding: '12px 16px',
       marginBottom: 12,
     }}>
-      <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>遊戲流程 · <span lang="en">Game flow</span></h3>
-      <Explanation zh="勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。"
-        en="To win, finish with the most cash after share sales and bonuses."/>
-      <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
-      <ol>
-        <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
-        <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
-      </ol>
+      <div className="tutorial-flow-layout">
+        <div>
+          <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>遊戲流程 · <span lang="en">Game flow</span></h3>
+          <Explanation zh="勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。"
+            en="To win, finish with the most cash after share sales and bonuses."/>
+          <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
+          <ol>
+            <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
+            <li className="tutorial-buy"><Explanation zh="買股票（唔買都得）" en="Buy shares (optional)"/></li>
+          </ol>
+        </div>
+        <div className="tutorial-turn-art" aria-hidden="true">
+          <div className="tutorial-turn-board">
+            <span/><span/><span/><span><Building2 size={26}/></span>
+          </div>
+          <ArrowDown size={22}/>
+          <div className="tutorial-turn-shares"><ScrollText size={47}/><ScrollText size={47}/></div>
+        </div>
+      </div>
       <p className="tutorial-explanation">
         買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
         <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>

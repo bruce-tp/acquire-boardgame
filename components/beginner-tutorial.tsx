@@ -14,8 +14,8 @@ import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, FOUR_SEASONS, MERGER_TILE
 
 const buildLessons = [
   ['place', '放置地塊', 'Placing a tile'],
-  ['found', '成立酒店', 'Founding a hotel'],
-  ['merge', '合併與換股', 'Mergers and shares'],
+  ['found', '1.1 成立酒店', '1.1 Founding a hotel'],
+  ['merge', '1.2 合併與換股', '1.2 Mergers and shares'],
 ] as const;
 
 const chapters = [
@@ -443,8 +443,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。表內各酒店的股票出售收入合計為 ${money(proceeds)}，股東獎金合計為 ${money(bonuses)}。三項相加後，你的最終總額為 ${money(player.cash)}。總額最高的玩家獲勝。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
+        <p className="tutorial-explanation">{t(
+          <>你已經完成基本教學，並成為一個可以獨當一面的投資者。{startPractice && <>我們強烈建議您<strong>與電腦試玩一局(在教學結束時會有鏈接)</strong>，對我們投資者而言，實踐就是最好的老師！</>}</>,
+          <>You’ve completed the basic tutorial and can now hold your own as an investor. {startPractice && <>We strongly recommend <strong>playing a practice game against the computer (use the link below)</strong>. For us investors, practice is the best teacher!</>}</>,
+        )}</p>
         {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("與電腦試玩一局", "Play a practice game against the computer")}</button>}
-        {!startPractice && <button type="button" className="primary" onClick={close}>{t("完成教學", "Finish tutorial")}</button>}
+        <button type="button" className="secondary" style={{marginTop: 8}} onClick={close}>
+          {startPractice ? t("返回首頁", "Back to homepage") : t("完成教學", "Finish tutorial")}
+        </button>
       </>}
       {error && <p className="error" role="alert">{localiseMessage(error)}</p>}
     </section>

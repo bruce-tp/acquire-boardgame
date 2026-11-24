@@ -50,7 +50,13 @@ function SuccessFeedback({zh, en}: {zh: string; en: string}) {
 
   return <div role="status" className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', border: '1px solid #dfbc8060', borderRadius: 8, background: '#dfbc8010', color: 'var(--goldlight)'}}>
     <BadgeCheck size={25} aria-hidden="true" style={{flexShrink: 0}}/>
-    <strong>{t(zh, en)}</strong>
+    <strong style={{flex: 1}}>{t(zh, en)}</strong>
+    <picture style={{flexShrink: 0, width: 'clamp(64px, 16vw, 116px)'}}>
+      <source media="(prefers-reduced-motion: no-preference)" srcSet="https://media1.tenor.com/m/yg67eWk9vG4AAAAC/%E8%8B%B1%E9%9B%84%E6%9C%AC%E8%89%B22-chow-yun-fat.gif"/>
+      <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E" alt="" referrerPolicy="no-referrer"
+        style={{display: 'block', width: '100%', height: 'auto', borderRadius: 5}}
+        onError={event => { event.currentTarget.closest('picture')?.setAttribute('hidden', ''); }}/>
+    </picture>
   </div>;
 }
 

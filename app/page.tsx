@@ -45,7 +45,10 @@ function MergerStatus({merger, phase, pending, playerName}: {
   const player = <strong>{playerName}</strong>;
 
   return <div className="board-merger-status" role="status" aria-atomic="true">
-    <span>{t('合併中…', 'Merger in progress…')} · {label(merger.tile)}</span>
+    <span>{t('合併中…', 'Merger in progress…')}</span>
+    <span style={{whiteSpace: 'nowrap'}}>
+      {t('位置：', 'Location: ')}<strong style={{display: 'inline-block', paddingInline: 6, border: '1px solid currentColor', borderRadius: 4}}>{label(merger.tile)}</strong>
+    </span>
     <span className="board-merger-player">
       {phase === 'survivor' ? t(
         <>{candidates}格數相同。{player}正在決定保留哪一間。</>,

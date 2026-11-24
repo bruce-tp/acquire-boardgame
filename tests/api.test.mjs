@@ -68,6 +68,7 @@ await db.prepare('UPDATE rooms SET state=? WHERE code=?').bind(JSON.stringify({[
 assert.deepEqual((await state(code,host.data.token)).data.purchaseAnnouncements,[]);
 assert.equal((await state(code,guest.data.token)).data.purchaseAnnouncements[0].id,noticeId);
 // Two fast subsequent turns must survive until the first viewer's next poll.
+const foundingNotices=[];
 async function skipPurchase(playerToken){
   let current=(await state(code,playerToken)).data;
   let response=await post({type:'action',code,version:current.version,action:{type:'place',tile:current.players[current.me].hand[0]}},playerToken);
@@ -76,6 +77,9 @@ async function skipPurchase(playerToken){
     const chain=Array.from({length:7},(_,i)=>i).find(c=>!current.board.includes(c));
     response=await post({type:'action',code,version:current.version,action:{type:'found',chain}},playerToken);
     assert.equal(response.status,200);current=response.data.state;
+    const notice=current.purchaseAnnouncements.findLast(n=>n.founding?.chain===chain);
+    assert.deepEqual(notice?.founding,{chain,reward:{type:'share'}});
+    foundingNotices.push(notice.id);
   }
   assert.equal(current.phase,'buy');
   response=await post({type:'action',code,version:current.version,action:{type:'finish'}},playerToken);
@@ -83,7 +87,8 @@ async function skipPurchase(playerToken){
 }
 await skipPurchase(guest.data.token);await skipPurchase(third.data.token);
 const caughtUp=(await state(code,host.data.token)).data;
-assert.deepEqual(caughtUp.purchaseAnnouncements.map(n=>n.playerName),['Integration guest','Integration third']);
+assert.deepEqual(caughtUp.purchaseAnnouncements.filter(n=>!n.founding).map(n=>n.playerName),['Integration guest','Integration third']);
+assert.deepEqual(caughtUp.purchaseAnnouncements.filter(n=>n.founding).map(n=>n.id),foundingNotices);
 assert.ok(caughtUp.purchaseAnnouncements.every(n=>n.total===0&&n.items.length===0&&n.remainingMs>14_000));
 assert.ok(caughtUp.log.every(line=>!line.includes('bought 1')&&!line.includes('@ $')));
 const lagRow=await db.prepare('SELECT state,version FROM rooms WHERE code=?').bind(code).first();

@@ -24,7 +24,14 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
   return <section className="purchase-notice-tray" aria-label={t("交易公告", "Table notifications")}
     aria-live="polite" aria-relevant="additions" aria-atomic="false">
     {visible.map(notice => <article className="purchase-notice" key={notice.id}>
-      {notice.bonus ? <>
+      {notice.founding ? <>
+        <header><strong>{notice.playerName}</strong><span>{t("成立酒店", "HOTEL FOUNDED")}</span></header>
+        <p>{t("成立了", "Founded")} <strong style={{color:HOTELS[notice.founding.chain].colour}}>{t(HOTELS[notice.founding.chain].zh, HOTELS[notice.founding.chain].name)}</strong></p>
+        <footer><span>{t("創辦獎勵", "Founder’s reward")}</span>
+          <strong>{notice.founding.reward.type === 'share'
+            ? t("1 股創辦人股票", "1 founder’s share")
+            : `$${notice.founding.reward.amount.toLocaleString('en-GB')}`}</strong></footer>
+      </> : notice.bonus ? <>
         <header><strong style={{color:HOTELS[notice.bonus.chain].colour}}>{t(HOTELS[notice.bonus.chain].zh, HOTELS[notice.bonus.chain].name)}</strong>
           <span>{t("股東獎金", "SHAREHOLDER BONUSES")}</span></header>
         <ul>{notice.bonus.payouts.map((payout,index)=><li key={index}>

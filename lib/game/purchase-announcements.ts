@@ -21,6 +21,7 @@ export type PurchaseAnnouncement = {
   total: number;
   createdAt: number;
   mergerResult?: {acquirer: number; acquired: number; decisions: MergerDecision[]};
+  founding?: {chain: number; reward: {type: 'share'} | {type: 'cash'; amount: number}};
   bonus?: {chain: number; payouts: {playerName: string; amount: number}[]};
 };
 export type DeliveredPurchaseAnnouncement = PurchaseAnnouncement & {remainingMs: number};

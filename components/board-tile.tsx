@@ -1,5 +1,5 @@
 import {useLanguage} from "./language";
-import type {CSSProperties} from 'react';
+import {useId, type CSSProperties} from 'react';
 import {Building2} from 'lucide-react';
 import {HOTELS, label, type placement} from '../lib/game/engine.ts';
 
@@ -10,8 +10,10 @@ const eventLabels = {
 } as const;
 
 export function GuesthouseWordmark({logo, className}: {logo: string; className: string}) {
+  const cropId = useId();
   return <svg className={className} viewBox="85 885 1095 245" aria-hidden="true" focusable="false">
-    <image href={logo} width="1254" height="1254"/>
+    <defs><clipPath id={cropId}><rect x="85" y="885" width="1095" height="245"/></clipPath></defs>
+    <image href={logo} width="1254" height="1254" clipPath={`url(#${cropId})`}/>
   </svg>;
 }
 

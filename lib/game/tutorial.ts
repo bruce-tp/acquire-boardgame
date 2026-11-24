@@ -1,6 +1,6 @@
 import {createGame, makePlayer, type Game} from './engine.ts';
 
-export const HOSHINO = 2;
+export const FOUR_SEASONS = 2;
 export const PENINSULA = 1;
 export const MANDARIN = 0;
 export const PLACEMENT_TILE = 28;
@@ -21,16 +21,16 @@ export function createTutorialGame(exercise: TutorialExercise): Game {
     game.players[0].hand = [exercise === 'place' ? PLACEMENT_TILE : FOUNDING_TILE];
   } else if (exercise === 'merge') {
     for (const tile of [26, 27, 38, 39, 50, 51]) game.board[tile] = PENINSULA;
-    for (const tile of [29, 30, 41, 42]) game.board[tile] = HOSHINO;
+    for (const tile of [29, 30, 41, 42]) game.board[tile] = FOUR_SEASONS;
     game.players[0].hand = [MERGER_TILE];
-    game.players[0].shares[HOSHINO] = 4;
-    game.players[1].shares[HOSHINO] = 2;
-    game.bank[HOSHINO] -= 6;
+    game.players[0].shares[FOUR_SEASONS] = 4;
+    game.players[1].shares[FOUR_SEASONS] = 2;
+    game.bank[FOUR_SEASONS] -= 6;
   } else {
     const hotels = [
       {id: MANDARIN, tiles: [0, 1, 2, 12, 13, 14, 15, 24, 25, 27, 28, 36, 37, 39, 40], shares: [7, 4, 0]},
       {id: PENINSULA, tiles: [8, 9, 10, 11, 19, 20, 21, 23, 31, 32, 35, 43, 44, 45], shares: [0, 3, 0]},
-      {id: HOSHINO, tiles: [60, 61, 72, 73, 74, 75, 85, 86, 87, 97, 99, 100], shares: [2, 0, 3]},
+      {id: FOUR_SEASONS, tiles: [60, 61, 72, 73, 74, 75, 85, 86, 87, 97, 99, 100], shares: [2, 0, 3]},
       {id: ROSEWOOD, tiles: [67, 68, 79, 80, 81, 82, 91, 92, 94, 106], shares: [0, 1, 2]},
     ];
     for (const {id, tiles, shares} of hotels) {

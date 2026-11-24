@@ -14,7 +14,7 @@ const hotelNamePattern = namePattern([...hotelNames.keys()]);
 HOTELS.forEach(hotel => hotelNames.set(hotel.short, hotel.colour));
 hotelNames.set('文華東方', HOTELS[0].colour);
 hotelNames.set('Peninsula', HOTELS[1].colour);
-hotelNames.set('Hoshino', HOTELS[2].colour);
+hotelNames.set('Four Seasons', HOTELS[2].colour);
 const shortHotelNamePattern = namePattern([...hotelNames.keys()]);
 export function hotelText(message: string, includeShortNames = false){
   return message.split(includeShortNames ? shortHotelNamePattern : hotelNamePattern).map((part,index)=>

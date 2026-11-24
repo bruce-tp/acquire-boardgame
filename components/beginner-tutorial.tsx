@@ -9,7 +9,7 @@ import {hotelText} from './hotel-text';
 import {BoardTile, boardHotelLogo} from './board-tile';
 import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, size, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
-import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, FOUR_SEASONS, MERGER_TILE, PENINSULA, PLACEMENT_TILE, type TutorialExercise} from '../lib/game/tutorial.ts';
 
 const buildLessons = [
   ['place', '放置地塊', 'Placing a tile'],
@@ -120,7 +120,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const [trade, setTrade] = useState(0);
   const [error, setError] = useState('');
   const player = game.players[0];
-  const buyingHotel = HOTELS[foundedHotel ?? HOSHINO];
+  const buyingHotel = HOTELS[foundedHotel ?? FOUR_SEASONS];
   const founderShares = foundedHotel === null ? 0 : 1;
   const chapter = lesson === 'buy' || lesson === 'settle' ? lesson : 'place';
   const heading = buildLessons.find(([id]) => id === lesson) ?? chapters.find(([id]) => id === chapter)!;
@@ -178,9 +178,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const placing = game.phase === 'place' && game.turn === 0;
   const buyingFinished = lesson === 'buy' && game.phase === 'place' && game.turn !== 0;
   const disposed = lesson === 'merge' && game.phase === 'buy';
-  const mergerPrice = game.merger ? priceFor(HOSHINO, game.merger.sizes[HOSHINO]) : 0;
+  const mergerPrice = game.merger ? priceFor(FOUR_SEASONS, game.merger.sizes[FOUR_SEASONS]) : 0;
   const award = game.merger?.awards?.[0]?.amount ?? 0;
-  const retained = player.shares[HOSHINO] - sell - trade * 2;
+  const retained = player.shares[FOUR_SEASONS] - sell - trade * 2;
   const score = game.finalScores?.[0];
   const proceeds = score?.hotels.reduce((sum, hotel) => sum + hotel.sale, 0) ?? 0;
   const bonuses = score?.hotels.reduce((sum, hotel) => sum + hotel.bonus, 0) ?? 0;
@@ -269,8 +269,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             zh="合併（收購）會影響你可用於再投資的現金。被收購的酒店會發放股東獎金，持有該酒店股票的玩家也可選擇出售股票。"
             en="Mergers are central to the game and can make a big difference to how much cash you have to reinvest. The acquired hotel pays shareholder bonuses, and its shareholders can choose to sell shares for cash."/>
           <Explanation
-            zh="半島有 6 格，星野有 4 格。選擇 5C 並確認放置後，兩間酒店便會相連，由規模較大的半島收購星野。"
-            en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
+            zh="半島有 6 格，四季有 4 格。選擇 5C 並確認放置後，兩間酒店便會相連，由規模較大的半島收購四季。"
+            en="The Peninsula has six tiles and Four Seasons has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Four Seasons."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
           <strong>{t(selected !== null ? `已選擇 ${label(selected)}，請按「確認放置」。` : lesson === 'place' ? '請選擇棋盤上六個有標記的地塊之一。' : `請選擇棋盤上的 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`)}</strong>
@@ -347,25 +347,25 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
         <Explanation
-          zh={`查閱股價表：先在星野欄找到收購前的規模（4 格），再橫向查看每股賣價 ${money(mergerPrice)}。同一列也列出第一及第二大股東的獎金。`}
-          en={`In the share price guide, find Hoshino’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
+          zh={`查閱股價表：先在四季欄找到收購前的規模（4 格），再橫向查看每股賣價 ${money(mergerPrice)}。同一列也列出第一及第二大股東的獎金。`}
+          en={`In the share price guide, find Four Seasons’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
         <details className="tutorial-price-guide">
           <summary>{t("查看股價及股東獎金表", "View share price and bonus guide")}</summary>
           <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
         </details>
 
-        <Explanation zh={`星野每股 ${money(mergerPrice)}。你持有 4 股，是第一大股東，已獲得 ${money(award)} 獎金。第二大股東的獎金為每股價格的 5 倍。獎金與股票分開計算。請試著賣出 1 股星野，再以 2 股星野換取 1 股半島，剩餘 1 股星野會自動保留。`}
-          en={`Hoshino trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
+        <Explanation zh={`四季每股 ${money(mergerPrice)}。你持有 4 股，是第一大股東，已獲得 ${money(award)} 獎金。第二大股東的獎金為每股價格的 5 倍。獎金與股票分開計算。請試著賣出 1 股四季，再以 2 股四季換取 1 股半島，剩餘 1 股四季會自動保留。`}
+          en={`Four Seasons trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">
           <label>{t("賣出股數", "Sell")}
             <select value={sell} onChange={event => setSell(Number(event.target.value))}>
-              {Array.from({length: player.shares[HOSHINO] - trade * 2 + 1}, (_, count) =>
+              {Array.from({length: player.shares[FOUR_SEASONS] - trade * 2 + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
           <label><span>{hotelText(t("換入半島股數", "Receive"), true)}</span>
             <select value={trade} onChange={event => setTrade(Number(event.target.value))}>
-              {Array.from({length: Math.floor((player.shares[HOSHINO] - sell) / 2) + 1}, (_, count) =>
+              {Array.from({length: Math.floor((player.shares[FOUR_SEASONS] - sell) / 2) + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
@@ -377,8 +377,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {disposed && <>
         <SuccessFeedback zh="做得好！你已完成本次合併的股票分配。" en="Well done! You handled your shares in the merger."/>
-        <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。達到 11 格的酒店屬於安全酒店，不可用同一個地塊連接兩間安全酒店。`}
-          en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[HOSHINO]} Hoshino shares and now have ${money(player.cash)} in cash. Kept shares matter if Hoshino reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
+        <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[FOUR_SEASONS]} 股四季，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。達到 11 格的酒店屬於安全酒店，不可用同一個地塊連接兩間安全酒店。`}
+          en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[FOUR_SEASONS]} Four Seasons shares and now have ${money(player.cash)} in cash. Kept shares matter if Four Seasons reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
         <button type="button" className="primary" onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
       </>}
 
@@ -391,8 +391,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <li>{t("棋盤上所有已成立的酒店都已達到安全規模，即每間至少有 11 格。", "Every active hotel on the board is safe, meaning each has at least 11 tiles.")}</li>
         </ol>
         {placing && <Explanation
-          zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、星野 12 格，全部安全。瑰麗只有 10 格。請在棋盤上選擇 10H，再按「確認放置」，看看瑰麗擴展至 11 格後會發生甚麼。"
-          en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Hoshino (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
+          zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、四季 12 格，全部安全。瑰麗只有 10 格。請在棋盤上選擇 10H，再按「確認放置」，看看瑰麗擴展至 11 格後會發生甚麼。"
+          en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Four Seasons (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
         {!placing && <h4>{t("終局棋盤", "Endgame board")}</h4>}
         <div className="board-scroll">
           <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile}/>

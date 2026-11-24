@@ -1,7 +1,7 @@
 'use client';
 import {useLanguage} from "./language";
 
-import {useEffect, useState} from 'react';
+import {HOTELS} from '../lib/game/engine';
 
 export function HotelPoster({ landing = false, hidden = false, id }: {
   landing?: boolean;
@@ -10,32 +10,14 @@ export function HotelPoster({ landing = false, hidden = false, id }: {
 }) {
   const {t} = useLanguage();
 
-  const [useHoshinoya, setUseHoshinoya] = useState(false);
-  const [hoshinoyaReady, setHoshinoyaReady] = useState(false);
-
-  useEffect(() => {
-    setUseHoshinoya(landing && new URLSearchParams(window.location.search).get('cover') !== 'original');
-  }, [landing]);
-
-  const showHoshinoya = useHoshinoya && hoshinoyaReady;
+  const fourSeasonsLogo = `url("${HOTELS[2].logo}")`;
   return <div id={id} className={'city-panorama branded-hotel-panorama' + (landing ? ' landing-hotel-poster' : '')}
-    role="img" aria-label={showHoshinoya
-      ? t("香港半島酒店與星のや東京", "The Peninsula Hong Kong and HOSHINOYA Tokyo")
-      : t("香港半島酒店與星野リゾート", "The Peninsula Hong Kong and Hoshino Resorts")} hidden={hidden}>
+    role="img" aria-label={t("酒店夜景插畫", "Illustrated hotel night scene")} hidden={hidden}>
     <div className="hotel-poster-stage" aria-hidden="true">
       <img src={landing ? '/art/hotel-dusk-oil.webp' : '/art/peninsula-okura-night-v3.png'} alt="" draggable={false} />
-      {useHoshinoya && <img className="hoshinoya-cover-layer" src="/art/hotel-dusk-hoshinoya-preview.webp"
-        alt="" draggable={false} onLoad={() => setHoshinoyaReady(true)} onError={() => setHoshinoyaReady(false)} />}
       <span className="hotel-poster-sign peninsula-sign">THE PENINSULA</span>
-      <span className={'hotel-poster-sign hoshino-sign' + (showHoshinoya ? ' hoshinoya-cover-sign' : '')} lang="ja">
-        {showHoshinoya ? <>
-          <span className="hoshinoya-sign-crests">
-            <span className="hoshinoya-flower">✿</span>
-            <span className="hoshinoya-name-seal">星のや</span>
-            <span className="hoshinoya-moon"/>
-          </span>
-          <span className="hoshinoya-sign-wordmark">{t("星のや東京", "HOSHINOYA Tokyo")}</span>
-        </> : '星野リゾート'}
+      <span className="hotel-poster-sign four-seasons-sign">
+        <span style={{maskImage: fourSeasonsLogo, WebkitMaskImage: fourSeasonsLogo}}/>
       </span>
     </div>
   </div>;

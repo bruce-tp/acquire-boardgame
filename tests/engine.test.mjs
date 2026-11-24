@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createGame,makePlayer,startGame,applyAction,actor,publicState,placement,size,priceFor,canEnd,botAction} from '../lib/game/engine.ts';
-import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, HOSHINO, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE} from '../lib/game/tutorial.ts';
+import {createTutorialGame, FINAL_TILE, FOUNDING_TILE, FOUR_SEASONS, MANDARIN, MERGER_TILE, PENINSULA, PLACEMENT_TILE} from '../lib/game/tutorial.ts';
 function setup(n=3){const g=createGame('TEST','a','Alice');for(let i=1;i<n;i++)g.players.push(makePlayer(String(i),'Player '+i));g.phase='place';g.turn=0;g.deck=Array.from({length:108},(_,i)=>i);return g;}
 function put(g,c,ts){for(const t of ts)g.board[t]=c;g.deck=g.deck.filter(t=>!ts.includes(t));}
 function hand(g,who,ts){g.players[who].hand=ts;g.deck=g.deck.filter(t=>!ts.includes(t));}
@@ -101,11 +101,11 @@ test('beginner tutorial exercises use valid placements, purchases, merger decisi
   const founding=createTutorialGame('found');
   applyAction(founding,0,{type:'place',tile:FOUNDING_TILE});
   assert.equal(founding.phase,'found');
-  applyAction(founding,0,{type:'found',chain:HOSHINO});
-  assert.equal(founding.players[0].shares[HOSHINO],1);
-  const quantities=founding.bank.map((_,id)=>id===HOSHINO?2:0);
+  applyAction(founding,0,{type:'found',chain:FOUR_SEASONS});
+  assert.equal(founding.players[0].shares[FOUR_SEASONS],1);
+  const quantities=founding.bank.map((_,id)=>id===FOUR_SEASONS?2:0);
   applyAction(founding,0,{type:'buyAndFinish',quantities});
-  assert.equal(founding.players[0].shares[HOSHINO],3);
+  assert.equal(founding.players[0].shares[FOUR_SEASONS],3);
   assert.equal(founding.players[0].cash,5400);
   assert.equal(founding.players[0].hand.length,6);
   assert.equal(founding.turn,1);
@@ -114,14 +114,14 @@ test('beginner tutorial exercises use valid placements, purchases, merger decisi
   const merger=createTutorialGame('merge');
   applyAction(merger,0,{type:'place',tile:MERGER_TILE});
   assert.equal(merger.merger.survivor,PENINSULA);
-  assert.equal(merger.merger.loser,HOSHINO);
+  assert.equal(merger.merger.loser,FOUR_SEASONS);
   assert.equal(merger.merger.awards[0].amount,5000);
   assert.equal(merger.merger.awards[1].amount,2500);
   applyAction(merger,0,{type:'dispose',sell:1,trade:1});
   applyAction(merger,1,{type:'dispose',sell:0,trade:0});
   assert.equal(merger.phase,'buy');
   assert.equal(merger.players[0].shares[PENINSULA],1);
-  assert.equal(merger.players[0].shares[HOSHINO],1);
+  assert.equal(merger.players[0].shares[FOUR_SEASONS],1);
   assert.equal(merger.players[0].cash,11500);
   assertShares(merger);
 

@@ -9,8 +9,14 @@ const eventLabels = {
   merge: ['合併', 'Merger'],
 } as const;
 
+export function GuesthouseWordmark({logo, className}: {logo: string; className: string}) {
+  return <svg className={className} viewBox="85 885 1095 245" aria-hidden="true" focusable="false">
+    <image href={logo} width="1254" height="1254"/>
+  </svg>;
+}
+
 export function boardHotelLogo(hotel: (typeof HOTELS)[number]) {
-  return hotel.mark === 'HR' ? '/hotels/hoshinoya-board.png' : hotel.logo;
+  return hotel.logo;
 }
 
 type BoardTileProps = {
@@ -37,7 +43,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   const description = hotel ? t(hotel.zh, hotel.name) : independent ? t("獨立建築", "Independent building") : plan ? t("你的專屬地塊", "Your private building spot") : t("空地", "Empty lot");
   const classes = [
     'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
-    plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
+    hotel?.mark === 'RGH' && 'guesthouse-tile', plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
   ].filter(Boolean).join(' ');
   const maskImage = hotel ? 'url("' + boardHotelLogo(hotel) + '")' : undefined;
 
@@ -49,7 +55,9 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabel}</span>}
     {hotel ? <>
-      <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>
+      {hotel.mark === 'RGH'
+        ? <GuesthouseWordmark logo={hotel.logo} className="board-guesthouse-wordmark"/>
+        : <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>}
       <span className="tile-coordinate">{coordinate}</span>
     </> : independent ? <>
       <Building2 size={20} aria-hidden="true"/>

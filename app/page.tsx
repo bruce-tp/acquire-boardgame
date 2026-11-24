@@ -15,7 +15,7 @@ import {createPracticeGame} from '../lib/game/practice';
 import {RulebookPreview} from '../components/rulebook-preview';
 import {BeginnerTutorial} from '../components/beginner-tutorial';
 import {FinalScorecard} from '../components/final-scorecard';
-import {BoardTile, boardHotelLogo} from '../components/board-tile';
+import {BoardTile, boardHotelLogo, GuesthouseWordmark} from '../components/board-tile';
 import {MergerResults} from '../components/merger-results';
 import {PurchaseAnnouncements} from '../components/purchase-announcements';
 import {acceptRoomView} from '../lib/purchase-notice-queue';
@@ -24,7 +24,11 @@ import {HOTELS,HOTEL_PRICE_GROUPS,createGame,makePlayer,publicState,applyAction,
 type View=ReturnType<typeof publicState>;
 function Emblem({c=0,small=false}:{c?:number;small?:boolean}){
   const {t} = useLanguage();
-const h=HOTELS[c];const logo=small?boardHotelLogo(h):h.logo;return <span className={'emblem brand-emblem '+(small?'small':'')} style={{'--hotel':h.colour} as React.CSSProperties} role="img" aria-label={t(h.zh, h.name)} title={t(h.zh, h.name)}><span className="hotel-logo" style={{maskImage:`url("${logo}")`,WebkitMaskImage:`url("${logo}")`}}/><span className="brand-code" aria-hidden="true">{h.mark}</span></span>}
+const h=HOTELS[c];const logo=small?boardHotelLogo(h):h.logo;return <span className={'emblem brand-emblem '+(small?'small':'')} style={{'--hotel':h.colour} as React.CSSProperties} role="img" aria-label={t(h.zh, h.name)} title={t(h.zh, h.name)}>{h.mark === 'RGH'
+  ? small
+    ? <GuesthouseWordmark logo={h.logo} className="guesthouse-emblem-art"/>
+    : <img className="guesthouse-emblem-art" src={h.logo} alt=""/>
+  : <span className="hotel-logo" style={{maskImage:`url("${logo}")`,WebkitMaskImage:`url("${logo}")`}}/>}<span className="brand-code" aria-hidden="true">{h.mark}</span></span>}
 
 function createScorecardPreview(settings:GameSettings){
   const game=createGame('PREVIEW','sample-1','Alex',settings);

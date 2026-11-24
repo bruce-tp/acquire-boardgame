@@ -4,10 +4,10 @@ import {recentPurchases, announcementDisplayMs, type MergerDecision, type Shareh
 export const HOTELS = [
   {id:0,name:'Mandarin Oriental',zh:'香港文華東方',short:'文華',colour:'#edb94b',tier:2,mark:'MO',original:'Tower',logo:'/hotels/mandarin.svg',region:'香港 · HK'},
   {id:1,name:'The Peninsula',zh:'香港半島酒店',short:'半島',colour:'#ec786d',tier:1,mark:'P',original:'Luxor',logo:'/hotels/peninsula.svg',region:'香港 · HK'},
-  {id:2,name:'Hoshino Resorts',zh:'星野リゾート',short:'星野',colour:'#65a9e5',tier:1,mark:'HR',original:'American',logo:'/hotels/hoshino-jp.svg',region:'日本 · JP'},
+  {id:2,name:'Four Seasons Hotel Hong Kong',zh:'香港四季酒店',short:'四季',colour:'#65a9e5',tier:1,mark:'FS',original:'American',logo:'/hotels/four-seasons.svg',region:'香港 · HK'},
   {id:3,name:'Rosewood',zh:'香港瑰麗酒店',short:'瑰麗',colour:'#a991d4',tier:2,mark:'R',original:'Worldwide',logo:'/hotels/rosewood.svg',region:'香港 · HK'},
-  {id:4,name:'APA Hotel',zh:'APAホテル',short:'APA',colour:'#83bd85',tier:0,mark:'APA',original:'Festival',logo:'/hotels/apa-crest.svg',region:'日本 · JP'},
-  {id:5,name:'Imperial Hotel',zh:'帝国ホテル',short:'帝国',colour:'#e0a077',tier:1,mark:'IH',original:'Imperial',logo:'/hotels/imperial.svg',region:'日本 · JP'},
+  {id:4,name:'Regent Guesthouse',zh:'麗晶大賓館',short:'麗晶大賓館',colour:'#83bd85',tier:0,mark:'RGH',original:'Festival',logo:'/hotels/regent-guesthouse.webp',region:'香港 · HK'},
+  {id:5,name:'Regent Hong Kong',zh:'香港麗晶酒店',short:'麗晶酒店',colour:'#e0a077',tier:1,mark:'RHK',original:'Imperial',logo:'/hotels/regent-hk.svg',region:'香港 · HK'},
   {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:0,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};

@@ -19,7 +19,7 @@ import {BoardTile, boardHotelLogo} from '../components/board-tile';
 import {MergerResults} from '../components/merger-results';
 import {PurchaseAnnouncements} from '../components/purchase-announcements';
 import {acceptRoomView} from '../lib/purchase-notice-queue';
-import {Building2,Copy,Check,Users,Plus,Minus,DoorOpen,BookOpen,Landmark,ShieldCheck,Coins,Volume2,VolumeX,X,Globe2,ChevronRight,RotateCcw,Play,Share2,Wifi,WifiOff,Crown} from 'lucide-react';
+import {Building2,Copy,Check,Users,Plus,Minus,DoorOpen,BookOpen,Landmark,ShieldCheck,Coins,Volume2,VolumeX,X,Globe2,ChevronRight,RotateCcw,Play,Share2,Wifi,WifiOff,Crown,TrendingUp} from 'lucide-react';
 import {HOTELS,HOTEL_PRICE_GROUPS,createGame,makePlayer,publicState,applyAction,actor,placement,size,price,priceFor,canEnd,label,botAction,type Game,type Action} from '../lib/game/engine';
 type View=ReturnType<typeof publicState>;
 function Emblem({c=0,small=false}:{c?:number;small?:boolean}){
@@ -117,7 +117,22 @@ const total=view?quantities.reduce((n,q,c)=>n+q*price(view as any,c),0):0,totalQ
 return <main className={playing?'app playing':'app'}><header className="topbar"><button className="brand" onClick={()=>view?setConfirmLeave(true):null} aria-label="Big Ambition home"><span className="brand-mark">B<span/></span><span>BIG AMBITION<small>{t("酒店交易所", "THE HOTEL EXCHANGE")}</small></span></button><div className="top-right"><LanguageSwitch/><button className="text-button price-guide-button" onClick={()=>setPriceGuide(true)}><Landmark size={17}/><span>{t("股價表", "Price guide")}</span></button><button className="text-button" onClick={()=>setTutorial(true)}><BookOpen size={17}/><span>{t("新手教學", "Learn to play")}</span></button><SoundControls sound={sound} volume={volume} error={audioError} toggle={toggleSound} setVolume={setVolume} preview={previewSound}/></div></header>
 {!playing?<><div className="landing landing-immersive">
 <div className="landing-showcase">
-<section className="hero hotel-landing-hero"><img className="landing-toast-art" src="/art/gatsby-toast-v1.webp" alt="" aria-hidden="true" draggable={false} width={1536} height={1024}/><div className="hero-copy"><span className="eyebrow"><span className="line"/>{t("經典酒店投資遊戲", "A CLASSIC GAME OF AMBITION")}</span>{language==='en'?<h1 className="hero-title-en">Build a city.<em>Build an empire.</em></h1>:<h1>瓊樓逐格起<span className="hero-title-line">情迷香港地</span></h1>}<p className="hero-desc">{hotelText(t('從半島、文華，到喜來登。建立你的酒店帝國。', 'From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.'), true)}<br/>{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span></div><div className="hero-actions">
+<section className="hero hotel-landing-hero"><img className="landing-toast-art" src="/art/gatsby-toast-v1.webp" alt="" aria-hidden="true" draggable={false} width={1536} height={1024}/><div className="hero-copy"><span className="eyebrow"><span className="line"/>{t("經典酒店投資遊戲", "A CLASSIC GAME OF AMBITION")}</span>{language==='en'?<h1 className="hero-title-en">Build a city.<em>Build an empire.</em></h1>:<div className="hero-title-with-art">
+  <h1>瓊樓逐格起<span className="hero-title-line">情迷香港地</span></h1>
+  <div className="hero-investment-art" aria-hidden="true">
+    <div className="hero-investment-skyline"><Building2/><TrendingUp/></div>
+    <div className="hero-investment-shares">
+      {[HOTELS[0], HOTELS[1]].map(hotel => {
+        const maskImage = `url("${hotel.logo}")`;
+        return <div className="hero-investment-share" key={hotel.id} style={{'--hotel': hotel.colour} as React.CSSProperties}>
+          <span>{hotel.mark} · 股票</span>
+          <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
+          <span>1 股</span>
+        </div>;
+      })}
+    </div>
+  </div>
+</div>}<p className="hero-desc">{hotelText(t('從半島、文華，到喜來登。建立你的酒店帝國。', 'From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.'), true)}<br/>{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span></div><div className="hero-actions">
   <a className="primary hero-play-link" href="#room-entry">{view?t("前往房間", "Your table"):t("開房／加入遊戲", "Play with friends")}</a>
   {!view&&<button type="button" className="secondary hero-practice-link" onClick={practice} disabled={busy}>
     <strong>{t("試玩一局", "Play a practice game")}</strong>

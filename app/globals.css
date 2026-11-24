@@ -878,3 +878,46 @@
 }
 
 .hero-title-line { display: block; }
+
+.hero-title-with-art {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 2vw, 28px);
+}
+.landing-immersive .hero-title-with-art h1 {
+  flex: none;
+  font-size: clamp(27px, 3.8vw, 52px);
+}
+.hero-investment-art {
+  width: clamp(98px, 14vw, 192px);
+  flex: none;
+  margin-top: 8px;
+  color: var(--gold);
+}
+.hero-investment-skyline {
+  height: clamp(27px, 3.6vw, 48px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8%;
+}
+.hero-investment-skyline svg { width: auto; height: 100%; stroke-width: 1.15; }
+.hero-investment-skyline svg:last-child { height: 75%; color: var(--green); }
+.hero-investment-shares {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+.hero-investment-share {
+  aspect-ratio: 1.14;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 7%;
+  border: 1px solid color-mix(in srgb, var(--hotel) 60%, transparent);
+  border-radius: 5px;
+  background: linear-gradient(150deg, #223949, #0e1d2d);
+  color: var(--hotel);
+  font: 600 clamp(7px, .75vw, 10px)/1.1 'DM Sans', 'Noto Sans TC', sans-serif;
+  text-shadow: none;
+}
+.hero-investment-share > :last-child { justify-self: end; }

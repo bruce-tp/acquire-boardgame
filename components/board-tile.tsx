@@ -1,5 +1,5 @@
 import {useLanguage} from "./language";
-import {useId, type CSSProperties} from 'react';
+import type {CSSProperties} from 'react';
 import {Building2} from 'lucide-react';
 import {HOTELS, label, type placement} from '../lib/game/engine.ts';
 
@@ -8,14 +8,6 @@ const eventLabels = {
   expand: ['擴展', 'Expansion'],
   merge: ['合併', 'Merger'],
 } as const;
-
-export function GuesthouseWordmark({logo, className}: {logo: string; className: string}) {
-  const cropId = useId();
-  return <svg className={className} viewBox="85 885 1095 245" aria-hidden="true" focusable="false">
-    <defs><clipPath id={cropId}><rect x="85" y="885" width="1095" height="245"/></clipPath></defs>
-    <image href={logo} width="1254" height="1254" clipPath={`url(#${cropId})`}/>
-  </svg>;
-}
 
 export function boardHotelLogo(hotel: (typeof HOTELS)[number]) {
   return hotel.logo;
@@ -58,7 +50,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabel}</span>}
     {hotel ? <>
       {hotel.mark === 'RGH'
-        ? <GuesthouseWordmark logo={hotel.logo} className="board-guesthouse-wordmark"/>
+        ? <img className="board-guesthouse-art" src="/hotels/regent-guesthouse-colour.webp" alt="" draggable={false}/>
         : <span className="board-hotel-logo" aria-hidden="true" style={{maskImage, WebkitMaskImage: maskImage}}/>}
       <span className="tile-coordinate">{coordinate}</span>
     </> : independent ? <>

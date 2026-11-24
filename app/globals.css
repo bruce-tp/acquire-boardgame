@@ -985,14 +985,17 @@
   background: color-mix(in srgb, var(--hotel) 15%, #122332);
 }
 .tile.hotel-tile.guesthouse-tile .tile-coordinate { color: var(--hotel); }
-.tile.hotel-tile .board-guesthouse-wordmark {
-  overflow: hidden;
+.tile.hotel-tile .board-guesthouse-art {
   position: absolute;
-  inset: 23% 5% auto;
-  width: 90%;
-  height: auto;
-  max-width: none;
-  opacity: 1;
+  inset: 8% 13% auto;
+  width: 74%;
+  height: 72%;
+  object-fit: contain;
+  pointer-events: none;
+}
+.tile.hotel-tile.guesthouse-tile.last .board-guesthouse-art {
+  top: 23%;
+  height: 56%;
 }
 
 :root:lang(zh) .landing-showcase .hotel-mini strong { font-weight: 600; }

@@ -35,7 +35,7 @@ export function useLanguage() {
 export function LanguageSwitch() {
   const {language, setLanguage, t} = useLanguage();
   return <div className="language-switch" role="group" aria-label={t('選擇語言', 'Choose language')}>
-    <button type="button" lang="zh-Hant" aria-pressed={language === 'zh'} onClick={() => setLanguage('zh')}>繁體中文</button>
-    <button type="button" lang="en" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}>English</button>
+    <button type="button" lang="zh-Hant" aria-pressed={language === 'zh'} onClick={() => setLanguage('zh')}><img className="language-flag" src="/flags/hk.svg" alt="" width={16} height={12}/>繁體中文</button>
+    <button type="button" lang="en" aria-pressed={language === 'en'} onClick={() => setLanguage('en')}><img className="language-flag" src="/flags/gb.svg" alt="" width={16} height={12}/>English</button>
   </div>;
 }

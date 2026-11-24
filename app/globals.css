@@ -876,3 +876,5 @@
   :root:lang(en) .landing-immersive .landing-toast-art { top: auto; bottom: 21%; }
   :root:lang(en) .landing-toast-quote { top: auto; bottom: 53vw; }
 }
+
+.hero-title-line { display: block; }

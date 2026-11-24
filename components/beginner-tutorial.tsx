@@ -206,8 +206,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <>You’ll practise <strong className="tutorial-build">placing tiles</strong>, <strong style={{color: '#f5ca80'}}>founding hotels</strong>, <strong style={{color: '#8cddcc'}}>expanding hotels</strong>, <strong style={{color: '#ffa696'}}>handling shares in a merger</strong> and <strong className="tutorial-buy">buying shares</strong>. Finally, you’ll learn to read the <strong className="tutorial-end">final scorecard</strong> and see who won and why.</>,
     )}</p>
     <p className="tutorial-explanation">{t(
-      <>在完成教學後，我們強烈建議您<strong>與電腦試玩一局(在教學結束時會有鏈接)</strong>，對我們投資者而言，實踐就是最好的老師！</>,
-      <>After the tutorial, we strongly recommend <strong>playing a practice game against the computer (you’ll find the link at the end of the tutorial)</strong>. For us investors, practice is the best teacher!</>,
+      <>在完成教學後，我們強烈建議您<strong>與電腦試玩一局</strong>，對我們投資者而言，實踐就是最好的老師！</>,
+      <>After the tutorial, we strongly recommend <strong>playing a practice game against the computer</strong>. For us investors, practice is the best teacher!</>,
     )}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
@@ -443,9 +443,13 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。表內各酒店的股票出售收入合計為 ${money(proceeds)}，股東獎金合計為 ${money(bonuses)}。三項相加後，你的最終總額為 ${money(player.cash)}。總額最高的玩家獲勝。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
+        <figure style={{display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: 12, margin: '16px 0 12px', padding: 10, border: '1px solid #dfbc8060', borderRadius: 8, background: '#dfbc8010'}}>
+          <img src="/art/gatsby-toast-v1.webp" alt="" width={144} height={96} style={{maxWidth: '100%', height: 'auto', borderRadius: 5}}/>
+          <figcaption style={{color: 'var(--goldlight)', fontWeight: 700}}>{t("敬你，投資者！", "Here’s to you, investor!")}</figcaption>
+        </figure>
         <p className="tutorial-explanation">{t(
-          <>你已經完成基本教學，並成為一個可以獨當一面的投資者。{startPractice && <>我們強烈建議您<strong>與電腦試玩一局(在教學結束時會有鏈接)</strong>，對我們投資者而言，實踐就是最好的老師！</>}</>,
-          <>You’ve completed the basic tutorial and can now hold your own as an investor. {startPractice && <>We strongly recommend <strong>playing a practice game against the computer (use the link below)</strong>. For us investors, practice is the best teacher!</>}</>,
+          <>你已經完成基本教學，並成為一個可以獨當一面的投資者。{startPractice && <>我們強烈建議您<strong>與電腦試玩一局</strong>，對我們投資者而言，實踐就是最好的老師！</>}</>,
+          <>You’ve completed the basic tutorial and can now hold your own as an investor. {startPractice && <>We strongly recommend <strong>playing a practice game against the computer</strong>. For us investors, practice is the best teacher!</>}</>,
         )}</p>
         {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("與電腦試玩一局", "Play a practice game against the computer")}</button>}
         <button type="button" className="secondary" style={{marginTop: 8}} onClick={close}>

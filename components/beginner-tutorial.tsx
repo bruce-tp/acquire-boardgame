@@ -206,8 +206,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <>You’ll practise <strong className="tutorial-build">placing tiles</strong>, <strong style={{color: '#f5ca80'}}>founding hotels</strong>, <strong style={{color: '#8cddcc'}}>expanding hotels</strong>, <strong style={{color: '#ffa696'}}>handling shares in a merger</strong> and <strong className="tutorial-buy">buying shares</strong>. Finally, you’ll learn to read the <strong className="tutorial-end">final scorecard</strong> and see who won and why.</>,
     )}</p>
     <p className="tutorial-explanation">{t(
-      <>在完成教學後，我們強烈建議您<strong>［與電腦試玩一局］</strong>，對我們投資者而言，實踐就是最好的老師！</>,
-      <>After the tutorial, we strongly recommend <strong>playing a practice game against the computer</strong>. For us investors, practice is the best teacher!</>,
+      <>在完成教學後，我們強烈建議您<strong>與電腦試玩一局(在教學結束時會有鏈接)</strong>，對我們投資者而言，實踐就是最好的老師！</>,
+      <>After the tutorial, we strongly recommend <strong>playing a practice game against the computer (you’ll find the link at the end of the tutorial)</strong>. For us investors, practice is the best teacher!</>,
     )}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',

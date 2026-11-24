@@ -140,7 +140,7 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
       })}
     </div>
   </div>
-</div>}<p className="hero-desc">{hotelText(t('從半島、文華，到喜來登。建立你的酒店帝國。', 'From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.'), true)}<br/>{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span>
+</div>}<p className="hero-desc">{language==='en'&&<>{hotelText('From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.', true)}<br/></>}{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span>
   <span className="hero-tutorial-prompt">{t("第一次玩？", "First time playing?")}
   <button type="button" className="hero-tutorial-link" onClick={() => setTutorial(true)}>{t("新手教學", "Learn to play")}</button>
 </span>

@@ -378,8 +378,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
         </details>
 
-        <Explanation zh={`四季每股 ${money(mergerPrice)}。你持有 4 股，是第一大股東，已獲得 ${money(award)} 獎金。第二大股東的獎金為每股價格的 5 倍。獎金與股票分開計算。請試著賣出 1 股四季，再以 2 股四季換取 1 股半島，剩餘 1 股四季會自動保留。`}
-          en={`Four Seasons trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
+        <Explanation zh={`從上表得知，四季每股 ${money(mergerPrice)}。你持有 4 股，是第一大股東，已獲得 ${money(award)} 獎金。第二大股東的獎金為每股價格的 5 倍。獎金與股票分開計算。請試著賣出 1 股四季，再以 2 股四季換取 1 股半島，剩餘 1 股四季會自動保留。`}
+          en={`As shown in the table above, Four Seasons trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">
           <label>{t("賣出股數", "Sell")}
             <select value={sell} onChange={event => setSell(Number(event.target.value))}>

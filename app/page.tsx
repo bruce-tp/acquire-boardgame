@@ -68,7 +68,6 @@ function Rulebook({close}: {close: () => void}) {
     <section className="dialog rules" role="dialog" aria-modal="true" aria-label={t("完整規則", "Full rules")} onClick={event => event.stopPropagation()}>
       <button className="icon close" onClick={close} aria-label={t("關閉", "Close")}><X size={20}/></button>
       <h2>{t("完整規則", "Full rules")}</h2>
-    <p className="tutorial-explanation">{t("完整規則仍在編寫，內容將持續更新。", "This rulebook is a work in progress.")}</p>
       <RulebookPreview/>
     </section>
   </div>;

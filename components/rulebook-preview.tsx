@@ -1,56 +1,111 @@
-import {useLanguage} from "./language";
-import {hotelText} from './hotel-text';
+import {useState, type CSSProperties} from 'react';
+import {useLanguage} from './language';
+import {BoardTile} from './board-tile';
+import {applyAction, createGame, HOTELS, priceFor, size} from '../lib/game/engine';
+import {bonusAmounts} from '../lib/game/settings';
 
-const sections = [
-  ['你要做乜？', 'Overview', [
-    ['你是一名酒店投資者。你可以在棋盤上建造、成立或擴展酒店，並購買看好的酒店股票。遊戲結束後，計入股票出售收入及股東獎金，現金最多的玩家獲勝。', 'You are a hotel investor. Build on the board, found or expand hotels and buy shares. The player with the most cash after share sales and bonuses wins.'],
-  ]],
-  ['先認識畫面', 'Know the board', [
-    ['棋盤：5C 代表第 5 欄、C 行。酒店各有顏色同標誌。', 'Board: 5C is column 5, row C. Each hotel has its own colour and logo.'],
-    ['專屬地塊：遊戲分配給你的建造位置。每位玩家只可查看自己的專屬地塊，並在自己的回合選擇有標記的地塊。', 'Private building spots: Only you see your assigned spots. On your turn, click a marked square.'],
-    ['可在酒店交易所查看股價、庫存及持股，也可按品牌及格數查閱股價和股東獎金。', 'The stock exchange shows prices, stock available and your holdings. The price guide lists prices and bonuses by brand and size.'],
-  ]],
-  ['開局', 'Set-up', [
-    ['由一位玩家建立房間並邀請朋友。2–6 人即可開始。每人獲得 $6,000 和六個專屬地塊，起初不持有股票。', 'Create a room and invite friends. Start with 2–6 players. Each gets $6,000, no shares and six private building spots.'],
-    ['系統為每人放一幢起始獨立建築。按 1A 至 12A、再到 B 行的順序排列，起始建築位置最前的玩家先行，其餘按座位順序輪流。', 'The game places one independent building per player. The earliest square in board order (1A to 12A, then row B) determines who goes first. Turns follow seat order.'],
-  ]],
-  ['每回合得兩步', 'Your turn', [
-    ['① 建造（放置地塊）。選擇一格，再按「確認放置」。只計算上下左右相鄰的地塊。新地塊及與其相連的獨立建築一併處理。', '① Build (place a tile). Choose a square and confirm. Only shared edges count. Resolve the tile together with any independent buildings it connects.'],
-    ['若未連接其他建築，則成為獨立建築。若只連接獨立建築，選擇一個尚未成立的品牌成立酒店，並獲得一股股票或等值現金。若連接一間酒店，該酒店便會擴展。若連接兩間或以上，則觸發合併。', 'An isolated tile stays independent. Joining only independent buildings lets you found an inactive brand and receive one share or its cash value. Joining one hotel expands it. Joining two or more triggers a merger.'],
-    ['② 購買股票（可略過）。若現金及股票庫存充足，可購買已成立酒店的股票，合計最多三股。確認買入或按「完成回合」，即可結束回合。若仍有剩餘地塊，系統會補上新的位置。', '② Buy shares (optional). Buy up to three shares in total in active hotels, subject to cash and supply. Confirm or select Finish turn to pass play. Used spots are replenished while tiles remain.'],
-    ['例：在 5C 建造，使文華東方擴展一格，然後可買入兩股文華東方並確認結束回合。', 'Example: Build at 5C to expand Mandarin Oriental by one tile, then buy two Mandarin Oriental shares and confirm to pass play.'],
-    ['合併：規模最大的酒店保留。若規模相同，由放置地塊的玩家決定。被收購的酒店先按合併前的股價發放獎金，持股玩家再按座位順序處理股票，從放置地塊的玩家開始。', 'Merger: The largest hotel survives. The tile placer breaks ties. The acquired hotel pays bonuses using its pre-merger price. Shareholders then act in seat order, starting with the tile placer.'],
-    ['例：半島 6 格，四季 4 格。合併後保留半島。若你持有六股四季，而四季每股價格為 $500，你可賣出兩股取得 $1,000、以兩股換取一股半島（若有庫存），並保留兩股四季。標準獎金分別為每股價格的 10 倍及 5 倍。若你是唯一股東，可另外獲得 $7,500。自訂房間則按設定的倍數計算。', 'Example: The Peninsula (six tiles) acquires Four Seasons (four tiles). At $500 per Four Seasons share, you can sell two for $1,000, swap two for one Peninsula share if available and keep two. Standard bonuses are 10× and 5× the share price. A sole shareholder receives both, $7,500 in this example. Custom rooms use their selected multipliers.'],
-  ]],
-  ['遊戲結束及結算', 'Game end and scoring', [
-    ['若一間酒店達到 41 格，或場上至少有一間已成立的酒店且每間均達到 11 格，你可以在自己的放置地塊或購買股票階段宣布最後回合。回合結束後結算。', 'If a hotel reaches 41 tiles, or at least one hotel is active and all active hotels have 11 or more tiles, you may declare the final turn during placement or buying. Finish your turn before settlement.'],
-    ['仍在營運的酒店會發放股東獎金，其股票按最終股價兌現。未成立酒店的股票價值為 $0。例：原有 $3,000 + 獎金 $6,000 + 三股每股 $600 = $10,800。現金最多的玩家獲勝，同額者並列。', 'Active hotels pay bonuses and their shares cash out at final prices. Inactive shares are worth $0. Example: $3,000 cash + $6,000 bonus + three shares at $600 = $10,800. The highest total wins, with joint winners on a tie.'],
-  ]],
-  ['特殊情況', 'Special cases', [
-    ['達到 11 格的酒店不可被收購。會連接兩間安全酒店的地塊永久不可放置，回合結束時若仍有剩餘地塊，系統會更換。若七間酒店均已成立，會觸發成立新酒店的地塊暫時不可放置。', 'Hotels of 11 or more tiles are safe from acquisition. Spots joining two safe hotels are permanently blocked and replaced at turn end if tiles remain. Founding spots are temporarily blocked when all seven hotels are active.'],
-    ['沒有可放置的地塊時，可略過放置階段並繼續購買股票。若所有玩家在一整輪內都無法放置地塊，遊戲會自動結算。', 'If you have no legal placement, skip it and proceed to buying. If everyone goes a full round without a legal placement, the game settles automatically.'],
-    ['同時收購多間酒店時，按各被收購酒店原有的規模由大至小處理。若格數相同，由放置地塊的玩家決定順序。', 'Resolve multiple acquired hotels in descending order of their original size. The tile placer breaks ties.'],
-    ['唯一股東獲得兩份獎金。並列第一的股東平分兩份獎金，並列第二的股東平分第二份獎金。每人的獎金向上取整至最接近的 $100。兩人對局中，若仍有剩餘地塊，合併及結算時會抽取一個地塊，以其欄號作為市場持股數。', 'A sole shareholder gets both bonuses. Tied leaders split both and tied runners-up split the second. Round split awards up to the next $100 increment. In two-player games, if tiles remain, a drawn tile’s column gives the market holding for merger and settlement bonuses.'],
-  ]],
-  ['一頁速查', 'Quick reference', [
-    ['回合：放置地塊 → 處理酒店變化 → 購買 0–3 股 → 結束回合。', 'Turn: Build → resolve hotel changes → buy 0–3 shares → pass play.'],
-    ['合併：決定邊間保留 → 派獎金 → 賣、換或留股。', 'Merger: Determine the survivor → pay bonuses → sell, exchange or keep shares.'],
-    ['結算：原有現金 + 股東獎金 + 賣股所得。', 'Settlement: Cash on hand + shareholder bonuses + share proceeds.'],
-  ]],
-] as const;
+const peninsula = 1;
+const fourSeasons = 2;
+const mergerTile = 3 * 12 + 4;
+const exampleSize = 4;
+const sharePrice = priceFor(fourSeasons, exampleSize);
+const awards = bonusAmounts(sharePrice);
+const money = (cash: number) => '$' + cash.toLocaleString('en-GB');
+
+function MergerExample() {
+  const {t} = useLanguage();
+  const [survivor, setSurvivor] = useState<number | null>(null);
+  const game = createGame('RULES', 'sample', 'Investor');
+  for (const row of [2, 3]) {
+    for (const column of [2, 3]) game.board[row * 12 + column] = peninsula;
+    for (const column of [5, 6]) game.board[row * 12 + column] = fourSeasons;
+  }
+  game.phase = 'place';
+  game.players[0].hand = [mergerTile];
+  applyAction(game, 0, {type:'place', tile:mergerTile});
+  const candidates = game.pending.map(id => HOTELS[id]);
+  if (survivor !== null) applyAction(game, 0, {type:'survivor', chain:survivor});
+  return <figure className="rules-merger-example">
+    <figcaption>{t('棋盤示例：在 5D 放置地塊後，兩間 4 格酒店相連。', 'Board example: placing 5D connects two four-tile hotels.')}</figcaption>
+    <div className="board-frame tutorial-board rules-example-board" style={{gridTemplateColumns:'24px repeat(5,minmax(0,1fr))'}}>
+      <span className="grid-label corner" aria-hidden="true">A</span>
+      {[3, 4, 5, 6, 7].map(col => <span key={col} className="grid-label">{col}</span>)}
+      {[2, 3].map(row => <div className="board-row" key={row}>
+        <span className="grid-label">{row === 2 ? 'C' : 'D'}</span>
+        {[2, 3, 4, 5, 6].map(col => {
+          const tile = row * 12 + col;
+          return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={null}
+            playable={false} selected={false} latest={tile === mergerTile}/>;
+        })}
+      </div>)}
+    </div>
+    <p>{t('試按其中一間酒店，看看選擇後棋盤如何變化。', 'Choose a hotel to see how the board changes.')}</p>
+    <div className="rules-choice-buttons">
+      {candidates.map(hotel => <button className="secondary compact" key={hotel.id}
+        style={{color:hotel.colour}} type="button" aria-pressed={survivor === hotel.id}
+        onClick={() => setSurvivor(hotel.id)}>
+        {t(hotel.zh, hotel.name)}{survivor === null && t('（4 格）', ' (4 tiles)')}
+      </button>)}
+      {survivor !== null && <button type="button" className="secondary compact"
+        onClick={() => setSurvivor(null)}>{t('重設示例', 'Reset example')}</button>}
+    </div>
+    {survivor !== null && <p role="status" style={{color:HOTELS[survivor].colour}}>
+      {t(`${HOTELS[survivor].zh}保留，合併後共有 ${size(game, survivor)} 格。`,
+        `${HOTELS[survivor].name} survives with ${size(game, survivor)} tiles.`)}
+    </p>}
+  </figure>;
+}
 
 export function RulebookPreview() {
   const {t} = useLanguage();
+  return <div className="rules-reference">
+    <section className="rules-recap">
+      <h3>{t('一回合速查', 'Your turn at a glance')}</h3>
+      <p>{t('放置一個專屬地塊，處理成立、擴展或合併。接着可買入已成立酒店的股票，合計最多 3 股，然後結束回合。', 'Place one private tile and resolve any founding, expansion or merger. Then optionally buy up to three shares in total in active hotels and finish your turn.')}</p>
+    </section>
 
-  return <div className="rulebook-preview">
-    {sections.map(([title, english, points], index) => <section className="rule-step" key={title}>
-      <b aria-hidden="true">{index + 1}</b>
-      <div>
-        <h3>{t(title, english)}</h3>
-        <ul>{points.map(([zh, en]) => <li key={zh}>
-          <p>{hotelText(t(zh, en), true)}</p>
-        </li>)}</ul>
-      </div>
-    </section>)}
+    <section>
+      <h3>{t('兩間酒店同樣大，誰收購誰？', 'Who survives a merger when hotels tie?')}</h3>
+      <p>{t('以放置地塊前的酒店格數比較，最大的一間保留。若有多間並列最大，由放置地塊的玩家選擇其中一間保留。持股數量不影響這個決定。', 'Compare hotel sizes before placement. The largest survives. If several tie for largest, the player who placed the tile chooses which of them survives. Shareholdings do not affect that choice.')}</p>
+      <MergerExample/>
+      <p>{t('一次收購多間酒店時，依照各間合併前的格數，由大至小處理。若被收購的酒店格數相同，由放置地塊的玩家決定先處理哪一間。', 'When several hotels are acquired, resolve them in descending order of their pre-merger sizes. The player who placed the tile decides the order between tied acquisitions.')}</p>
+    </section>
+
+    <section>
+      <h3>{t('有專屬地塊，為甚麼仍然不能放？', 'Why is a private tile blocked?')}</h3>
+      <ul>
+        <li><strong>{t('永久禁放', 'Permanently blocked')}</strong> {t('若一格會把兩間或以上的安全酒店連在一起，就不能放置。酒店達到 11 格即屬安全。即使是透過相連的獨立建築接通，也一樣禁止。回合結束時，系統會移除這類地塊，並在有剩餘地塊時補發。', 'You cannot connect two or more safe hotels, even through a group of independent buildings. A hotel is safe at 11 tiles. The game discards these blocked tiles at the end of your turn and replaces them while tiles remain.')}</li>
+        <li><strong>{t('暫時禁放', 'Temporarily blocked')}</strong> {t('七間酒店均已成立時，不能放置會成立第八間酒店的地塊。該地塊會保留，日後仍可能可用。', 'When all seven hotels are active, a tile that would found an eighth hotel is blocked. You keep it and may be able to use it later.')}</li>
+        <li>{t('若沒有任何可放置的地塊，可直接進入購買股票階段。若所有玩家一整輪都無法放置，遊戲會自動結算。', 'If none of your tiles can be placed, skip to buying shares. If nobody can place a tile for a full round, the game settles automatically.')}</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>{t('為甚麼要爭第一或第二大股東？', 'Why aim for the largest or second-largest holding?')}</h3>
+      <p>{t('股東獎金按同一間酒店的持股數量排名。被收購時，只有被收購的酒店按合併前股價發放獎金。終局時，每間仍在營運的酒店會按最終股價發放獎金，股票也會另行兌現。', 'Bonuses are based on shareholdings in each hotel. In a merger, the acquired hotel pays bonuses at its pre-merger share price. At game end, every active hotel pays bonuses at its final price, and its shares are cashed out separately.')}</p>
+      <p style={{color:HOTELS[fourSeasons].colour} as CSSProperties}>{t(
+        `以標準房間的四季酒店為例：4 格時每股 ${money(sharePrice)}，第一大股東可獲 ${money(awards.majority)}，第二大股東可獲 ${money(awards.minority)}。`,
+        `In a standard room, Four Seasons at four tiles is worth ${money(sharePrice)} per share. The largest holder receives ${money(awards.majority)} and the second-largest receives ${money(awards.minority)}.`)}</p>
+      <ul>
+        <li>{t('標準房間的獎金為每股股價的 10 倍及 5 倍。自訂房間以房間設定為準。', 'Standard bonuses are 10× and 5× the share price. Custom rooms use their chosen multipliers.')}</li>
+        <li>{t('唯一股東可獲兩份獎金。並列第一者平分兩份獎金，並列第二者平分第二份。平分後，每人的獎金向上取整至 $100 的倍數。', 'A sole holder receives both bonuses. Tied leaders share both. Tied runners-up share the second bonus. Round each split payment up to a multiple of $100.')}</li>
+        <li>{t('兩人對局有剩餘地塊時，系統會抽取一格，以欄號作為市場的持股數，參與獎金排名。市場取得的獎金不歸任何玩家。', 'In a two-player game, if tiles remain, the game draws a tile and uses its column number as the market’s holding for bonus ranking. Any bonus won by the market goes to no player.')}</li>
+      </ul>
+    </section>
+
+    <section>
+      <h3>{t('被收購後，手上的股票怎麼辦？', 'What can you do with acquired shares?')}</h3>
+      <ul>
+        <li>{t('賣出：按被收購酒店合併前的每股價格套現。', 'Sell at the acquired hotel’s pre-merger share price.')}</li>
+        <li>{t('換股：每 2 股被收購酒店股票可換 1 股收購方股票，須有庫存。', 'Exchange two acquired shares for one share in the surviving hotel, subject to supply.')}</li>
+        <li>{t('保留：未賣出或換出的股票可留待酒店重新成立。若終局時該酒店仍未成立，股票價值為 $0。', 'Keep unallocated shares in case the hotel is founded again. They are worth $0 if the hotel is inactive at game end.')}</li>
+      </ul>
+      <p>{t('同一次收購可混合使用三種方式。持股玩家由放置地塊者開始，按座位順序處理，因此換股庫存可能先被其他玩家用完。', 'You can mix all three options. Shareholders act in seat order starting with the tile placer, so earlier players may use up the shares available for exchange.')}</p>
+    </section>
+
+    <section>
+      <h3>{t('何時可以結束遊戲？', 'When can you end the game?')}</h3>
+      <p>{t('若任何酒店達到 41 格，或場上至少有一間酒店且所有已成立酒店均達 11 格，輪到你的放置或購股階段可宣告最後回合。完成該回合後結算。現金、股東獎金及股票出售收入合計最高者獲勝，同額者並列。', 'If any hotel reaches 41 tiles, or at least one is active and all active hotels have at least 11 tiles, you may declare the final turn during placement or buying. Finish that turn, then settle. Cash plus bonuses and share proceeds determines the winner. Equal totals share the win.')}</p>
+    </section>
   </div>;
 }

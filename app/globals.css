@@ -1019,3 +1019,23 @@
 @media (max-width: 380px) {
   :root:lang(en) .landing-immersive .hero-title-with-art h1 { font-size: 22px; }
 }
+
+.rules-reference { display: grid; gap: 20px; margin-top: 18px; }
+.rules-reference > section { min-width: 0; padding-bottom: 16px; border-bottom: 1px solid var(--line); }
+.rules-reference > section:last-child { border-bottom: 0; }
+.rules-reference h3 { color: var(--goldlight); margin: 0 0 8px; }
+.rules-reference p, .rules-reference li { color: #d2dce4; line-height: 1.65; }
+.rules-reference p { margin: 6px 0 10px; }
+.rules-reference ul { padding-inline-start: 21px; margin: 8px 0; }
+.rules-reference li + li { margin-top: 8px; }
+.rules-reference .rules-recap, .rules-merger-example {
+  border: 1px solid #829bb24d;
+  border-radius: 8px;
+  background: #182b3d;
+  padding: 14px;
+}
+.rules-merger-example { margin: 14px 0; }
+.rules-merger-example figcaption { color: #d2dce4; margin-bottom: 10px; }
+.rules-example-board { width: min(100%, 430px); min-width: 0; }
+.rules-choice-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
+.rules-choice-buttons button[aria-pressed="true"] { border-color: currentColor; }

@@ -19,7 +19,7 @@ import {BoardTile, boardHotelLogo} from '../components/board-tile';
 import {MergerResults} from '../components/merger-results';
 import {PurchaseAnnouncements} from '../components/purchase-announcements';
 import {acceptRoomView} from '../lib/purchase-notice-queue';
-import {Building2,Copy,Check,Users,Plus,Minus,DoorOpen,BookOpen,Landmark,ShieldCheck,Coins,Volume2,VolumeX,X,Globe2,ChevronRight,RotateCcw,Play,Share2,Wifi,WifiOff,Crown,TrendingUp} from 'lucide-react';
+import {Building2,Copy,Check,Users,Plus,Minus,DoorOpen,BookOpen,Landmark,ShieldCheck,Coins,Volume2,VolumeX,X,Globe2,ChevronRight,RotateCcw,Play,Share2,Wifi,WifiOff,Crown} from 'lucide-react';
 import {HOTELS,HOTEL_PRICE_GROUPS,createGame,makePlayer,publicState,applyAction,actor,placement,size,price,priceFor,canEnd,label,botAction,type Game,type Action} from '../lib/game/engine';
 type View=ReturnType<typeof publicState>;
 function Emblem({c=0,small=false}:{c?:number;small?:boolean}){
@@ -120,12 +120,19 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
 <section className="hero hotel-landing-hero"><img className="landing-toast-art" src="/art/gatsby-toast-v1.webp" alt="" aria-hidden="true" draggable={false} width={1536} height={1024}/><div className="hero-copy"><span className="eyebrow"><span className="line"/>{t("經典酒店投資遊戲", "A CLASSIC GAME OF AMBITION")}</span>{language==='en'?<h1 className="hero-title-en">Build a city.<em>Build an empire.</em></h1>:<div className="hero-title-with-art">
   <h1>瓊樓逐格起<span className="hero-title-line">情迷香港地</span></h1>
   <div className="hero-investment-art" aria-hidden="true">
-    <div className="hero-investment-skyline"><Building2/><TrendingUp/></div>
+    <svg className="hero-investment-skyline" viewBox="0 0 204 118" focusable="false">
+      <path className="hero-investment-hotel" d="M86 104V57h25V32h10V18h44v14h10v37h20v35ZM121 32h44m-54 8h64m-89 64h109"/>
+      <path className="hero-investment-windows" d="M96 67h6m-6 10h6m-6 10h6m17-38h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m-49 10h7m7 0h7m7 0h7m7 0h7m12-11h6m-6 10h6"/>
+      <path className="hero-investment-grid" d="M8 91h81M8 71h81M8 51h81M8 31h81"/>
+      <path className="hero-investment-price" d="m8 88 15-13 12 7 17-24 12 6 20-29m-13 1 13-1 2 13"/>
+      <circle className="hero-investment-price-dot" cx="35" cy="82" r="2"/>
+      <circle className="hero-investment-price-dot" cx="64" cy="64" r="2"/>
+    </svg>
     <div className="hero-investment-shares">
       {[HOTELS[0], HOTELS[1]].map(hotel => {
         const maskImage = `url("${hotel.logo}")`;
         return <div className="hero-investment-share" key={hotel.id} style={{'--hotel': hotel.colour} as React.CSSProperties}>
-          <span>{hotel.mark} · 股票</span>
+          <span>{hotel.mark} · 股票證書</span>
           <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
           <span>1 股</span>
         </div>;

@@ -761,3 +761,9 @@
   .tutorial-flow-layout { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .tutorial-turn-art { display: none; }
 }
+
+.language-switch { display: inline-flex; gap: 3px; padding: 3px; border: 1px solid var(--line); border-radius: 6px; }
+.language-switch button { padding: 5px 8px; border-radius: 3px; font-size: 12px; white-space: nowrap; }
+.language-switch button[aria-pressed="true"] { background: #d9bd7950; color: var(--goldlight); }
+.stock-card-hotel { max-width: 100%; white-space: normal; overflow-wrap: anywhere; }
+.tutorial-turn-certificate strong { overflow-wrap: anywhere; }

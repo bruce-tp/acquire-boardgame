@@ -1,4 +1,5 @@
 'use client';
+import {useLanguage} from "./language";
 
 import {useEffect, useState} from 'react';
 
@@ -7,6 +8,8 @@ export function HotelPoster({ landing = false, hidden = false, id }: {
   hidden?: boolean;
   id?: string;
 }) {
+  const {t} = useLanguage();
+
   const [useHoshinoya, setUseHoshinoya] = useState(false);
   const [hoshinoyaReady, setHoshinoyaReady] = useState(false);
 
@@ -17,8 +20,8 @@ export function HotelPoster({ landing = false, hidden = false, id }: {
   const showHoshinoya = useHoshinoya && hoshinoyaReady;
   return <div id={id} className={'city-panorama branded-hotel-panorama' + (landing ? ' landing-hotel-poster' : '')}
     role="img" aria-label={showHoshinoya
-      ? '香港半島酒店與星のや東京 · The Peninsula Hong Kong and HOSHINOYA Tokyo'
-      : '香港半島酒店與星野リゾート · The Peninsula Hong Kong and Hoshino Resorts'} hidden={hidden}>
+      ? t("香港半島酒店與星のや東京", "The Peninsula Hong Kong and HOSHINOYA Tokyo")
+      : t("香港半島酒店與星野リゾート", "The Peninsula Hong Kong and Hoshino Resorts")} hidden={hidden}>
     <div className="hotel-poster-stage" aria-hidden="true">
       <img src={landing ? '/art/hotel-dusk-oil.webp' : '/art/peninsula-okura-night-v3.png'} alt="" draggable={false} />
       {useHoshinoya && <img className="hoshinoya-cover-layer" src="/art/hotel-dusk-hoshinoya-preview.webp"
@@ -31,7 +34,7 @@ export function HotelPoster({ landing = false, hidden = false, id }: {
             <span className="hoshinoya-name-seal">星のや</span>
             <span className="hoshinoya-moon"/>
           </span>
-          <span className="hoshinoya-sign-wordmark">星のや東京<small lang="en">HOSHINOYA Tokyo</small></span>
+          <span className="hoshinoya-sign-wordmark">{t("星のや東京", "HOSHINOYA Tokyo")}</span>
         </> : '星野リゾート'}
       </span>
     </div>

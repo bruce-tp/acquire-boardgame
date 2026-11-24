@@ -1,4 +1,5 @@
 'use client';
+import {useLanguage} from "./language";
 
 import {useEffect, useRef, useState} from 'react';
 import {ArrowDown, Building2, X} from 'lucide-react';
@@ -28,10 +29,15 @@ const boardColumns = [3, 4, 5, 6, 7];
 const boardRows = ['C', 'D', 'E'];
 
 function Explanation({zh, en}: {zh: string; en: string}) {
-  return <p className="tutorial-explanation">{hotelText(zh, true)}<small lang="en">{hotelText(en, true)}</small></p>;
+  const {t} = useLanguage();
+
+  return <p className="tutorial-explanation">{hotelText(t(zh, en), true)}</p>;
 }
 
-function PrivateSpotCoordinates({english = false}: {english?: boolean}) {
+function PrivateSpotCoordinates() {
+  const {language} = useLanguage();
+  const english = language === "en";
+
   const spots = ['5C', '7E', '8B', '8G', '8H', '9E'];
   return spots.map((spot, index) => <span key={spot} style={{whiteSpace: 'nowrap'}}>
     {index === 0 ? '' : index === spots.length - 1 ? (english ? ' and ' : ' 同 ') : (english ? ', ' : '、')}
@@ -40,9 +46,10 @@ function PrivateSpotCoordinates({english = false}: {english?: boolean}) {
 }
 
 function SuccessFeedback({zh, en}: {zh: string; en: string}) {
+  const {t} = useLanguage();
+
   return <div role="status" className="tutorial-explanation" style={{borderInlineStart: '3px solid var(--goldlight)', paddingInlineStart: 12}}>
-    <strong style={{color: 'var(--goldlight)'}}>{zh}</strong>
-    <small lang="en">{en}</small>
+    <strong style={{color: 'var(--goldlight)'}}>{t(zh, en)}</strong>
   </div>;
 }
 
@@ -54,13 +61,15 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
   full?: boolean;
   overviewViewer?: number;
 }) {
+  const {t} = useLanguage();
+
   const placing = game.phase === 'place' && game.turn === 0;
   const overviewView = overviewViewer === undefined ? null : publicState(game, overviewViewer);
   const privateSpots = overviewView?.players[overviewView.me].hand;
   const canPlace = overviewView ? game.turn === overviewView.me && game.phase === 'place' : placing;
   const columns = full ? Array.from({length:12}, (_, index) => index + 1) : boardColumns;
   const rows = full ? Array.from({length:9}, (_, index) => String.fromCharCode(65 + index)) : boardRows;
-  return <div className={full ? 'board-frame' : 'board-frame tutorial-board'} role="group" aria-label="練習棋盤 · Practice board">
+  return <div className={full ? 'board-frame' : 'board-frame tutorial-board'} role="group" aria-label={t("練習棋盤", "Practice board")}>
     <div className="grid-label corner" aria-hidden="true">A</div>
     {columns.map(column => <div className="grid-label" key={column}>{column}</div>)}
     {rows.map(row => <div className="board-row" key={row}>
@@ -77,7 +86,9 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
 }
 
 function FoundingChoices({game, onChoose}: {game: Game; onChoose: (chain: number) => void}) {
-  return <div className="chain-choices" role="group" aria-label="選擇酒店 · Choose a hotel">
+  const {t} = useLanguage();
+
+  return <div className="chain-choices" role="group" aria-label={t("選擇酒店", "Choose a hotel")}>
     {HOTELS.filter(hotel => size(game, hotel.id) === 0).map(hotel => {
       const maskImage = `url("${boardHotelLogo(hotel)}")`;
       return <button type="button" className="chain-choice" key={hotel.id}
@@ -85,7 +96,7 @@ function FoundingChoices({game, onChoose}: {game: Game; onChoose: (chain: number
         <span className="emblem brand-emblem small" aria-hidden="true" style={{'--hotel': hotel.colour} as React.CSSProperties}>
           <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
         </span>
-        <span>{hotelText(hotel.zh)}<small lang="en">{hotelText(hotel.name)}</small></span>
+        <span>{hotelText(t(hotel.zh, hotel.name))}</span>
       </button>;
     })}
   </div>;
@@ -96,6 +107,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   showRules: () => void;
   startPractice?: () => void;
 }) {
+  const {t, localiseMessage} = useLanguage();
+
   const dialog = useRef<HTMLDialogElement>(null);
   const [unlockedChapter, setUnlockedChapter] = useState(0);
   const [lesson, setLesson] = useState<Lesson>('place');
@@ -173,9 +186,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const bonuses = score?.hotels.reduce((sum, hotel) => sum + hotel.bonus, 0) ?? 0;
 
   return <dialog ref={dialog} className="dialog beginner-tutorial" aria-labelledby="beginner-tutorial-title" onClose={close}>
-    <form method="dialog"><button className="icon close" aria-label="關閉 · Close"><X size={20}/></button></form>
-    <h2 id="beginner-tutorial-title">新手教學 <em>Learn to play</em></h2>
-    <p className="tutorial-explanation"><strong style={{color: 'var(--goldlight)'}}>編寫中</strong> · 呢份新手教學仲寫緊，內容會繼續更新。<br/><span lang="en">This tutorial is a work in progress.</span></p>
+    <form method="dialog"><button className="icon close" aria-label={t("關閉", "Close")}><X size={20}/></button></form>
+    <h2 id="beginner-tutorial-title">{t("新手教學", "Learn to play")}</h2>
+    <p className="tutorial-explanation">{t("編寫中 · 呢份新手教學仲寫緊，內容會繼續更新。", "This tutorial is a work in progress.")}</p>
     <section aria-labelledby="tutorial-game-flow" style={{
       border: '1px solid #829bb24d',
       borderRadius: 8,
@@ -184,7 +197,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
     }}>
       <div className="tutorial-flow-layout">
         <div>
-          <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>遊戲流程 · <span lang="en">Game flow</span></h3>
+          <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>{t("遊戲流程", "Game flow")}</h3>
           <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
           <ol>
             <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
@@ -200,18 +213,17 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             {[HOTELS[0], HOTELS[2]].map(hotel => {
               const maskImage = `url("${boardHotelLogo(hotel)}")`;
               return <div className="tutorial-turn-certificate" key={hotel.id} style={{'--hotel': hotel.colour} as React.CSSProperties}>
-                <span lang="en">SHARE CERTIFICATE</span>
+                <span>{t("股票證書", "SHARE CERTIFICATE")}</span>
                 <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
-                <strong>{hotel.short}</strong>
-                <span>1 股 · <span lang="en">ONE SHARE</span></span>
+                <strong>{t(hotel.short, hotel.name)}</strong>
+                <span>{t("1 股", "ONE SHARE")}</span>
               </div>;
             })}
           </div>
         </div>
       </div>
       <p className="tutorial-explanation">
-        買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
-        <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>
+        {t("買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到", "Once you buy or skip buying, the next player takes their turn. This repeats until ")}<span className="tutorial-end">{t("終局", "the game ends")}</span>{t("。", ".")}
       </p>
           <div className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, color: '#ffd98a'}}>
             <span aria-hidden="true" style={{
@@ -219,32 +231,29 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           border: '2px solid currentColor', borderRadius: 4, fontWeight: 800, lineHeight: 1,
         }}>$</span>
             <div>
-              <strong>勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。</strong>
-              <small lang="en" style={{color: 'inherit'}}>To win, finish with the most cash after share sales and bonuses.</small>
+              <strong>{t("勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。", "To win, finish with the most cash after share sales and bonuses.")}</strong>
             </div>
           </div>
     </section>
-    <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
+    <nav className="tutorial-lessons" aria-label={t("教學章節", "Lessons")}>
       {chapters.map(([id, zh, en, colour], index) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
         disabled={index > unlockedChapter} style={index > unlockedChapter ? {opacity: 0.4} : undefined}
         aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>
-        <span>{index + 1}. {zh}</span><small lang="en">{en}</small>
+        <span>{index + 1}. {t(zh, en)}</span>
       </button>)}
     </nav>
     <section aria-labelledby="tutorial-exercise-title">
-      <h3 id="tutorial-exercise-title" className={chapter === 'place' ? 'tutorial-build' : chapter === 'buy' ? 'tutorial-buy' : 'tutorial-end'}>{heading[1]} · {heading[2]}</h3>
+      <h3 id="tutorial-exercise-title" className={chapter === 'place' ? 'tutorial-build' : chapter === 'buy' ? 'tutorial-buy' : 'tutorial-end'}>{t(heading[1], heading[2])}</h3>
 
       {chapter === 'place' && <>
         {placing && lesson === 'place' && <>
           <p className="tutorial-explanation">
-            放置地塊之後，可能會起一幢<span style={{color: '#b9ccd8'}}>獨立建築</span>、<span style={{color: '#f5ca80'}}>成立酒店</span>、<span style={{color: '#8cddcc'}}>擴展酒店</span>，或者<span style={{color: '#ffa696'}}>觸發合併</span>同換股。下面會逐步練習。
-            <small lang="en">Placing a tile can add an <span style={{color: '#b9ccd8'}}>independent building</span>, <span style={{color: '#f5ca80'}}>found a hotel</span>, <span style={{color: '#8cddcc'}}>expand a hotel</span>, or <span style={{color: '#ffa696'}}>trigger a merger</span> and share exchanges. Try these in the exercises below.</small>
+            {t(<> 放置地塊之後，可能會起一幢<span style={{color: '#b9ccd8'}}>獨立建築</span>、<span style={{color: '#f5ca80'}}>成立酒店</span>、<span style={{color: '#8cddcc'}}>擴展酒店</span>，或者<span style={{color: '#ffa696'}}>觸發合併</span>同換股。下面會逐步練習。</>, <> Placing a tile can add an <span style={{color: '#b9ccd8'}}>independent building</span>, <span style={{color: '#f5ca80'}}>found a hotel</span>, <span style={{color: '#8cddcc'}}>expand a hotel</span>, or <span style={{color: '#ffa696'}}>trigger a merger</span> and share exchanges. Try these in the exercises below.</>)}
           </p>
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，即係只有你可以起樓嘅位置。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <p className="tutorial-explanation">
-            用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 <PrivateSpotCoordinates/>。輪到你時，就可以喺棋盤撳呢啲格起樓。
-            <small lang="en">In this example, the player’s six private building spots are <PrivateSpotCoordinates english/>. On their turn, they can click any of these squares to build.</small>
+            {t(<> 用呢個盤面做例子。假設你就係呢位玩家，由地圖得知，你嘅六個專屬地塊係 <PrivateSpotCoordinates/>。輪到你時，就可以喺棋盤撳呢啲格起樓。</>, <> In this example, the player’s six private building spots are <PrivateSpotCoordinates/>. On their turn, they can click any of these squares to build.</>)}
           </p>
         </>}
         {placing && lesson === 'found' && <>
@@ -264,16 +273,15 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             en="The Peninsula has six tiles and Hoshino has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Hoshino."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
-          <strong>{selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '依家試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`}</strong>
-          <small lang="en">{selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`}</small>
+          <strong>{t(selected !== null ? `已揀 ${label(selected)}，撳「確認放置」。` : lesson === 'place' ? '依家試吓撳棋盤上六個提示格嘅其中一格。' : `試吓撳棋盤嘅 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`)}</strong>
         </p>}
         {lesson === 'place' ? <figure className="tutorial-practice-opening">
-          <div className="board-scroll" tabIndex={0} role="region" aria-label="練習棋盤 · Practice board">
+          <div className="board-scroll" tabIndex={0} role="region" aria-label={t("練習棋盤", "Practice board")}>
             <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
           </div>
         </figure> : <LessonBoard game={game} target={target} selected={selected} onSelect={selectTile}/>}
         {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
-          確認放置 · Build tile
+          {t("確認放置", "Build tile")}
         </button>}
       </>}
 
@@ -290,7 +298,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           en="Tile placed. It touches no other buildings, so it stays independent."/>
         : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}擴展咗一格。`}
           en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
-        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>繼續起樓練習 · Continue building</button>}
+        {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>{t("繼續起樓練習", "Continue building")}</button>}
       </>}
 
       {lesson === 'found' && game.phase === 'found' && <>
@@ -302,7 +310,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {lesson === 'found' && game.phase === 'buy' && <>
         <SuccessFeedback zh="恭喜！你成立咗一間酒店。" en="Congratulations! You founded a hotel."/>
         <Explanation zh="酒店成立咗，你攞到一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
-        <button type="button" className="primary" onClick={() => openLesson('merge')}>繼續起樓練習 · Continue building</button>
+        <button type="button" className="primary" onClick={() => openLesson('merge')}>{t("繼續起樓練習", "Continue building")}</button>
       </>}
 
       {lesson === 'buy' && game.phase === 'buy' && <>
@@ -311,21 +319,21 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         {founderShares > 0 && <Explanation zh={`你已有 1 股${buyingHotel.zh}創辦人股票。`}
           en={`You already have one founder’s share in ${buyingHotel.name}.`}/>}
         <div className="tutorial-controls">
-          <span>{hotelText(buyingHotel.zh + ' · ' + buyingHotel.name)} <strong>{money(price(game, buyingHotel.id))} / 股</strong></span>
+          <span>{hotelText(t(buyingHotel.zh, buyingHotel.name))} <strong>{money(price(game, buyingHotel.id))} {t("/ 股", "/ share")}</strong></span>
           <div className="stepper">
-            <button type="button" disabled={quantity === 0} onClick={() => setQuantity(quantity - 1)} aria-label="減一股 · Remove one share">−</button>
+            <button type="button" disabled={quantity === 0} onClick={() => setQuantity(quantity - 1)} aria-label={t("減一股", "Remove one share")}>−</button>
             <output aria-live="polite">{quantity}</output>
-            <button type="button" disabled={quantity === 3} onClick={() => setQuantity(quantity + 1)} aria-label="加一股 · Add one share">+</button>
+            <button type="button" disabled={quantity === 3} onClick={() => setQuantity(quantity + 1)} aria-label={t("加一股", "Add one share")}>+</button>
           </div>
-          <span>總額 · Total <strong>{money(quantity * price(game, buyingHotel.id))}</strong></span>
+          <span>{t("總額", "Total")} <strong>{money(quantity * price(game, buyingHotel.id))}</strong></span>
         </div>
         <div className="tutorial-actions">
           <button type="button" className="primary" disabled={!quantity} onClick={() => {
             const quantities = HOTELS.map(hotel => hotel.id === buyingHotel.id ? quantity : 0);
             advance({type: 'buyAndFinish', quantities});
-          }}>買入並完成回合 · Buy &amp; finish turn</button>
+          }}>{t("買入並完成回合", "Buy & finish turn")}</button>
           <button type="button" className="secondary" onClick={() => advance({type: 'finish'})}>
-            不買股，完成回合 · Skip buying &amp; finish
+            {t("不買股，完成回合", "Skip buying & finish")}
           </button>
         </div>
       </>}
@@ -334,7 +342,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         <SuccessFeedback zh="做得好！你完成咗買股練習。" en="Well done! You completed the buying exercise."/>
         <Explanation zh={`回合完成。${buyingHotel.zh}：${founderShares ? '1 股創辦人股票 + ' : ''}今次買入 ${player.shares[buyingHotel.id] - founderShares} 股，合共 ${player.shares[buyingHotel.id]} 股。剩餘現金：${money(player.cash)}。`}
           en={`Turn complete. ${buyingHotel.name}: ${founderShares ? '1 founder’s share + ' : ''}${player.shares[buyingHotel.id] - founderShares} bought this turn, ${player.shares[buyingHotel.id]} in total. Cash remaining: ${money(player.cash)}.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('settle')}>下一節：終局 · Next: Game end</button>
+        <button type="button" className="primary" onClick={() => openLesson('settle')}>{t("下一節：終局", "Next: Game end")}</button>
       </>}
 
       {lesson === 'merge' && game.phase === 'dispose' && <>
@@ -342,36 +350,36 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`查股價表：喺星野嗰欄搵收購前嘅 4 格，再橫向讀取每股賣價 ${money(mergerPrice)}。同一行亦列出第一同第二大股東嘅獎金。`}
           en={`In the share price guide, find Hoshino’s pre-merger size of four tiles in its column. Read across for the sell price of ${money(mergerPrice)} per share and the majority and minority bonuses.`}/>
         <details className="tutorial-price-guide">
-          <summary>查看股價及股東獎金表 · View share price and bonus guide</summary>
+          <summary>{t("查看股價及股東獎金表", "View share price and bonus guide")}</summary>
           <PriceReference sizes={game.merger?.sizes} settings={game.settings}/>
         </details>
 
         <Explanation zh={`星野每股 ${money(mergerPrice)}。你持有 4 股，係第一大股東，已收 ${money(award)} 獎金。第二大股東收一股股價嘅 5 倍。獎金同股票分開計。試吓賣 1 股、用 2 股換 1 股半島，餘下 1 股會自動保留。`}
           en={`Hoshino trades at ${money(mergerPrice)} per share. As the largest shareholder with four shares, you earned a separate ${money(award)} majority bonus. The second-largest shareholder gets five times one share’s price. Try selling one and trading two for one Peninsula share. The remaining share is kept automatically.`}/>
         <div className="tutorial-controls tutorial-disposal">
-          <label>賣出股數 · Sell
+          <label>{t("賣出股數", "Sell")}
             <select value={sell} onChange={event => setSell(Number(event.target.value))}>
               {Array.from({length: player.shares[HOSHINO] - trade * 2 + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
-          <label><span>{hotelText('換入半島股數 · Receive', true)}</span>
+          <label><span>{hotelText(t("換入半島股數", "Receive"), true)}</span>
             <select value={trade} onChange={event => setTrade(Number(event.target.value))}>
               {Array.from({length: Math.floor((player.shares[HOSHINO] - sell) / 2) + 1}, (_, count) =>
                 <option key={count} value={count}>{count}</option>)}
             </select>
           </label>
-          <span>保留 · Keep <strong>{retained}</strong></span>
-          <span>套現 · Proceeds <strong>{money(sell * mergerPrice)}</strong></span>
+          <span>{t("保留", "Keep")} <strong>{retained}</strong></span>
+          <span>{t("套現", "Proceeds")} <strong>{money(sell * mergerPrice)}</strong></span>
         </div>
-        <button type="button" className="primary" onClick={() => advance({type: 'dispose', sell, trade})}>確認 · Confirm</button>
+        <button type="button" className="primary" onClick={() => advance({type: 'dispose', sell, trade})}>{t("確認", "Confirm")}</button>
       </>}
 
       {disposed && <>
         <SuccessFeedback zh="做得好！你處理完今次合併嘅股票。" en="Well done! You handled your shares in the merger."/>
         <Explanation zh={`合併完成。同規模時，由落地塊嘅玩家揀邊間保留。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[HOSHINO]} 股星野，現金有 ${money(player.cash)}。保留嘅股票可等酒店重開。11 格或以上嘅酒店屬安全酒店，唔可以用一塊地連接兩間安全酒店。`}
           en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[HOSHINO]} Hoshino shares and now have ${money(player.cash)} in cash. Kept shares matter if Hoshino reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
-        <button type="button" className="primary" onClick={() => openLesson('buy')}>下一節：買股票 · Next: Buy shares</button>
+        <button type="button" className="primary" onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
       </>}
 
       {lesson === 'settle' && <>
@@ -379,18 +387,18 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh="輪到你時，符合以下任何一個條件，就可以選擇喺今個回合完結後結算。"
           en="On your turn, you may choose to end the game after your turn if either condition is met."/>
         <ol>
-          <li>至少一間酒店有 41 格或以上。<br/><small lang="en">At least one hotel has 41 or more tiles.</small></li>
-          <li>棋盤上所有已成立嘅酒店都安全，即係每間都有至少 11 格。<br/><small lang="en">Every active hotel on the board is safe, meaning each has at least 11 tiles.</small></li>
+          <li>{t("至少一間酒店有 41 格或以上。", "At least one hotel has 41 or more tiles.")}</li>
+          <li>{t("棋盤上所有已成立嘅酒店都安全，即係每間都有至少 11 格。", "Every active hotel on the board is safe, meaning each has at least 11 tiles.")}</li>
         </ol>
         {placing && <Explanation
           zh="棋盤上有四間酒店。文華東方 15 格、半島 14 格、星野 12 格，全部安全。瑰麗得 10 格。撳棋盤嘅 10H，再撳「確認放置」，睇吓瑰麗擴展到 11 格之後會點。"
           en="There are four hotels on the board. Mandarin Oriental (15), The Peninsula (14) and Hoshino (12) are safe. Rosewood has 10 tiles. Select 10H, then choose ‘Build tile’ to grow Rosewood to 11."/>}
-        {!placing && <h4>終局棋盤 · Endgame board</h4>}
+        {!placing && <h4>{t("終局棋盤", "Endgame board")}</h4>}
         <div className="board-scroll">
           <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile}/>
         </div>
         {placing && <button type="button" className="primary" disabled={selected === null} onClick={() => advance({type: 'place', tile: target})}>
-          確認放置 · Build tile
+          {t("確認放置", "Build tile")}
         </button>}
         {game.phase === 'buy' && <>
           <SuccessFeedback zh="做得好！你令最後一間酒店達到安全規模。" en="Well done! You brought the last hotel up to safe size."/>
@@ -401,7 +409,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             applyAction(finalGame, 0, {type: 'declare'});
             applyAction(finalGame, 0, {type: 'finish'});
             setGame(finalGame);
-          }}>結束遊戲及查看結算表 · End game and see scores</button>
+          }}>{t("結束遊戲及查看結算表", "End game and see scores")}</button>
         </>}
       </>}
 
@@ -411,14 +419,14 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           zh={`你結算前有 ${money(score.cashBeforeSettlement)} 現金。將表內各間酒店嘅賣股收入加埋，係 ${money(proceeds)}，再加 ${money(bonuses)} 股東獎金。你嘅最終總額係 ${money(player.cash)}。最終總額最高嘅玩家排第一。`}
           en={`You start settlement with ${money(score.cashBeforeSettlement)} in cash. Add the share sale proceeds of ${money(proceeds)} and shareholder bonuses of ${money(bonuses)} for a final total of ${money(player.cash)}. The player with the highest final total ranks first.`}/>
         <FinalScorecard view={publicState(game, 0)}/>
-        {startPractice && <button type="button" className="primary" onClick={startPractice}>試玩一局 · Play a practice game</button>}
-        {!startPractice && <button type="button" className="primary" onClick={close}>返回遊戲 · Return to game</button>}
+        {startPractice && <button type="button" className="primary" onClick={startPractice}>{t("試玩一局", "Play a practice game")}</button>}
+        {!startPractice && <button type="button" className="primary" onClick={close}>{t("返回遊戲", "Return to game")}</button>}
       </>}
-      {error && <p className="error" role="alert">{error}</p>}
+      {error && <p className="error" role="alert">{localiseMessage(error)}</p>}
     </section>
     <footer className="tutorial-actions tutorial-footer">
-      <button type="button" className="secondary compact" onClick={() => openLesson(lesson)}>重試本節 · Restart lesson</button>
-      <button type="button" className="secondary compact" onClick={showRules}>詳細規則 · Full rules</button>
+      <button type="button" className="secondary compact" onClick={() => openLesson(lesson)}>{t("重試本節", "Restart lesson")}</button>
+      <button type="button" className="secondary compact" onClick={showRules}>{t("詳細規則", "Full rules")}</button>
     </footer>
   </dialog>;
 }

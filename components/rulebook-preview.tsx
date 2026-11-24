@@ -1,3 +1,4 @@
+import {useLanguage} from "./language";
 import {hotelText} from './hotel-text';
 
 const sections = [
@@ -39,14 +40,15 @@ const sections = [
 ] as const;
 
 export function RulebookPreview() {
+  const {t} = useLanguage();
+
   return <div className="rulebook-preview">
     {sections.map(([title, english, points], index) => <section className="rule-step" key={title}>
       <b aria-hidden="true">{index + 1}</b>
       <div>
-        <h3>{title} · <span lang="en">{english}</span></h3>
+        <h3>{t(title, english)}</h3>
         <ul>{points.map(([zh, en]) => <li key={zh}>
-          <p>{hotelText(zh, true)}</p>
-          <p lang="en">{hotelText(en, true)}</p>
+          <p>{hotelText(t(zh, en), true)}</p>
         </li>)}</ul>
       </div>
     </section>)}

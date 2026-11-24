@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
-import {ArrowDown, Building2, Coins, X} from 'lucide-react';
+import {ArrowDown, Building2, X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
@@ -185,13 +185,6 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       <div className="tutorial-flow-layout">
         <div>
           <h3 id="tutorial-game-flow" style={{margin: '0 0 8px'}}>遊戲流程 · <span lang="en">Game flow</span></h3>
-          <div className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, color: '#ffd98a'}}>
-            <Coins size={24} aria-hidden="true" style={{flexShrink: 0}}/>
-            <div>
-              <strong>勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。</strong>
-              <small lang="en" style={{color: 'inherit'}}>To win, finish with the most cash after share sales and bonuses.</small>
-            </div>
-          </div>
           <Explanation zh="每個回合得兩個步驟：" en="Each turn has two steps:"/>
           <ol>
             <li className="tutorial-build"><Explanation zh="起樓（放置地塊）" en="Build (place a tile)"/></li>
@@ -220,6 +213,16 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
         買完或者揀唔買，就到下一位玩家做同樣嘅嘢，直到<span className="tutorial-end">終局</span>。
         <small lang="en">Once you buy or skip buying, the next player takes their turn. This repeats until <span className="tutorial-end">the game ends</span>.</small>
       </p>
+          <div className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, color: '#ffd98a'}}>
+            <span aria-hidden="true" style={{
+          display: 'grid', placeItems: 'center', flexShrink: 0, width: 36, height: 24,
+          border: '2px solid currentColor', borderRadius: 4, fontWeight: 800, lineHeight: 1,
+        }}>$</span>
+            <div>
+              <strong>勝利條件：完場計埋賣股同獎金，最多錢嗰個贏。</strong>
+              <small lang="en" style={{color: 'inherit'}}>To win, finish with the most cash after share sales and bonuses.</small>
+            </div>
+          </div>
     </section>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
       {chapters.map(([id, zh, en, colour], index) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}

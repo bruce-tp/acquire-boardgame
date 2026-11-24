@@ -801,21 +801,9 @@
 :root:lang(zh) .hotel-landing-hero .hero-copy :is(.eyebrow, .hero-play-link, .hero-tutorial-link) {
   font-family: inherit;
 }
-@font-face {
-  font-family: 'Cover Masa';
-  src: url('/fonts/cover-masa.woff') format('woff');
-  font-weight: 400;
-  font-display: swap;
-}
-:root:lang(zh) .hotel-landing-hero .hero-copy :is(h1, .eyebrow) {
-  font-family: 'Cover Masa', 'Cover GenWanMin', serif;
-  font-weight: 400;
-}
 :root:lang(zh) .hotel-landing-hero .hero-copy h1 {
+  font-weight: 700;
   letter-spacing: 0.035em;
-}
-:root:lang(zh) .hotel-landing-hero .hero-copy .eyebrow {
-  font-size: 1em;
 }
 :root:lang(zh) .hotel-landing-hero .hero-desc { font-weight: 500; }
 :root:lang(zh) .landing-toast-quote p {

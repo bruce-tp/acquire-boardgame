@@ -690,11 +690,9 @@
 
 .beginner-tutorial .tutorial-lessons > button > span { color: var(--lesson-colour); }
 
-.landing-immersive .hero-tutorial-prompt {
-  color: #c0ccd6;
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 12px 0 0;
+.landing-immersive .hero-tags > .hero-tutorial-prompt {
+  gap: 3px;
+  white-space: nowrap;
 }
 .hero-tutorial-link {
   border: 0;
@@ -866,7 +864,6 @@
   text-wrap: pretty;
 }
 :root:lang(en) .hero-actions { margin-top: 16px; }
-:root:lang(en) .landing-immersive .hero-tutorial-prompt { margin: 12px 0 0; }
 @media (min-width: 761px) and (max-width: 1100px) {
   :root:lang(en) .landing-toast-quote { left: 53%; right: auto; top: 285px; max-width: 30%; }
 }

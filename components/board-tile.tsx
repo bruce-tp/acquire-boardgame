@@ -22,9 +22,10 @@ type BoardTileProps = {
   latest: boolean;
   onSelect?: () => void;
   tutorialHint?: boolean;
+  merging?: boolean;
 };
 
-export function BoardTile({tile, value, plan, playable, selected, latest, onSelect, tutorialHint}: BoardTileProps) {
+export function BoardTile({tile, value, plan, playable, selected, latest, onSelect, tutorialHint, merging}: BoardTileProps) {
   const {t, localiseMessage} = useLanguage();
 
   const hotel = HOTELS[value];
@@ -37,14 +38,14 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   const placementStatus = selected ? t('已選取', 'Selected') : t('可放置', 'Place here');
   const description = hotel ? t(hotel.zh, hotel.name) : independent ? t("獨立建築", "Independent building") : plan ? t("你的專屬地塊", "Your private building spot") : t("空地", "Empty lot");
   const classes = [
-    'tile', hotel ? 'hotel-tile' : independent ? 'independent' : '',
+    'tile', merging && 'tile-merging', hotel ? 'hotel-tile' : independent ? 'independent' : '',
     hotel?.mark === 'RGH' && 'guesthouse-tile', plan && 'held', playable && 'playable', selected && 'selected', latest && 'last', event && 'tile-event tile-event-' + event,
   ].filter(Boolean).join(' ');
   const maskImage = hotel ? 'url("' + boardHotelLogo(hotel) + '")' : undefined;
 
   return <button type="button" className={classes} data-tutorial-next={tutorialHint || undefined}
     title={coordinate + ' · ' + (plan?.reason ? localiseMessage(plan.reason) : description)}
-    aria-label={[coordinate, description, playable && placementStatus, eventLabel, latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
+    aria-label={[coordinate, description, playable && placementStatus, eventLabel, merging && t("合併位置", "Merger location"), latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
     disabled={!playable || !onSelect} onClick={onSelect}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>

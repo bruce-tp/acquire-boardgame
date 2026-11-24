@@ -2,7 +2,7 @@
 import {useLanguage} from "./language";
 
 import {useEffect, useRef, useState} from 'react';
-import {ArrowDown, Building2, X} from 'lucide-react';
+import {ArrowDown, BadgeCheck, Building2, X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
@@ -48,8 +48,9 @@ function PrivateSpotCoordinates() {
 function SuccessFeedback({zh, en}: {zh: string; en: string}) {
   const {t} = useLanguage();
 
-  return <div role="status" className="tutorial-explanation" style={{borderInlineStart: '3px solid var(--goldlight)', paddingInlineStart: 12}}>
-    <strong style={{color: 'var(--goldlight)'}}>{t(zh, en)}</strong>
+  return <div role="status" className="tutorial-explanation" style={{display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', border: '1px solid #dfbc8060', borderRadius: 8, background: '#dfbc8010', color: 'var(--goldlight)'}}>
+    <BadgeCheck size={25} aria-hidden="true" style={{flexShrink: 0}}/>
+    <strong>{t(zh, en)}</strong>
   </div>;
 }
 

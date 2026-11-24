@@ -28,14 +28,13 @@ export function PurchaseAnnouncements({roomCode, incoming}: {
       const logoMask = hotel ? `url("${hotel.logo}")` : undefined;
       return <article className="purchase-notice" key={notice.id}>
       {notice.founding && hotel ? <>
-        <header><strong>{notice.playerName}</strong><span>{t("成立酒店", "HOTEL FOUNDED")}</span></header>
-        <p style={{display:'flex', alignItems:'center', gap:10}}>
+        <p style={{display:'flex', alignItems:'center', flexWrap:'wrap', gap:8}}>
+          <span style={{overflowWrap:'anywhere'}}><strong>{notice.playerName}</strong> {t("成立了", "founded")} <strong style={{color:hotel.colour}}>{t(hotel.zh, hotel.name)}</strong></span>
           <span className="emblem small" style={{'--hotel':hotel.colour, padding:4, width:56, height:36} as CSSProperties} aria-hidden="true">
             {hotel.mark === 'RGH'
               ? <img className="guesthouse-emblem-art" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
               : <span className="hotel-logo" style={{maskImage:logoMask, WebkitMaskImage:logoMask}}/>}
           </span>
-          <span>{t("成立了", "Founded")} <strong style={{color:hotel.colour}}>{t(hotel.zh, hotel.name)}</strong></span>
         </p>
         <footer><span>{t("創辦獎勵", "Founder’s reward")}</span>
           <strong>{notice.founding.reward.type === 'share'

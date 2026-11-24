@@ -159,7 +159,7 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
 </blockquote>
 <HotelPoster landing/><div className="art-caption"><span>{t("由你打造這座城市", "THE CITY IS YOURS TO BUILD")}</span><span>BIG AMBITION</span></div></section>
 <div className="hotel-collection" tabIndex={0} role="region" aria-label={t("七大酒店品牌", "Seven hotel brands")}>
-  {[[0, 1, 6, 3], [4, 5, 2]].map((hotelIds, side) => (
+  {[[0, 1, 6, 3], [5, 4, 2]].map((hotelIds, side) => (
     <div className="hotel-rail" key={side}>
       {hotelIds.map(id => HOTELS[id]).map(h => (
         <div className="hotel-mini" key={h.id} style={{'--hotel': h.colour} as React.CSSProperties}>

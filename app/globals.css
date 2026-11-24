@@ -999,3 +999,23 @@
 }
 
 :root:lang(zh) .landing-showcase .hotel-mini strong { font-weight: 600; }
+
+.tutorial-founder-certificate {
+  display: flex;
+  justify-content: flex-start;
+  padding: 4px 0 16px;
+}
+.tutorial-founder-certificate .stock-card {
+  margin: 0;
+  transform: none;
+}
+:root:lang(en) .landing-immersive .hero-title-with-art h1 {
+  font-size: clamp(24px, 3.15vw, 49px);
+}
+:root:lang(en) .hero-investment-art {
+  width: clamp(85px, 10vw, 150px);
+  transform: translateY(-10px);
+}
+@media (max-width: 380px) {
+  :root:lang(en) .landing-immersive .hero-title-with-art h1 { font-size: 22px; }
+}

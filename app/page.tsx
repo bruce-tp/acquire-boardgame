@@ -119,8 +119,8 @@ const total=view?quantities.reduce((n,q,c)=>n+q*price(view as any,c),0):0,totalQ
 return <main className={playing?'app playing':'app'}><header className="topbar"><button className="brand" onClick={()=>view?setConfirmLeave(true):null} aria-label="Big Ambition home"><span className="brand-mark">B<span/></span><span>BIG AMBITION<small>{t("酒店交易所", "THE HOTEL EXCHANGE")}</small></span></button><div className="top-right"><LanguageSwitch/><button className="text-button price-guide-button" onClick={()=>setPriceGuide(true)}><Landmark size={17}/><span>{t("股價表", "Price guide")}</span></button><button className="text-button" onClick={()=>setTutorial(true)}><BookOpen size={17}/><span>{t("新手教學", "Learn to play")}</span></button><SoundControls sound={sound} volume={volume} error={audioError} toggle={toggleSound} setVolume={setVolume} preview={previewSound}/></div></header>
 {!playing?<><div className="landing landing-immersive">
 <div className="landing-showcase">
-<section className="hero hotel-landing-hero"><img className="landing-toast-art" src="/art/gatsby-toast-v1.webp" alt="" aria-hidden="true" draggable={false} width={1536} height={1024}/><div className="hero-copy"><span className="eyebrow"><span className="line"/>{t("由經典酒店投資桌遊改編", "A CLASSIC GAME OF AMBITION")}</span>{language==='en'?<h1 className="hero-title-en">Build a city.<em>Build an empire.</em></h1>:<div className="hero-title-with-art">
-  <h1>瓊樓逐格起<span className="hero-title-line">情迷香港地</span></h1>
+<section className="hero hotel-landing-hero"><img className="landing-toast-art" src="/art/gatsby-toast-v1.webp" alt="" aria-hidden="true" draggable={false} width={1536} height={1024}/><div className="hero-copy"><span className="eyebrow"><span className="line"/>{t("由經典酒店投資桌遊改編", "A CLASSIC GAME OF AMBITION")}</span><div className="hero-title-with-art">
+  {language==='en'?<h1 className="hero-title-en">Build a city.<em>Build an empire.</em></h1>:<h1>瓊樓逐格起<span className="hero-title-line">情迷香港地</span></h1>}
   <div className="hero-investment-art" aria-hidden="true">
     <svg className="hero-investment-skyline" viewBox="0 0 204 118" focusable="false">
       <path className="hero-investment-hotel" d="M86 104V57h25V32h10V18h44v14h10v37h20v35ZM121 32h44m-54 8h64m-89 64h109"/>
@@ -142,7 +142,7 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
       })}
     </div>
   </div>
-</div>}<p className="hero-desc">{language==='en'&&<>{hotelText('From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.', true)}<br/></>}{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span>
+</div><p className="hero-desc">{language==='en'&&<>{hotelText('From The Peninsula to Mandarin Oriental and Sheraton Hong Kong, build your hotel empire.', true)}<br/></>}{t('與朋友一起建造、投資，掌握每一次合併的時機。', 'Build, invest and time your mergers as you play with friends.')}</p><div className="hero-tags"><span><Users size={15}/>{t("2–6 位玩家", "2–6 players")}</span><span><Globe2 size={15}/>{t("即開即玩", "in your browser")}</span>
   <span className="hero-tutorial-prompt">{t("第一次玩？", "First time playing?")}
   <button type="button" className="hero-tutorial-link" onClick={() => setTutorial(true)}>{t("新手教學", "Learn to play")}</button>
 </span>
@@ -155,7 +155,7 @@ return <main className={playing?'app playing':'app'}><header className="topbar">
 </div>
 </div>
 <blockquote className="landing-toast-quote">
-  <p>{t("今晚我嘅～", "Tonight’s on me.")}<br/>{t("今晚之後，間酒店都係我嘅～", "After tonight, the hotel’s mine too.")}</p>
+  <p>{t("今晚我嘅～", "I’ll pick up the tab.")}<br/>{t("今晚之後，間酒店都係我嘅～", "Then I’ll pick up the hotel.")}</p>
 </blockquote>
 <HotelPoster landing/><div className="art-caption"><span>{t("由你打造這座城市", "THE CITY IS YOURS TO BUILD")}</span><span>BIG AMBITION</span></div></section>
 <div className="hotel-collection" tabIndex={0} role="region" aria-label={t("七大酒店品牌", "Seven hotel brands")}>

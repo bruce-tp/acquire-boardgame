@@ -6,6 +6,7 @@ import {ArrowDown, BadgeCheck, Building2, X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
+import {ShareCertificate} from './share-cards';
 import {BoardTile, boardHotelLogo} from './board-tile';
 import {PriceReference} from './price-reference';
 import {applyAction, HOTELS, label, placement, size, price, priceFor, publicState, type Action, type Game} from '../lib/game/engine.ts';
@@ -305,6 +306,9 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           en="Tile placed. It touches no other buildings, so it stays independent."/>
         : <Explanation zh={`放置成功。${HOTELS[game.board[game.lastTile]].zh}已擴展一格。`}
           en={`Tile placed. ${HOTELS[game.board[game.lastTile]].name} gained one tile.`}/>}
+        {game.lastTileEvent === 'found' && game.phase === 'buy' && <div className="tutorial-founder-certificate">
+          <ShareCertificate hotel={HOTELS[game.board[game.lastTile]]}/>
+        </div>}
         {game.phase !== 'found' && <button type="button" className="primary" onClick={() => openLesson('found')}>{t("繼續建造練習", "Continue building")}</button>}
       </>}
 
@@ -317,6 +321,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       {lesson === 'found' && game.phase === 'buy' && <>
         <SuccessFeedback zh="恭喜！你已成立一間酒店。" en="Congratulations! You founded a hotel."/>
         <Explanation zh="酒店已成立，你獲得一股創辦人股票。" en="The hotel is open, and you received one founder’s share."/>
+        <div className="tutorial-founder-certificate"><ShareCertificate hotel={buyingHotel}/></div>
         <button type="button" className="primary" onClick={() => openLesson('merge')}>{t("繼續建造練習", "Continue building")}</button>
       </>}
 

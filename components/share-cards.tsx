@@ -58,19 +58,7 @@ export function ShareCards({ shares, active, settled = false }: {
               <div className="certificate-spread" id={spreadId} role="list"
                 aria-label={t(`${h.zh}股票證書`, `${h.name} share certificates`)}>
                 {Array.from({ length: count }, (_, index) =>
-                  <div className="stock-card" role="listitem" key={`${h.id}-${index}`}
-                    style={{ '--card-index': index } as CSSProperties}
-                    aria-label={t(`${h.zh}股票，第 ${index + 1} 張，共 ${count} 張，每張一股`, `${h.name}, share ${index + 1} of ${count}`)}>
-                    <div className="stock-card-frame" aria-hidden="true" />
-                    <div className="stock-card-top"><span>{h.mark}</span><span>{String(index + 1).padStart(2, '0')}</span></div>
-                    <span className="stock-card-caption" lang="en">SHARE CERTIFICATE</span>
-                    {h.mark === 'RGH'
-                      ? <img className="stock-card-logo stock-card-guesthouse" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
-                      : <span className="stock-card-logo" aria-hidden="true"
-                      style={{ maskImage: `url("${h.logo}")`, WebkitMaskImage: `url("${h.logo}")` }} />}
-                    <strong className="stock-card-hotel">{t(h.zh, h.name)}</strong>
-                    <div className="stock-card-bottom"><span className="stock-card-seal" aria-hidden="true">A</span><span><b lang="en">ONE SHARE</b></span></div>
-                  </div>
+                  <ShareCertificate key={index} hotel={h} index={index} count={count}/>
                 )}
               </div>
               {!active[h.id] && <p className="certificate-retained">{t("酒店暫未成立 · 保留待重建", "Inactive chain · Shares retained")}</p>}
@@ -78,4 +66,26 @@ export function ShareCards({ shares, active, settled = false }: {
           })}
         </div>}
   </section>;
+}
+
+
+export function ShareCertificate({hotel: h, index = 0, count}: {
+  hotel: (typeof HOTELS)[number];
+  index?: number;
+  count?: number;
+}) {
+  const {t} = useLanguage();
+  return <div className="stock-card" role={count === undefined ? undefined : "listitem"}
+    style={{ '--card-index': index, '--hotel': h.colour } as CSSProperties}
+    aria-label={count === undefined ? undefined : t(`${h.zh}股票，第 ${index + 1} 張，共 ${count} 張，每張一股`, `${h.name}, share ${index + 1} of ${count}`)}>
+    <div className="stock-card-frame" aria-hidden="true" />
+    <div className="stock-card-top"><span>{h.mark}</span><span>{String(index + 1).padStart(2, '0')}</span></div>
+    <span className="stock-card-caption" lang="en">SHARE CERTIFICATE</span>
+    {h.mark === 'RGH'
+      ? <img className="stock-card-logo stock-card-guesthouse" src="/hotels/regent-guesthouse-colour.webp" alt=""/>
+      : <span className="stock-card-logo" aria-hidden="true"
+      style={{ maskImage: `url("${h.logo}")`, WebkitMaskImage: `url("${h.logo}")` }} />}
+    <strong className="stock-card-hotel">{t(h.zh, h.name)}</strong>
+    <div className="stock-card-bottom"><span className="stock-card-seal" aria-hidden="true">A</span><span><b lang="en">ONE SHARE</b></span></div>
+  </div>;
 }

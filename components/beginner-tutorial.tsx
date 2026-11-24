@@ -97,6 +97,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   startPractice?: () => void;
 }) {
   const dialog = useRef<HTMLDialogElement>(null);
+  const [unlockedChapter, setUnlockedChapter] = useState(0);
   const [lesson, setLesson] = useState<Lesson>('place');
   const [game, setGame] = useState(createPracticeGame);
   const [selected, setSelected] = useState<number | null>(null);
@@ -148,6 +149,12 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       if (action.type === 'found' && action.chain !== undefined) {
         setFoundedHotel(action.chain);
       }
+      if (lesson === 'merge' && next.phase === 'buy') {
+        setUnlockedChapter(previous => Math.max(previous, 1));
+      }
+      if (lesson === 'buy' && next.phase === 'place' && next.turn !== 0) {
+        setUnlockedChapter(2);
+      }
       setGame(next);
       setError('');
     } catch (cause) {
@@ -189,7 +196,8 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
       </p>
     </section>
     <nav className="tutorial-lessons" aria-label="教學章節 · Lessons">
-      {chapters.map(([id, zh, en, colour]) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
+      {chapters.map(([id, zh, en, colour], index) => <button type="button" className={`secondary compact tutorial-${colour}`} key={id}
+        disabled={index > unlockedChapter} style={index > unlockedChapter ? {opacity: 0.4} : undefined}
         aria-current={id === chapter ? 'step' : undefined} onClick={() => {if (id !== chapter) openLesson(id);}}>
         <span>{zh}</span><small lang="en">{en}</small>
       </button>)}

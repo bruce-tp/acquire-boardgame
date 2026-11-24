@@ -1,7 +1,7 @@
 'use client';
 
 import {useEffect, useRef, useState} from 'react';
-import {ArrowDown, Building2, ScrollText, X} from 'lucide-react';
+import {ArrowDown, Building2, X} from 'lucide-react';
 import {FinalScorecard} from './final-scorecard';
 import {createPracticeGame} from '../lib/game/practice.ts';
 import {hotelText} from './hotel-text';
@@ -198,7 +198,17 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             <span/><span/><span/><span><Building2 size={26}/></span>
           </div>
           <ArrowDown size={22}/>
-          <div className="tutorial-turn-shares"><ScrollText size={47}/><ScrollText size={47}/></div>
+          <div className="tutorial-turn-shares">
+            {[HOTELS[0], HOTELS[2]].map(hotel => {
+              const maskImage = `url("${boardHotelLogo(hotel)}")`;
+              return <div className="tutorial-turn-certificate" key={hotel.id} style={{'--hotel': hotel.colour} as React.CSSProperties}>
+                <span lang="en">SHARE CERTIFICATE</span>
+                <span className="hotel-logo" style={{maskImage, WebkitMaskImage: maskImage}}/>
+                <strong>{hotel.short}</strong>
+                <span>1 股 · <span lang="en">ONE SHARE</span></span>
+              </div>;
+            })}
+          </div>
         </div>
       </div>
       <p className="tutorial-explanation">

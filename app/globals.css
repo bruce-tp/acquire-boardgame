@@ -740,9 +740,23 @@
   background: var(--goldlight);
   color: #192937;
 }
-.tutorial-turn-shares { display: flex; color: #8ee0d0; }
-.tutorial-turn-shares > svg:first-child { transform: rotate(-12deg); }
-.tutorial-turn-shares > svg:last-child { margin-left: -13px; transform: rotate(10deg); }
+.tutorial-turn-shares { display: flex; justify-content: center; gap: 5px; }
+.tutorial-turn-certificate {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  padding: 5px 3px;
+  width: 78px;
+  border: 1px solid var(--hotel);
+  border-radius: 5px;
+  background: #1b3443;
+  color: var(--hotel);
+  text-align: center;
+  font-size: 7px;
+  line-height: 1.2;
+}
+.tutorial-turn-certificate strong { font-size: 12px; }
+.tutorial-turn-certificate .hotel-logo { width: 52px; height: 24px; }
 @media (max-width: 500px) {
   .tutorial-flow-layout { grid-template-columns: minmax(0, 1fr); gap: 6px; }
   .tutorial-turn-art { display: none; }

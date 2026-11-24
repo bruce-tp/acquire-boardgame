@@ -11,7 +11,7 @@ export const HOTELS = [
   {id:6,name:'Sheraton Hong Kong',zh:'香港喜來登酒店',short:'喜來登',colour:'#64c3bb',tier:0,mark:'SH',original:'Continental',logo:'/hotels/sheraton.png',region:'香港 · HK'},
 ];
 export type Player = {id:string;name:string;cash:number;shares:number[];hand:number[]};
-export type Merger = {tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[];decisions?:Record<number, MergerDecision>;awards?:Record<number, ShareholderAward>};
+export type Merger = {resultNotices?:NonNullable<PurchaseAnnouncement['mergerResult']>[];tile:number;survivor:number;chains:number[];sizes:number[];remaining:number[];loser:number;order:number[];cursor:number;revealed?:number[];decisions?:Record<number, MergerDecision>;awards?:Record<number, ShareholderAward>};
 export type FinalScore = {
   cashBeforeSettlement: number;
   hotels: {id:number; shares:number; sharePrice:number; sale:number; bonus:number}[];
@@ -94,7 +94,7 @@ function settle(g:Game){
   const max=Math.max(...g.players.map(player=>player.cash));
   note(g,`${g.players.filter(player=>player.cash===max).map(player=>player.name).join(' & ')} win · 勝出 ($${max.toLocaleString()})`);
 }
-function completeMerger(g:Game){const m=g.merger!;for(let i=0;i<108;i++)if(m.chains.includes(g.board[i]))g.board[i]=m.survivor;for(const t of independentGroup(g,m.tile))g.board[t]=m.survivor;note(g,`${HOTELS[m.survivor].name} survives · 合併完成`);g.merger=null;g.phase='buy';}
+function completeMerger(g:Game){const m=g.merger!;for(let i=0;i<108;i++)if(m.chains.includes(g.board[i]))g.board[i]=m.survivor;for(const t of independentGroup(g,m.tile))g.board[t]=m.survivor;note(g,`${HOTELS[m.survivor].name} survives · 合併完成`);for(const mergerResult of m.resultNotices??[])enqueueAnnouncement(g,{playerName:'',items:[],total:0,mergerResult});g.merger=null;g.phase='buy';}
 function nextLoser(g:Game){const m=g.merger!;if(!m.remaining.length){completeMerger(g);return;}const max=Math.max(...m.remaining.map(c=>m.sizes[c]));g.pending=m.remaining.filter(c=>m.sizes[c]===max);if(g.pending.length>1){g.phase='order';return;}beginDisposal(g,g.pending[0]);}
 function beginDisposal(g:Game,c:number){const m=g.merger!;m.loser=c;m.revealed=g.players.map(p=>p.shares[c]);m.remaining=m.remaining.filter(x=>x!==c);m.awards=bonus(g,c,m.sizes[c],true);m.order=Array.from({length:g.players.length},(_,i)=>(g.turn+i)%g.players.length).filter(i=>g.players[i].shares[c]>0);m.cursor=0;m.decisions={};if(!m.order.length){finishAcquisition(g);return;}g.phase='dispose';}
 function finishAcquisition(g:Game){
@@ -106,14 +106,11 @@ function finishAcquisition(g:Game){
     received:null,
     kept:g.players[index].shares[merger.loser],
   });
-  enqueueAnnouncement(g,{
-    playerName:'',items:[],total:0,
-    mergerResult:{
-      acquirer:merger.survivor,acquired:merger.loser,
-      decisions:decisions.map((decision,index)=>({
-        ...decision,award:merger.awards ? (merger.awards[merger.order[index]]??null) : undefined,
-      })),
-    },
+  (merger.resultNotices??=[]).push({
+    acquirer:merger.survivor,acquired:merger.loser,
+    decisions:decisions.map((decision,index)=>({
+      ...decision,award:merger.awards ? (merger.awards[merger.order[index]]??null) : undefined,
+    })),
   });
   nextLoser(g);
 }
@@ -158,7 +155,7 @@ export function publicState(g:Game,viewer:number,delivered?:DeliveredPurchaseAnn
   const now=Date.now();
   const purchaseAnnouncements=delivered??recentPurchases(purchaseNotices,now).flatMap(event=>{const remainingMs=announcementDisplayMs(event)-(now-event.createdAt);return remainingMs>0?[{...event,remainingMs}]:[];});
   const finished=g.phase==='end';
-  const merger=g.merger?{...g.merger,decisions:undefined,awards:undefined,revealed:g.phase==='dispose'?(g.merger.revealed??g.players.map(p=>p.shares[g.merger!.loser])):undefined}:null;
+  const merger=g.merger?{...g.merger,decisions:undefined,awards:undefined,resultNotices:undefined,revealed:g.phase==='dispose'?(g.merger.revealed??g.players.map(p=>p.shares[g.merger!.loser])):undefined}:null;
   return {...safeGame,finalScores:finished?g.finalScores:undefined,settings:gameSettings(g.settings),purchaseAnnouncements,merger,deck:[],deckCount:g.deck.length,
     players:g.players.map((p,i)=>({...p,id:undefined,cash:i===viewer||finished?p.cash:undefined,shares:i===viewer||finished?p.shares:[],hand:i===viewer?p.hand:[],handCount:p.hand.length})),
     log:g.log.map(hiddenHistory),announcement:finished?null:hiddenHistory(g.log.at(-1)??''),me:viewer};

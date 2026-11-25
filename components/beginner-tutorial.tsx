@@ -402,8 +402,10 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
       {disposed && <>
         <SuccessFeedback zh="做得好！你已完成本次合併的股票分配。" en="Well done! You handled your shares in the merger."/>
-        <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[FOUR_SEASONS]} 股四季，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。達到 11 格的酒店屬於安全酒店，不可用同一個地塊連接兩間安全酒店。`}
-          en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[FOUR_SEASONS]} Four Seasons shares and now have ${money(player.cash)} in cash. Kept shares matter if Four Seasons reopens. Chains of 11 or more tiles are safe. You cannot connect two safe chains.`}/>
+        <Explanation zh={`合併完成。酒店規模相同時，由放置地塊的玩家決定保留哪一間。你換入 ${player.shares[PENINSULA]} 股半島、保留 ${player.shares[FOUR_SEASONS]} 股四季，現金為 ${money(player.cash)}。保留的股票可留待酒店重新成立。`}
+          en={`The merger is complete. When chains tie for size, the tile placer picks which survives. You received ${player.shares[PENINSULA]} Peninsula shares, kept ${player.shares[FOUR_SEASONS]} Four Seasons shares and now have ${money(player.cash)} in cash. Kept shares matter if Four Seasons reopens.`}/>
+        <Explanation zh="注意：達到 11 格的酒店屬於安全酒店，無法被合併"
+          en="Note: Hotels with 11 or more tiles are safe and cannot be taken over in a merger."/>
         <button type="button" className="primary" data-tutorial-next onClick={() => openLesson('buy')}>{t("下一節：買股票", "Next: Buy shares")}</button>
       </>}
 

@@ -140,7 +140,7 @@
 .phase-focus-label{display:inline-flex;align-items:center;gap:7px;margin-top:9px;border:1px solid #dfbc8055;border-radius:4px;background:#dfbc8012;padding:6px 9px;font-size:12px;line-height:1.4;letter-spacing:.35px;color:#f0d7a8}
 .phase-focus-label svg{flex-shrink:0}.phase-market-active .market-title{background:linear-gradient(115deg,#dfbc8010,transparent)}
 .icon.sound[aria-pressed='true']{color:#e9c78d}
-@media(prefers-reduced-motion:no-preference){.phase-active{animation:phase-arrival .65s ease-out}@keyframes phase-arrival{from{outline-offset:0;outline-color:#f3d49688;filter:brightness(1.12)}to{outline-offset:4px;outline-color:#edca8726;filter:brightness(1)}}}
+@media(prefers-reduced-motion:no-preference){.phase-active{animation:phase-panel-pulse 1.6s ease-in-out infinite}@keyframes phase-panel-pulse{0%,100%{outline-color:#edca8733}50%{outline-color:#ffe6a6;outline-width:3px}}}
 @media(max-width:760px){.phase-focus-label{font-size:12px;padding:6px 8px}.phase-active{outline-offset:2px}}
 /* A readable, always-available version of the physical Classic info card. */
 .price-reference{margin-top:28px;border:1px solid #d4b67e42;border-radius:9px;padding:23px;background:linear-gradient(140deg,#203344,#132638);box-shadow:inset 0 1px #e5c59114,0 8px 20px #0001}

@@ -134,14 +134,14 @@
 @media(max-width:420px){.certificate-group-heading>span{font-size:14px}.certificate-group-heading strong{font-size:20px}.certificate-spread-toggle{padding:5px 7px}.share-cards-heading .eyebrow{font-size:9px}.share-cards-heading h3 small{display:block;margin:6px 0 0}.share-cards-meta>span{font-size:11px}.certificate-group.expanded .certificate-spread{gap:12px}}
 @media(prefers-reduced-motion:reduce){.stock-card{transition:none}}
 /* The current player's phase moves the focus ring between map and market. */
-.phase-active{border:2px solid #edca87!important;outline:1px solid #edca8726;outline-offset:4px}
-.board-frame.phase-map-active{box-shadow:0 0 0 3px #edca8714,0 0 28px #d6b16b24,0 7px 0 #08121d,inset 0 0 0 4px #edca8708}
-.market-panel.phase-market-active{box-shadow:0 0 0 3px #edca8714,0 0 30px #d6b16b24}
+.board-frame.phase-active,.market-panel.phase-active{border:2px solid #edca87}
+.board-frame.phase-map-active{box-shadow:0 7px 0 #08121d}
+
 .phase-focus-label{display:inline-flex;align-items:center;gap:7px;margin-top:9px;border:1px solid #dfbc8055;border-radius:4px;background:#dfbc8012;padding:6px 9px;font-size:12px;line-height:1.4;letter-spacing:.35px;color:#f0d7a8}
 .phase-focus-label svg{flex-shrink:0}.phase-market-active .market-title{background:linear-gradient(115deg,#dfbc8010,transparent)}
 .icon.sound[aria-pressed='true']{color:#e9c78d}
-@media(prefers-reduced-motion:no-preference){.phase-active{animation:phase-panel-pulse 1.6s ease-in-out infinite}@keyframes phase-panel-pulse{0%,100%{outline-color:#edca8733}50%{outline-color:#ffe6a6;outline-width:3px}}}
-@media(max-width:760px){.phase-focus-label{font-size:12px;padding:6px 8px}.phase-active{outline-offset:2px}}
+@media(prefers-reduced-motion:no-preference){.phase-active{animation:phase-panel-pulse 1.4s ease-in-out infinite}@keyframes phase-panel-pulse{0%,100%{border-color:#665436}50%{border-color:#ffe4a0}}}
+@media(max-width:760px){.phase-focus-label{font-size:12px;padding:6px 8px}}
 /* A readable, always-available version of the physical Classic info card. */
 .price-reference{margin-top:28px;border:1px solid #d4b67e42;border-radius:9px;padding:23px;background:linear-gradient(140deg,#203344,#132638);box-shadow:inset 0 1px #e5c59114,0 8px 20px #0001}
 .reference-heading{display:flex;align-items:center;gap:13px;padding-right:20px}.reference-heading>svg{color:#dfbd84;flex-shrink:0}.reference-heading .eyebrow{font-size:10px;letter-spacing:1.5px}

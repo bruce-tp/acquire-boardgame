@@ -1102,3 +1102,21 @@
     box-shadow: inset 0 0 16px #ffa69680, 0 0 14px #ffa696a0;
   }
 }
+
+.tile.tile-blocked {
+  background: repeating-linear-gradient(135deg, #e38d7920 0 2px, transparent 2px 7px), #192731;
+  border-color: #ba796f;
+}
+.blocked-tile-symbol {
+  color: #ffaf9d;
+  font-weight: 700;
+  line-height: 1;
+}
+.tile-blocked .blocked-tile-symbol { font-size: 1.4rem; }
+.tile-blocked .blocked-tile-coordinate {
+  position: absolute;
+  right: 3px;
+  bottom: 2px;
+  color: #ffd1c4;
+  font-size: 9px;
+}

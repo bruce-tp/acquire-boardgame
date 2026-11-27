@@ -37,7 +37,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     ? plan.chains.length > 1 ? 'merge' : plan.chains.length === 1 ? 'expand' : plan.group.length > 1 ? 'found' : null
     : null;
   const eventLabel = event ? t(eventLabels[event][0], eventLabels[event][1]) : '';
-  const blocked = blockedReason ?? (plan?.legal === false ? plan.reason : undefined);
+  const blocked = blockedReason;
   const blockedLabel = blocked ? t('不可放置', 'Blocked') + ' · ' + localiseMessage(blocked) : '';
   const placementStatus = selected ? t('已選取', 'Selected') : t('可放置', 'Place here');
   const description = hotel ? t(hotel.zh, hotel.name) : independent ? t("獨立建築", "Independent building") : plan ? t("你的專屬地塊", "Your private building spot") : t("空地", "Empty lot");
@@ -48,7 +48,7 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
   const maskImage = hotel ? 'url("' + boardHotelLogo(hotel) + '")' : undefined;
 
   return <button type="button" className={classes} data-tutorial-next={tutorialHint || undefined}
-    title={coordinate + ' · ' + (blockedLabel || description)}
+    title={coordinate + ' · ' + (blockedLabel || (plan?.reason ? localiseMessage(plan.reason) : description))}
     aria-label={[coordinate, description, blockedLabel, playable && placementStatus, eventLabel, merging && t("合併位置", "Merger location"), latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
     disabled={!blocked && (!playable || !onSelect)}

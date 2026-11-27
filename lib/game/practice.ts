@@ -1,17 +1,12 @@
 import {createGame, makePlayer, startGame, price} from './engine.ts';
 import type {GameSettings} from './settings.ts';
 
-export function createPracticeGame(playerName = 'You · 你', settings?: GameSettings, showBlockedSpace = false) {
+export function createPracticeGame(playerName = 'You · 你', settings?: GameSettings) {
   const g=createGame('DEMO','you',playerName,settings);
   g.players.push(makePlayer('bot1','Evelyn'),makePlayer('bot2','Oliver'));
   startGame(g);
   g.board=Array(108).fill(-1);
   const groups=[[26,27,38],[66,67,78],[44,45]];
-  if (showBlockedSpace) {
-    // Leave 5E between two safe chains, so the opening board demonstrates a blocked space.
-    groups[0].push(13, 14, 15, 25, 37, 39, 50, 51);
-    groups[1].push(53, 64, 65, 76, 77, 88, 89, 90);
-  }
   groups.forEach((ts,c)=>ts.forEach(t=>g.board[t]=c));
   [5,31,72].forEach(t=>g.board[t]=7);
   const used=new Set(g.board.map((v,i)=>v>=0?i:-1).filter(i=>i>=0));

@@ -84,10 +84,8 @@ function LessonBoard({game, target, selected, onSelect, full = false, overviewVi
       <div className="grid-label">{row}</div>
       {columns.map(column => {
         const tile = (row.charCodeAt(0) - 65) * 12 + column - 1;
-        const emptyPlan = game.board[tile] === -1 ? placement(game, tile) : null;
-        const plan = (privateSpots ? privateSpots.includes(tile) : placing && tile === target) ? emptyPlan : null;
+        const plan = (privateSpots ? privateSpots.includes(tile) : placing && tile === target) ? placement(game, tile) : null;
         return <BoardTile key={tile} tile={tile} value={game.board[tile]} plan={plan}
-          blockedReason={emptyPlan && !emptyPlan.legal ? emptyPlan.reason : undefined}
           playable={canPlace && !!plan?.legal} selected={!!plan && canPlace && selected === tile}
           tutorialHint={canPlace && !!plan?.legal && selected === null && !!onSelect}
           latest={game.lastTile === tile} onSelect={onSelect && (() => onSelect(tile))}/>;
@@ -123,7 +121,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
   const dialog = useRef<HTMLDialogElement>(null);
   const [unlockedChapter, setUnlockedChapter] = useState(0);
   const [lesson, setLesson] = useState<Lesson>('place');
-  const [game, setGame] = useState(() => createPracticeGame(undefined, undefined, true));
+  const [game, setGame] = useState(createPracticeGame);
   const [selected, setSelected] = useState<number | null>(null);
   const [foundedHotel, setFoundedHotel] = useState<number | null>(null);
   const [quantity, setQuantity] = useState(0);
@@ -141,7 +139,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
 
   function openLesson(id: Lesson) {
     setLesson(id);
-    const next = id === 'place' ? createPracticeGame(undefined, undefined, true) : createTutorialGame(id === 'buy' ? 'found' : id);
+    const next = id === 'place' ? createPracticeGame() : createTutorialGame(id === 'buy' ? 'found' : id);
     if (id === 'buy') {
       applyAction(next, 0, {type: 'place', tile: FOUNDING_TILE});
       applyAction(next, 0, {type: 'found', chain: buyingHotel.id});
@@ -302,7 +300,6 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <div className="board-scroll" tabIndex={0} role="region" aria-label={t("練習棋盤", "Practice board")}>
             <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
           </div>
-          {placing && <figcaption>{t("紅色 × 表示不可放置。以 5E 為例，放置地塊會連接兩間各有 11 格的安全酒店。", "A red × marks a blocked space. For example, placing 5E would connect two safe hotels with 11 tiles each.")}</figcaption>}
         </figure> : <LessonBoard game={game} target={target} selected={selected} onSelect={selectTile}/>}
         {placing && <button type="button" className="primary" data-tutorial-next={selected !== null || undefined} disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
           {t("確認放置", "Build tile")}

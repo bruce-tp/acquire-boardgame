@@ -35,11 +35,11 @@ function Explanation({zh, en}: {zh: string; en: string}) {
   return <p className="tutorial-explanation">{hotelText(t(zh, en), true)}</p>;
 }
 
-function PrivateSpotCoordinates({tiles}: {tiles: number[]}) {
+function PrivateSpotCoordinates() {
   const {language} = useLanguage();
   const english = language === "en";
 
-  const spots = tiles.map(label);
+  const spots = ['5C', '7E', '8B', '8G', '8H', '9E'];
   return spots.map((spot, index) => <span key={spot} style={{whiteSpace: 'nowrap'}}>
     {index === 0 ? '' : index === spots.length - 1 ? (english ? ' and ' : ' 及 ') : (english ? ', ' : '、')}
     <span style={{display: 'inline-block', paddingInline: 5, border: '1px solid #dfbc8080', borderRadius: 4, color: 'var(--goldlight)', fontWeight: 700}}>{spot}</span>
@@ -276,7 +276,7 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
           <Explanation zh="遊戲開始時，每個玩家都會獲分配 6 個「專屬地塊」，只有獲分配該地塊的玩家可以在該處建造。"
             en="At the start of the game, each player gets six private building spots. Only you can build on the spots assigned to you."/>
           <p className="tutorial-explanation">
-            {t(<> 以這個棋盤為例，假設你是這位玩家，你的六個專屬地塊是 <PrivateSpotCoordinates tiles={game.players[0].hand}/>。輪到你時，可在棋盤上選擇其中一格可放置的地塊建造。</>, <> In this example, the player’s six private building spots are <PrivateSpotCoordinates tiles={game.players[0].hand}/>. On their turn, they can build on any playable tile in their hand.</>)}
+            {t(<> 以這個棋盤為例，假設你是這位玩家，你的六個專屬地塊是 <PrivateSpotCoordinates/>。輪到你時，可在棋盤上選擇其中一格建造。</>, <> In this example, the player’s six private building spots are <PrivateSpotCoordinates/>. On their turn, they can click any of these squares to build.</>)}
           </p>
         </>}
         {placing && lesson === 'found' && <>
@@ -296,13 +296,13 @@ export function BeginnerTutorial({close, showRules, startPractice}: {
             en="The Peninsula has six tiles and Four Seasons has four. Select 5C and confirm to connect them. The larger Peninsula chain acquires Four Seasons."/>
         </>}
         {placing && <p className="tutorial-explanation" aria-live="polite">
-          <strong>{t(selected !== null ? `已選擇 ${label(selected)}，請按「確認放置」。` : lesson === 'place' ? '請選擇棋盤上其中一個閃動的地塊。' : `請選擇棋盤上的 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking one of the highlighted tiles.' : `Try clicking ${label(target)} on the board.`)}</strong>
+          <strong>{t(selected !== null ? `已選擇 ${label(selected)}，請按「確認放置」。` : lesson === 'place' ? '請選擇棋盤上六個有標記的地塊之一。' : `請選擇棋盤上的 ${label(target)} 格。`, selected !== null ? `${label(selected)} selected. Choose ‘Build tile’.` : lesson === 'place' ? 'Try clicking any of the six marked squares.' : `Try clicking ${label(target)} on the board.`)}</strong>
         </p>}
         {lesson === 'place' ? <figure className="tutorial-practice-opening">
           <div className="board-scroll" tabIndex={0} role="region" aria-label={t("練習棋盤", "Practice board")}>
             <LessonBoard full game={game} target={target} selected={selected} onSelect={selectTile} overviewViewer={0}/>
           </div>
-          {placing && <figcaption>{t("5E 的金框表示你持有這格。右上角紅色 × 表示目前不可放置，因為這會連接兩間各有 11 格的安全酒店。", "The gold border on 5E shows you hold it. The red × shows it is blocked because it would connect two safe hotels with 11 tiles each.")}</figcaption>}
+          {placing && <figcaption>{t("紅色 × 表示不可放置。以 5E 為例，放置地塊會連接兩間各有 11 格的安全酒店。", "A red × marks a blocked space. For example, placing 5E would connect two safe hotels with 11 tiles each.")}</figcaption>}
         </figure> : <LessonBoard game={game} target={target} selected={selected} onSelect={selectTile}/>}
         {placing && <button type="button" className="primary" data-tutorial-next={selected !== null || undefined} disabled={selected === null} onClick={() => advance({type: 'place', tile: selected!})}>
           {t("確認放置", "Build tile")}

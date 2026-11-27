@@ -17,7 +17,7 @@ export function createPracticeGame(playerName = 'You · 你', settings?: GameSet
   const used=new Set(g.board.map((v,i)=>v>=0?i:-1).filter(i=>i>=0));
   g.deck=Array.from({length:108},(_,i)=>i).filter(i=>!used.has(i));
   for(const p of g.players)p.hand=[];
-  g.players[0].hand=showBlockedSpace ? [28,54,52,79,19,91] : [28,54,56,79,19,91];
+  g.players[0].hand=[28,54,56,79,19,91];
   g.deck=g.deck.filter(t=>!g.players[0].hand.includes(t));
   for(let i=1; i<3; i++)g.players[i].hand=g.deck.splice(-6);
   for(let i=0; i<3; i++){g.players[i].shares[i]=2;

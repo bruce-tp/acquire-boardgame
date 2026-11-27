@@ -1,5 +1,5 @@
 import {useLanguage} from "./language";
-import type {CSSProperties} from 'react';
+import {useState, type CSSProperties} from 'react';
 import {Building2} from 'lucide-react';
 import {HOTELS, label, type placement} from '../lib/game/engine.ts';
 
@@ -29,6 +29,7 @@ type BoardTileProps = {
 export function BoardTile({tile, value, plan, playable, selected, latest, onSelect, tutorialHint, merging, blockedReason}: BoardTileProps) {
   const {t, localiseMessage} = useLanguage();
 
+  const [showReason, setShowReason] = useState(false);
   const hotel = HOTELS[value];
   const independent = value === 7;
   const coordinate = label(tile);
@@ -50,7 +51,11 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
     title={coordinate + ' · ' + (blockedLabel || description)}
     aria-label={[coordinate, description, blockedLabel, playable && placementStatus, eventLabel, merging && t("合併位置", "Merger location"), latest && t("最近放置", "Latest placement")].filter(Boolean).join(' · ')}
     aria-pressed={playable ? selected : undefined}
-    disabled={!playable || !onSelect} onClick={onSelect}
+    disabled={!blocked && (!playable || !onSelect)}
+    aria-expanded={blocked ? showReason : undefined}
+    onClick={blocked ? () => setShowReason(open => !open) : onSelect}
+    onBlur={() => setShowReason(false)}
+    onKeyDown={event => { if (event.key === 'Escape') setShowReason(false); }}
     style={hotel ? {'--hotel': hotel.colour} as CSSProperties : undefined}>
     {event && <span className="tile-event-badge" title={eventLabel} aria-hidden="true">{eventLabel}</span>}
     {hotel ? <>
@@ -62,10 +67,11 @@ export function BoardTile({tile, value, plan, playable, selected, latest, onSele
       <Building2 size={20} aria-hidden="true"/>
       <span className="tile-coordinate">{coordinate}</span>
       <span className="independent-tile-label" aria-hidden="true">{t("獨立建築", "Independent")}</span>
-    </> : blocked ? <><span className="blocked-tile-symbol" aria-hidden="true">×</span><small className="blocked-tile-coordinate" aria-hidden="true">{coordinate}</small></> : plan ? <span>{coordinate}</span> : <span className="tile-dot" aria-hidden="true">·</span>}
+    </> : blocked ? <><span className="blocked-tile-symbol" aria-hidden="true">×</span><small className={plan ? "held-blocked-coordinate" : "blocked-tile-coordinate"} aria-hidden="true">{coordinate}</small></> : plan ? <span>{coordinate}</span> : <span className="tile-dot" aria-hidden="true">·</span>}
     {playable && (!event || selected) && <span className="tile-placement-label" aria-hidden="true">
       {placementStatus}
     </span>}
+    {blocked && showReason && <span className="blocked-tile-reason" role="status">{blockedLabel}</span>}
     {latest && <span className="latest-tile-badge" aria-hidden="true">{t("最新", "Latest")}</span>}
   </button>;
 }

@@ -1149,3 +1149,12 @@
   text-align: left;
 }
 .tile.tile-blocked:last-child .blocked-tile-reason { left: auto; right: 0; }
+
+.room-visibility { margin: 20px 0 12px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 6px; }
+.room-visibility legend { padding: 0 5px; color: var(--goldlight); }
+.room-visibility label { display: flex; align-items: center; gap: 8px; padding: 6px 0; font-size: 14px; }
+.room-visibility input { width: auto; margin: 0; accent-color: var(--gold); }
+.public-rooms { margin-top: 20px; border-top: 1px solid var(--line); padding-top: 12px; }
+.public-rooms > div, .public-rooms .secondary { display: flex; justify-content: space-between; align-items: center; }
+.public-rooms .secondary { width: 100%; margin-top: 6px; }
+.public-rooms .secondary[aria-pressed="true"] { border-color: var(--gold); }

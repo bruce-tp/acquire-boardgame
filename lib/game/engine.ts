@@ -16,7 +16,7 @@ export type FinalScore = {
   cashBeforeSettlement: number;
   hotels: {id:number; shares:number; sharePrice:number; sale:number; bonus:number}[];
 };
-export type Game = {finalScores?:FinalScore[];settings?:GameSettings;purchaseNotices?:PurchaseAnnouncement[];code:string;version:number;players:Player[];board:number[];deck:number[];discard:number[];turn:number;round:number;phase:string;bank:number[];bought:number;log:string[];pending:number[];merger:Merger|null;endDeclared:boolean;stalls:number;lastTileEvent?:'found'|'merge'|null;lastTile:number|null};
+export type Game = {visibility?:"public"|"private";finalScores?:FinalScore[];settings?:GameSettings;purchaseNotices?:PurchaseAnnouncement[];code:string;version:number;players:Player[];board:number[];deck:number[];discard:number[];turn:number;round:number;phase:string;bank:number[];bought:number;log:string[];pending:number[];merger:Merger|null;endDeclared:boolean;stalls:number;lastTileEvent?:'found'|'merge'|null;lastTile:number|null};
 export type Action = {type:string;tile?:number;chain?:number;quantities?:number[];sell?:number;trade?:number;name?:string};
 export function label(t:number) {return `${t%12+1}${String.fromCharCode(65+Math.floor(t/12))}`;}
 export function size(g:Game,c:number) {return g.board.filter(x=>x===c).length;}
